@@ -1,0 +1,1157 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>CareSync | Caregiver Access</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f7fb;
+            color: #243b53;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .header {
+            margin-bottom: 25px;
+        }
+
+        .header h1 {
+            margin: 0 0 8px;
+            color: #173f63;
+            font-size: 30px;
+        }
+
+        .header p {
+            margin: 0;
+            color: #627d98;
+        }
+
+        .card {
+            background: white;
+            border: 1px solid #d9e2ec;
+            border-radius: 10px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+        }
+
+        .card h2 {
+            margin-top: 0;
+            color: #173f63;
+        }
+
+        /* =========================
+           INVITATION FORM
+           ========================= */
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 7px;
+            font-weight: 600;
+            color: #243b53;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #2176b5;
+            box-shadow: 0 0 0 2px rgba(33, 118, 181, 0.12);
+        }
+
+        button {
+            padding: 11px 18px;
+            border: none;
+            border-radius: 6px;
+            background: #2176b5;
+            color: white;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        button:hover {
+            background: #1769aa;
+        }
+
+        button:disabled {
+            background: #9aa5b1;
+            cursor: not-allowed;
+        }
+
+        .danger-button {
+            background: #c62828;
+        }
+
+        .danger-button:hover {
+            background: #a61b1b;
+        }
+
+        .secondary-button {
+            background: #64748b;
+        }
+
+        .secondary-button:hover {
+            background: #475569;
+        }
+
+        /* =========================
+           MESSAGES
+           ========================= */
+
+        .message {
+            margin-top: 15px;
+            padding: 11px;
+            border-radius: 6px;
+            display: none;
+            font-size: 14px;
+        }
+
+        .success {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .error {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        /* =========================
+           CAREGIVER CARD
+           ========================= */
+
+        .caregiver-item {
+            border: 1px solid #d9e2ec;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 16px;
+        }
+
+        .caregiver-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 18px;
+        }
+
+        .caregiver-email {
+            font-size: 17px;
+            font-weight: 700;
+            color: #173f63;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 5px 11px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .status-accepted {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .status-pending {
+            background: #fff8e1;
+            color: #b26a00;
+        }
+
+        .status-revoked {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        .status-other {
+            background: #eceff1;
+            color: #455a64;
+        }
+
+        /* =========================
+           PERMISSIONS
+           ========================= */
+
+        .permissions-title {
+            margin: 0 0 12px;
+            font-size: 14px;
+            font-weight: bold;
+            color: #486581;
+        }
+
+        .permissions-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 18px;
+        }
+
+        .permission {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 7px;
+        }
+
+        .permission input {
+            width: auto;
+            margin: 0;
+        }
+
+        .permission label {
+            margin: 0;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .permission-disabled {
+            opacity: 0.55;
+        }
+
+        .access-summary {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .access-tag {
+            padding: 5px 9px;
+            border-radius: 5px;
+            background: #e3f2fd;
+            color: #1565c0;
+            font-size: 12px;
+        }
+
+        .no-access {
+            color: #78909c;
+            font-size: 13px;
+        }
+
+        .actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        /* =========================
+           EMPTY STATE
+           ========================= */
+
+        .empty {
+            text-align: center;
+            padding: 30px 15px;
+            color: #78909c;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 25px;
+            color: #627d98;
+        }
+
+        /* =========================
+           RESPONSIVE
+           ========================= */
+
+        @media (max-width: 650px) {
+
+            .container {
+                margin: 20px auto;
+            }
+
+            .caregiver-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .permissions-grid {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+        /* MASTER DASHBOARD DESIGN TOKENS */
+        :root { --gray-800:#243b53; --gray-600:#627d98; --gray-200:#d9e2ec; --gray-50:#f5f7fa; --blue-600:#2176b5; --blue-700:#1769aa; }
+        body { background:var(--gray-50); color:var(--gray-800); font-family:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; font-size:13px; }
+        .container { max-width:1000px; margin:32px auto; }
+        .header h1 { color:#173f63; font-size:23px; }
+        .header p { color:var(--gray-600); font-size:12px; }
+        .card,.caregiver-item { border:1px solid var(--gray-200); border-radius:6px; box-shadow:0 1px 3px rgba(16,42,67,.05); }
+        .card { padding:20px; }
+        input { border:1px solid #cbd5e1; border-radius:5px; font-size:12px; }
+        button { border-radius:4px; background:var(--blue-600); font-size:11px; }
+        button:hover { background:var(--blue-700); }
+        .caregiver-email { color:#173f63; font-size:15px; }
+    .user-info {
+    display: flex !important;
+    align-items: center !important;
+    gap: 9px !important;
+    padding-left: 13px !important;
+    border-left: 1px solid #e1e7ec !important;
+}
+
+.avatar {
+    width: 30px !important;
+    height: 30px !important;
+    min-width: 30px !important;
+    border-radius: 50% !important;
+    background: #eaf3fa !important;
+    color: #1769aa !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 11px !important;
+    font-weight: 500 !important;
+}
+
+.user-name {
+    color: #243b53 !important;
+    font-size: 11px !important;
+    font-weight: 600 !important;
+    line-height: 14px !important;
+    white-space: nowrap !important;
+}
+
+.user-role {
+    color: #829ab1 !important;
+    font-size: 9px !important;
+    font-weight: 400 !important;
+    line-height: 12px !important;
+    margin-top: 1px !important;
+    white-space: nowrap !important;
+}
+/* CARESYNC DASHBOARD MASTER SHELL */
+body{margin:0!important;background:#f5f7fa!important;color:#243b53!important;font-family:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif!important;font-size:13px!important}
+.app{display:flex;min-height:100vh}.sidebar{width:224px!important;background:#102a43!important;color:#fff!important;position:fixed!important;top:0!important;bottom:0!important;left:0!important;display:flex!important;flex-direction:column!important;border-right:0!important}.brand{height:62px!important;padding:0 17px!important;display:flex!important;align-items:center!important;border-bottom:1px solid rgba(255,255,255,.08)!important}.brand-mark{width:29px!important;height:29px!important;margin-right:9px!important;border-radius:5px!important;background:#2176b5!important;display:flex!important;align-items:center!important;justify-content:center!important}.brand-mark svg{width:18px!important;height:18px!important;stroke:#fff!important;stroke-width:2.2!important;stroke-linecap:round!important;stroke-linejoin:round!important;fill:none!important}.brand-name{color:#fff!important;font-size:17px!important;font-weight:700!important;letter-spacing:-.25px!important}.menu-title{padding:0 10px 7px!important;margin-top:18px!important;color:#7893aa!important;font-size:9px!important;font-weight:600!important;letter-spacing:.7px!important;text-transform:uppercase!important}.nav{padding:0 10px!important}.nav a{width:100%!important;height:36px!important;min-height:36px!important;margin-bottom:2px!important;padding:0 10px!important;display:flex!important;align-items:center!important;gap:10px!important;border-radius:5px!important;color:#c8d6e3!important;text-decoration:none!important;font-size:12px!important;font-weight:500!important}.nav a:hover{background:rgba(255,255,255,.065)!important;color:#fff!important}.nav a.active{background:#1e68a8!important;color:#fff!important}.nav-icon{width:18px!important;height:18px!important;min-width:18px!important;flex:0 0 18px!important;display:flex!important;align-items:center!important;justify-content:center!important;color:#9fb5c8!important}.nav-icon .icon{width:17px!important;height:17px!important;display:block!important;stroke:currentColor!important;stroke-width:1.8!important;stroke-linecap:round!important;stroke-linejoin:round!important;fill:none!important}.nav a.active .nav-icon{color:#fff!important}.support{margin:auto 13px 13px!important;padding:13px!important;border:1px solid rgba(255,255,255,.09)!important;border-radius:6px!important;background:rgba(255,255,255,.045)!important}.support-title{margin:0 0 4px!important;color:#fff!important;font-size:11px!important;font-weight:600!important}.support-text{margin:0 0 10px!important;color:#9db2c5!important;font-size:9px!important;line-height:1.45!important}.support button{width:100%!important;height:29px!important;border:0!important;border-radius:4px!important;background:#1e75bd!important;color:#fff!important;font-size:9px!important;font-weight:600!important}.main{margin-left:224px!important;width:calc(100% - 224px)!important;min-height:100vh}.topbar{height:62px!important;padding:0 22px!important;background:#fff!important;border-bottom:1px solid #d9e2ec!important;display:flex!important;align-items:center!important;justify-content:space-between!important}.search-wrapper{width:330px;height:34px;display:flex;align-items:center;border:1px solid #d9e2ec;border-radius:5px;background:#f5f7fa;padding:0 9px}.search-wrapper .icon{width:15px;height:15px;flex:0 0 15px;color:#829ab1;margin-right:7px;stroke:currentColor;stroke-width:1.8;fill:none}.search-wrapper input{width:100%;height:100%;padding:0;border:0;outline:0;background:transparent;color:#243b53;font-size:11px}.search-shortcut{padding:2px 5px;border:1px solid #d9e2ec;border-radius:3px;background:#fff;color:#829ab1;font-size:8px;white-space:nowrap}.top-right{display:flex;align-items:center;gap:13px}
+.user-info{min-height:36px;padding-left:13px;border-left:1px solid #d9e2ec;display:flex;align-items:center;gap:8px}.avatar{width:30px;height:30px;border-radius:50%;background:#eaf3fa;color:#1769aa;font-size:10px;display:flex;align-items:center;justify-content:center}.user-details{min-width:0}.user-name{color:#172b4d;font-size:10px;font-weight:600;white-space:nowrap}.user-role{color:#829ab1;font-size:8px;margin-top:1px}.logout{height:29px!important;padding:0 10px!important;border:1px solid #e0b2ae!important;border-radius:4px!important;background:#fff!important;color:#b42318!important;font-size:9px!important;font-weight:600!important;cursor:pointer!important}.dashboard-content{padding:21px 22px 18px;max-width:1500px;margin:0 auto}.container{max-width:none!important;margin:0!important;padding:0!important}.header{margin-bottom:25px!important}.header h1{color:#172b4d!important;font-size:22px!important;font-weight:700!important;letter-spacing:-.3px!important}.header p{color:#627d98!important;font-size:11px!important}@media(max-width:850px){.sidebar{width:64px!important}.main{margin-left:64px!important;width:calc(100% - 64px)!important}.brand-name,.menu-title,.nav a span:not(.nav-icon),.support,.user-name,.user-role,.logout{display:none!important}.brand{justify-content:center!important;padding:0!important}.nav a{justify-content:center!important;padding:0!important}}@media(max-width:650px){.topbar{padding:0 12px!important}.search-wrapper{width:200px}}
+.logout {
+    height: 31px !important;
+    padding: 0 12px !important;
+    border: 1px solid #e2a5a5 !important;
+    color: #d95353 !important;
+    background: #ffffff !important;
+    border-radius: 4px !important;
+    font-size: 9px !important;
+    font-weight: 500 !important;
+    cursor: pointer !important;
+}
+</style>
+
+</head>
+
+
+<body><div class="app"><aside class="sidebar">
+    <div class="brand"><div class="brand-mark"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14"></path><path d="M5 12h14"></path></svg></div><div class="brand-name">CareSync</div></div><div class="menu-title">MAIN MENU</div><nav class="nav"><a href="/caresync/patient/dashboard"><span class="nav-icon"><svg class="icon" viewBox="0 0 24 24"><path d="m3 11 9-8 9 8"></path><path d="M5 10v10h14V10"></path><path d="M9 20v-6h6v6"></path></svg></span><span>Overview</span></a><a href="/caresync/patient/medications"><span class="nav-icon"><svg class="icon" viewBox="0 0 24 24"><path d="m8 4 12 12"></path><path d="M4.5 8.5a5 5 0 0 1 7.1-7.1l9 9a5 5 0 0 1-7.1 7.1z"></path><path d="m6 6 12 12"></path></svg></span><span>Medications</span></a><a href="/caresync/patient/appointments"><span class="nav-icon"><svg class="icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="17" rx="2"></rect><path d="M16 2v4"></path><path d="M8 2v4"></path><path d="M3 10h18"></path></svg></span><span>Appointments</span></a><a href="/caresync/patient/documents"><span class="nav-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6z"></path><path d="M14 3v5h5"></path><path d="M9 13h6"></path><path d="M9 17h6"></path></svg></span><span>Documents</span></a><a href="/caresync/patient/reminders"><span class="nav-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path><path d="M10 21h4"></path></svg></span><span>Reminders</span></a><a href="/caresync/patient/health-records"><span class="nav-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M4 4h16v16H4z"></path><path d="M8 8h8"></path><path d="M8 12h8"></path><path d="M8 16h5"></path></svg></span><span>Health Records</span></a>
+        <a href="/caresync/patient/health-timeline">
+    <span class="nav-icon">
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M6 4h12"></path>
+            <path d="M6 12h12"></path>
+            <path d="M6 20h12"></path>
+            <circle cx="4" cy="4" r="1.5"></circle>
+            <circle cx="4" cy="12" r="1.5"></circle>
+            <circle cx="4" cy="20" r="1.5"></circle>
+        </svg>
+    </span>
+    <span>Health Timeline</span>
+</a>
+<a href="/caresync/patient/profile"><span class="nav-icon"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3"></circle><path d="M5 21a7 7 0 0 1 14 0"></path></svg></span><span>Profile</span></a><a class="active" href="/caresync/patient/caregivers"><span class="nav-icon"><svg class="icon" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"></circle><circle cx="17" cy="9" r="2.5"></circle><path d="M3 21a6 6 0 0 1 12 0"></path><path d="M14 17a5 5 0 0 1 7 4"></path></svg></span><span>Caregiver Access</span></a></nav><div class="support"><div class="support-title">Need Help?</div><div class="support-text">Contact CareSync support if you need assistance with your healthcare information.</div><button type="button">Contact Support</button></div></aside><main class="main"><header class="topbar"><div class="search-wrapper"><svg class="icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg><input type="search" placeholder="Search healthcare information..." aria-label="Search healthcare information"><span class="search-shortcut">Ctrl /</span></div>
+    <div class="top-right">
+        <div class="user-info"><div class="avatar">T</div><div class="user-details"><div class="user-name">Test Patient</div><div class="user-role">Patient</div></div></div><button class="logout" type="button" onclick="logoutUser()">Logout</button></div></header><section class="dashboard-content"><div class="container">
+
+    <!-- =========================
+         PAGE HEADER
+         ========================= -->
+
+    <div class="header">
+
+        <h1>Caregiver Access</h1>
+
+        <p>
+            Manage people who are authorized to access
+            your healthcare information.
+        </p>
+
+    </div>
+
+
+    <!-- =========================
+         INVITE CAREGIVER
+         ========================= -->
+
+    <div class="card">
+
+        <h2>Invite a Caregiver</h2>
+
+        <p>
+            Enter the email address of the caregiver
+            you want to give access to.
+        </p>
+
+        <form id="caregiverForm">
+
+            <div class="form-group">
+
+                <label for="caregiverEmail">
+                    Caregiver Email
+                </label>
+
+                <input
+                    type="email"
+                    id="caregiverEmail"
+                    placeholder="caregiver@example.com"
+                    required
+                >
+
+            </div>
+
+            <button
+                type="submit"
+                id="inviteButton">
+
+                Send Invitation
+
+            </button>
+
+        </form>
+
+
+        <div id="successMessage"
+             class="message success">
+        </div>
+
+        <div id="errorMessage"
+             class="message error">
+        </div>
+
+    </div>
+
+
+    <!-- =========================
+         CAREGIVER LIST
+         ========================= -->
+
+    <div class="card">
+
+        <h2>Your Caregivers</h2>
+
+        <div id="caregiverList">
+
+            <div class="loading">
+                Loading caregiver information...
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+    const form =
+        document.getElementById("caregiverForm");
+
+    const inviteButton =
+        document.getElementById("inviteButton");
+
+    const successMessage =
+        document.getElementById("successMessage");
+
+    const errorMessage =
+        document.getElementById("errorMessage");
+
+    const caregiverList =
+        document.getElementById("caregiverList");
+
+
+    // =====================================================
+    // SHOW SUCCESS
+    // =====================================================
+
+    function showSuccess(message) {
+
+        successMessage.textContent = message;
+
+        successMessage.style.display = "block";
+
+        errorMessage.style.display = "none";
+    }
+
+
+    // =====================================================
+    // SHOW ERROR
+    // =====================================================
+
+    function showError(message) {
+
+        errorMessage.textContent = message;
+
+        errorMessage.style.display = "block";
+
+        successMessage.style.display = "none";
+    }
+
+
+    // =====================================================
+    // SEND INVITATION
+    // =====================================================
+
+    form.addEventListener(
+        "submit",
+        async function(event) {
+
+            event.preventDefault();
+
+            successMessage.style.display = "none";
+            errorMessage.style.display = "none";
+
+            const caregiverEmail =
+                document.getElementById(
+                    "caregiverEmail"
+                ).value.trim();
+
+            if (!caregiverEmail) {
+
+                showError(
+                    "Please enter a caregiver email."
+                );
+
+                return;
+            }
+
+            inviteButton.disabled = true;
+            inviteButton.textContent = "Sending...";
+
+            try {
+
+                const response =
+                    await fetch(
+                        "/caresync/api/patient/caregivers?caregiverEmail="
+                        + encodeURIComponent(caregiverEmail),
+                        {
+                            method: "POST",
+                            credentials: "include"
+                        }
+                    );
+
+                const text =
+                    await response.text();
+
+                if (!response.ok) {
+
+                    showError(
+                        text ||
+                        "Unable to send invitation."
+                    );
+
+                    return;
+                }
+
+                showSuccess(
+                    "Caregiver invitation sent successfully."
+                );
+
+                document.getElementById(
+                    "caregiverEmail"
+                ).value = "";
+
+                await loadCaregivers();
+
+            } catch (error) {
+
+                console.error(error);
+
+                showError(
+                    "Unable to connect to the CareSync server."
+                );
+
+            } finally {
+
+                inviteButton.disabled = false;
+                inviteButton.textContent = "Send Invitation";
+            }
+
+        }
+    );
+
+
+    // =====================================================
+    // LOAD CAREGIVERS
+    // =====================================================
+
+    async function loadCaregivers() {
+
+        caregiverList.innerHTML =
+            '<div class="loading">' +
+            'Loading caregiver information...' +
+            '</div>';
+
+        try {
+
+            const response =
+                await fetch(
+                    "/caresync/api/patient/caregivers",
+                    {
+                        method: "GET",
+                        credentials: "include"
+                    }
+                );
+
+            if (!response.ok) {
+
+                caregiverList.innerHTML =
+                    '<div class="empty">' +
+                    'Unable to load caregiver information.' +
+                    '</div>';
+
+                return;
+            }
+
+            const caregivers =
+                await response.json();
+
+            if (!caregivers ||
+                caregivers.length === 0) {
+
+                caregiverList.innerHTML =
+                    '<div class="empty">' +
+                    'No caregivers have been added yet.' +
+                    '</div>';
+
+                return;
+            }
+
+            caregiverList.innerHTML =
+                caregivers
+                    .map(
+                        caregiver =>
+                            createCaregiverCard(caregiver)
+                    )
+                    .join("");
+
+        } catch (error) {
+
+            console.error(error);
+
+            caregiverList.innerHTML =
+                '<div class="empty">' +
+                'Unable to load caregiver information.' +
+                '</div>';
+        }
+    }
+
+
+    // =====================================================
+    // CREATE CAREGIVER CARD
+    // =====================================================
+
+    function createCaregiverCard(caregiver) {
+
+        const id =
+            caregiver.id;
+
+        const email =
+            caregiver.caregiverEmail ||
+            "Caregiver";
+
+        const status =
+            (caregiver.status || "PENDING")
+                .toUpperCase();
+
+        let statusClass =
+            "status-other";
+
+        if (status === "ACCEPTED") {
+            statusClass = "status-accepted";
+        }
+
+        if (status === "PENDING") {
+            statusClass = "status-pending";
+        }
+
+        if (status === "REVOKED") {
+            statusClass = "status-revoked";
+        }
+
+
+        const isAccepted =
+            status === "ACCEPTED";
+
+
+        return `
+
+            <div class="caregiver-item">
+
+                <div class="caregiver-header">
+
+                    <div class="caregiver-email">
+
+                        ${escapeHtml(email)}
+
+                    </div>
+
+                    <span class="status ${statusClass}">
+
+                        ${escapeHtml(status)}
+
+                    </span>
+
+                </div>
+
+
+                ${
+                    isAccepted
+                    ?
+                    createPermissionSection(caregiver)
+                    :
+                    `
+                    <div class="permission-disabled">
+
+                        <p>
+                            ${
+                                status === "PENDING"
+                                ?
+                                "Waiting for the caregiver to accept the invitation."
+                                :
+                                "Caregiver access is not currently active."
+                            }
+                        </p>
+
+                    </div>
+                    `
+                }
+
+
+                <div class="actions">
+
+                    ${
+                        isAccepted
+                        ?
+                        `
+                        <button
+                            type="button"
+                            onclick="savePermissions(${id})">
+
+                            Save Permissions
+
+                        </button>
+                        `
+                        :
+                        ""
+                    }
+
+
+                    <button
+                        type="button"
+                        class="danger-button"
+                        onclick="revokeCaregiver(${id})">
+
+                        Revoke Access
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        `;
+    }
+
+
+    // =====================================================
+    // PERMISSION SECTION
+    // =====================================================
+
+    function createPermissionSection(caregiver) {
+
+        return `
+
+            <div>
+
+                <div class="permissions-title">
+
+                    Healthcare Information Access
+
+                </div>
+
+
+                <div class="permissions-grid">
+
+
+                    <div class="permission">
+
+                        <input
+                            type="checkbox"
+                            id="medication-${caregiver.id}"
+                            ${caregiver.medicationAccess ? "checked" : ""}
+                        >
+
+                        <label
+                            for="medication-${caregiver.id}">
+
+                            Medication Access
+
+                        </label>
+
+                    </div>
+
+
+                    <div class="permission">
+
+                        <input
+                            type="checkbox"
+                            id="appointment-${caregiver.id}"
+                            ${caregiver.appointmentAccess ? "checked" : ""}
+                        >
+
+                        <label
+                            for="appointment-${caregiver.id}">
+
+                            Appointment Access
+
+                        </label>
+
+                    </div>
+
+
+                    <div class="permission">
+
+                        <input
+                            type="checkbox"
+                            id="health-${caregiver.id}"
+                            ${caregiver.healthHistoryAccess ? "checked" : ""}
+                        >
+
+                        <label
+                            for="health-${caregiver.id}">
+
+                            Health History Access
+
+                        </label>
+
+                    </div>
+
+
+                    <div class="permission">
+
+                        <input
+                            type="checkbox"
+                            id="reminder-${caregiver.id}"
+                            ${caregiver.reminderAccess ? "checked" : ""}
+                        >
+
+                        <label
+                            for="reminder-${caregiver.id}">
+
+                            Reminder Access
+
+                        </label>
+
+                    </div>
+
+
+                    <div class="permission">
+
+                        <input
+                            type="checkbox"
+                            id="document-${caregiver.id}"
+                            ${caregiver.documentAccess ? "checked" : ""}
+                        >
+
+                        <label
+                            for="document-${caregiver.id}">
+
+                            Document Access
+
+                        </label>
+
+                    </div>
+
+                </div>
+
+
+                ${createAccessSummary(caregiver)}
+
+            </div>
+
+        `;
+    }
+
+
+    // =====================================================
+    // ACCESS SUMMARY
+    // =====================================================
+
+    function createAccessSummary(caregiver) {
+
+        const access = [];
+
+        if (caregiver.medicationAccess) {
+            access.push("Medications");
+        }
+
+        if (caregiver.appointmentAccess) {
+            access.push("Appointments");
+        }
+
+        if (caregiver.healthHistoryAccess) {
+            access.push("Health History");
+        }
+
+        if (caregiver.reminderAccess) {
+            access.push("Reminders");
+        }
+
+        if (caregiver.documentAccess) {
+            access.push("Documents");
+        }
+
+
+        if (access.length === 0) {
+
+            return `
+                <div class="no-access">
+                    No healthcare information is currently shared.
+                </div>
+            `;
+        }
+
+
+        return `
+
+            <div class="access-summary">
+
+                ${access
+                    .map(
+                        item =>
+                            `
+                            <span class="access-tag">
+                                ${item}
+                            </span>
+                            `
+                    )
+                    .join("")}
+
+            </div>
+
+        `;
+    }
+
+
+    // =====================================================
+    // SAVE PERMISSIONS
+    // =====================================================
+
+    async function savePermissions(id) {
+
+        const permissions = {
+
+            medicationAccess:
+                document.getElementById(
+                    `medication-${id}`
+                ).checked,
+
+            appointmentAccess:
+                document.getElementById(
+                    `appointment-${id}`
+                ).checked,
+
+            healthHistoryAccess:
+                document.getElementById(
+                    `health-${id}`
+                ).checked,
+
+            reminderAccess:
+                document.getElementById(
+                    `reminder-${id}`
+                ).checked,
+
+            documentAccess:
+                document.getElementById(
+                    `document-${id}`
+                ).checked
+        };
+
+
+        try {
+
+            const response =
+                await fetch(
+                    `/caresync/api/patient/caregivers/${id}/permissions`,
+                    {
+                        method: "PUT",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+
+                        credentials: "include",
+
+                        body:
+                            JSON.stringify(permissions)
+                    }
+                );
+
+
+            const text =
+                await response.text();
+
+
+            if (!response.ok) {
+
+                showError(
+                    text ||
+                    "Unable to update permissions."
+                );
+
+                return;
+            }
+
+
+            showSuccess(
+                "Caregiver permissions updated successfully."
+            );
+
+
+            await loadCaregivers();
+
+        } catch (error) {
+
+            console.error(error);
+
+            showError(
+                "Unable to update caregiver permissions."
+            );
+        }
+    }
+
+
+    // =====================================================
+    // REVOKE CAREGIVER
+    // =====================================================
+
+    async function revokeCaregiver(id) {
+
+        const confirmed =
+            confirm(
+                "Are you sure you want to revoke this caregiver's access?"
+            );
+
+        if (!confirmed) {
+            return;
+        }
+
+
+        try {
+
+            const response =
+                await fetch(
+                    `/caresync/api/patient/caregivers/${id}`,
+                    {
+                        method: "DELETE",
+                        credentials: "include"
+                    }
+                );
+
+
+            const text =
+                await response.text();
+
+
+            if (!response.ok) {
+
+                showError(
+                    text ||
+                    "Unable to revoke caregiver access."
+                );
+
+                return;
+            }
+
+
+            showSuccess(
+                "Caregiver access revoked successfully."
+            );
+
+
+            await loadCaregivers();
+
+        } catch (error) {
+
+            console.error(error);
+
+            showError(
+                "Unable to revoke caregiver access."
+            );
+        }
+    }
+
+
+    // =====================================================
+    // BASIC HTML ESCAPING
+    // =====================================================
+
+    function escapeHtml(value) {
+
+        return String(value)
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
+
+
+    // =====================================================
+    // INITIAL LOAD
+    // =====================================================
+
+    loadCaregivers();
+
+</script></section></main></div><script>
+function logoutUser() {
+    localStorage.removeItem("caresyncToken");
+    localStorage.removeItem("caresyncEmail");
+    localStorage.removeItem("caresyncRole");
+    window.location.href = "/caresync/login";
+}
+</script></body>
+
+</html>

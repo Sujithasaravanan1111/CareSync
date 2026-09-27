@@ -1,0 +1,2423 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>CareSync | Medications</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+          rel="stylesheet">
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        :root {
+            --navy: #17324d;
+            --navy-dark: #10283e;
+            --blue: #2468a5;
+            --blue-dark: #1b578a;
+            --blue-light: #edf4fa;
+
+            --bg: #f4f6f8;
+            --white: #ffffff;
+
+            --text: #253746;
+            --muted: #6c7b88;
+
+            --border: #dce3e8;
+            --border-light: #e9edf0;
+
+            --green: #277a50;
+            --green-bg: #eaf6ef;
+
+            --red: #a33b3b;
+            --red-bg: #fceeee;
+
+            --shadow: 0 2px 8px rgba(20, 45, 65, 0.06);
+        }
+
+        html,
+        body {
+            margin: 0;
+            min-height: 100%;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: "Inter", Arial, sans-serif;
+            font-size: 13px;
+        }
+
+        button,
+        input,
+        textarea,
+        select {
+            font-family: inherit;
+        }
+
+        button {
+            cursor: pointer;
+        }
+
+        /* =========================
+           APP LAYOUT
+        ========================= */
+
+        .app {
+            min-height: 100vh;
+            display: flex;
+        }
+
+        /* =========================
+           SIDEBAR
+        ========================= */
+
+        .sidebar {
+    position: fixed;
+
+    top: 0;
+    bottom: 0;
+    left: 0;
+
+    width: 224px;
+
+    background: #102a43;
+
+    color: #dce8f2;
+
+    display: flex;
+    flex-direction: column;
+
+    z-index: 1000;
+}
+
+        .brand {
+    height: 62px;
+
+    padding: 0 17px;
+
+    display: flex;
+
+    align-items: center;
+
+    border-bottom:
+        1px solid rgba(255,255,255,0.08);
+}
+
+        .brand-name {
+    color: white;
+
+    font-size: 17px;
+
+    font-weight: 700;
+
+    letter-spacing: -0.25px;
+}
+.brand-symbol {
+
+    width: 29px;
+    height: 29px;
+
+    margin-right: 9px;
+
+    border-radius: 5px;
+
+    background: #2176b5;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    color: white;
+}
+
+.brand-symbol svg {
+
+    width: 18px;
+    height: 18px;
+
+    stroke: white;
+
+    stroke-width: 2.2;
+
+    fill: none;
+}
+
+        .brand-subtitle {
+            margin-left: 7px;
+            color: #b8c8d6;
+
+            font-size: 9px;
+            font-weight: 500;
+
+            text-transform: uppercase;
+            letter-spacing: .7px;
+        }
+
+        .nav {
+    padding: 18px 10px;
+}
+
+        .nav-label {
+    padding: 0 10px 7px;
+
+    color: #7893aa;
+
+    font-size: 9px;
+
+    font-weight: 600;
+
+    text-transform: uppercase;
+
+    letter-spacing: .7px;
+}
+
+        .nav a {
+
+    min-height: 36px;
+
+    width: 100%;
+
+    margin-bottom: 2px;
+
+    padding: 0 10px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    border-radius: 5px;
+
+    color: #c8d6e3;
+
+    text-decoration: none;
+
+    font-size: 12px;
+
+    font-weight: 500;
+
+    transition:
+        background .15s ease,
+        color .15s ease;
+}
+
+        .nav a:hover {
+            background: rgba(255,255,255,.08);
+        }
+
+        .nav a.active {
+
+    background: #1e68a8;
+
+    color: white;
+}
+
+        .icon {
+            width: 18px;
+
+            text-align: center;
+
+            font-size: 13px;
+
+            opacity: .9;
+        }
+
+        .support {
+            margin: auto 10px 10px;
+            padding: 12px;
+
+            border: 1px solid rgba(255,255,255,.13);
+            background: rgba(255,255,255,.045);
+
+            border-radius: 4px;
+        }
+
+        .support-title {
+            margin-bottom: 4px;
+
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .support-text {
+            margin-bottom: 9px;
+
+            color: #aebfcd;
+
+            font-size: 10px;
+            line-height: 1.5;
+        }
+
+        .support-btn {
+            display: block;
+
+            padding: 7px;
+
+            color: #ffffff;
+            text-align: center;
+            text-decoration: none;
+
+            background: #1e75bd;
+            border: 1px solid #1e75bd;
+            border-radius: 3px;
+
+            font-size: 10px;
+        }
+
+        /* =========================
+           MAIN
+        ========================= */
+
+        .main {
+
+    margin-left: 224px;
+
+    width: calc(100% - 224px);
+
+    min-height: 100vh;
+}
+
+        /* =========================
+           TOP BAR
+        ========================= */
+
+        .topbar {
+            height: 62px;
+
+            padding: 0 22px;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            background: white;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .search {
+            width: 330px;
+            height: 34px;
+
+            padding: 0 12px;
+
+            background: #fafbfc;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+
+            color: var(--text);
+            font-size: 12px;
+        }
+
+        .search:focus {
+            outline: none;
+            border-color: #8caec8;
+            background: white;
+        }
+
+        .top-right {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+
+            padding-left: 15px;
+
+            border-left: 1px solid var(--border);
+        }
+
+        .avatar {
+            width: 30px;
+            height: 30px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background: #dce8f1;
+            color: #315b79;
+
+            border-radius: 50%;
+
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .user-name {
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .user-role {
+            margin-top: 1px;
+
+            color: var(--muted);
+
+            font-size: 10px;
+        }
+
+        .logout {
+            margin-left: 8px;
+
+            color: #657582;
+            text-decoration: none;
+
+            font-size: 11px;
+        }
+
+        .logout:hover {
+            color: var(--red);
+        }
+
+        /* =========================
+           CONTENT
+        ========================= */
+
+        .content {
+            max-width: 1450px;
+
+            padding: 18px 22px 24px;
+        }
+
+        .breadcrumb {
+            margin-bottom: 7px;
+
+            color: var(--muted);
+
+            font-size: 11px;
+        }
+
+        .page-header {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+
+            margin-bottom: 15px;
+        }
+
+        .page-title {
+            margin: 0 0 4px;
+
+            color: #1e3446;
+
+            font-size: 22px;
+            font-weight: 700;
+        }
+
+        .page-subtitle {
+            margin: 0;
+
+            color: var(--muted);
+
+            font-size: 12px;
+        }
+
+        .primary-btn {
+            height: 34px;
+
+            padding: 0 13px;
+
+            background: var(--blue);
+            color: white;
+
+            border: 0;
+            border-radius: 4px;
+
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .primary-btn:hover {
+            background: var(--blue-dark);
+        }
+
+        /* =========================
+           SUMMARY
+        ========================= */
+
+        .summary-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+
+            gap: 10px;
+
+            margin-bottom: 14px;
+        }
+
+        .summary-card {
+            padding: 12px 14px;
+
+            background: white;
+
+            border: 1px solid var(--border);
+            border-radius: 4px;
+
+            box-shadow: var(--shadow);
+        }
+
+        .summary-label {
+            color: var(--muted);
+
+            font-size: 10px;
+            font-weight: 600;
+
+            text-transform: uppercase;
+            letter-spacing: .5px;
+        }
+
+        .summary-value {
+            margin-top: 4px;
+
+            color: var(--navy);
+
+            font-size: 19px;
+            font-weight: 700;
+        }
+
+        /* =========================
+           TABLE
+        ========================= */
+
+        .panel {
+            overflow: hidden;
+
+            background: white;
+
+            border: 1px solid var(--border);
+            border-radius: 4px;
+
+            box-shadow: var(--shadow);
+        }
+
+        .panel-header {
+            min-height: 48px;
+
+            padding: 10px 14px;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            border-bottom: 1px solid var(--border);
+        }
+
+        .panel-title {
+            color: #243a4b;
+
+            font-size: 15px;
+            font-weight: 700;
+        }
+
+        .panel-description {
+            margin-top: 2px;
+
+            color: var(--muted);
+
+            font-size: 11px;
+        }
+
+        .table-wrap {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+
+            border-collapse: collapse;
+        }
+
+        th {
+            padding: 9px 12px;
+
+            background: #f7f9fa;
+
+            color: #647583;
+
+            border-bottom: 1px solid var(--border);
+
+            text-align: left;
+
+            font-size: 10px;
+            font-weight: 700;
+
+            text-transform: uppercase;
+            letter-spacing: .45px;
+
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 10px 12px;
+
+            border-bottom: 1px solid var(--border-light);
+
+            vertical-align: middle;
+
+            font-size: 12px;
+        }
+
+        tbody tr:hover {
+            background: #fafcfd;
+        }
+
+        tbody tr:last-child td {
+            border-bottom: 0;
+        }
+
+        .medicine-name {
+            color: #24465f;
+
+            font-weight: 600;
+        }
+
+        .secondary {
+            margin-top: 2px;
+
+            color: var(--muted);
+
+            font-size: 10px;
+        }
+
+        .status {
+            display: inline-block;
+
+            padding: 4px 7px;
+
+            border-radius: 3px;
+
+            font-size: 9px;
+            font-weight: 700;
+
+            text-transform: uppercase;
+        }
+
+        .status-active {
+            background: var(--green-bg);
+            color: var(--green);
+        }
+
+        .status-ended {
+            background: #eef1f3;
+            color: #687681;
+        }
+
+        /* =========================
+           ACTIONS
+        ========================= */
+
+        .actions {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            white-space: nowrap;
+        }
+
+        .action-btn {
+            height: 28px;
+
+            padding: 0 9px;
+
+            background: white;
+
+            color: #496477;
+
+            border: 1px solid #cfd8df;
+            border-radius: 3px;
+
+            font-size: 10px;
+            font-weight: 600;
+        }
+
+        .action-btn:hover {
+            background: #f4f7f9;
+        }
+
+        .delete-btn {
+            color: var(--red);
+            border-color: #e0c4c4;
+        }
+
+        .delete-btn:hover {
+            background: var(--red-bg);
+        }
+
+        .empty-row {
+            padding: 22px !important;
+
+            color: var(--muted);
+
+            text-align: center;
+
+            font-size: 12px;
+        }
+
+        /* =========================
+           FOOTER
+        ========================= */
+
+        .footer {
+            margin-top: 18px;
+            padding-top: 12px;
+
+            display: flex;
+            justify-content: space-between;
+
+            color: #788692;
+
+            border-top: 1px solid var(--border);
+
+            font-size: 10px;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 15px;
+        }
+
+        .footer a {
+            color: #667885;
+            text-decoration: none;
+        }
+
+        /* =========================
+           MODAL
+        ========================= */
+
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+
+            display: none;
+            align-items: center;
+            justify-content: center;
+
+            padding: 20px;
+
+            background: rgba(18, 39, 57, .48);
+
+            z-index: 1000;
+        }
+
+        .modal {
+            width: 100%;
+            max-width: 620px;
+            max-height: 92vh;
+
+            overflow-y: auto;
+
+            background: white;
+
+            border: 1px solid #d9e1e7;
+            border-radius: 5px;
+
+            box-shadow: 0 12px 35px rgba(20,40,60,.20);
+        }
+
+        .modal-header {
+            min-height: 58px;
+
+            padding: 13px 16px;
+
+            display: flex;
+            justify-content: space-between;
+
+            border-bottom: 1px solid var(--border);
+        }
+
+        .modal-title {
+            color: #20384b;
+
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .modal-subtitle {
+            margin-top: 3px;
+
+            color: #74828d;
+
+            font-size: 11px;
+        }
+
+        .modal-close {
+            width: 30px;
+            height: 30px;
+
+            background: transparent;
+
+            color: #687985;
+
+            border: 0;
+
+            font-size: 20px;
+        }
+
+        .form-grid {
+            display: grid;
+
+            grid-template-columns: 1fr 1fr;
+
+            gap: 11px 13px;
+
+            padding: 15px 16px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group.full {
+            grid-column: 1 / -1;
+        }
+
+        .form-group label {
+            margin-bottom: 5px;
+
+            color: #445865;
+
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+
+            padding: 8px 9px;
+
+            background: white;
+
+            border: 1px solid #cfd9e0;
+            border-radius: 3px;
+
+            color: #273c4b;
+
+            font-size: 12px;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+
+            border-color: #6d9ab9;
+
+            box-shadow: 0 0 0 2px rgba(36,104,165,.08);
+        }
+
+        .form-error {
+            display: none;
+
+            margin: 0 16px 12px;
+
+            padding: 8px 10px;
+
+            background: var(--red-bg);
+
+            border: 1px solid #efcaca;
+            border-radius: 3px;
+
+            color: var(--red);
+
+            font-size: 11px;
+        }
+
+        .modal-footer {
+            padding: 11px 16px;
+
+            display: flex;
+            justify-content: flex-end;
+
+            gap: 8px;
+
+            border-top: 1px solid var(--border);
+        }
+
+        .secondary-btn {
+            height: 34px;
+
+            padding: 0 13px;
+
+            background: white;
+
+            color: #4d6270;
+
+            border: 1px solid #cbd5dc;
+            border-radius: 4px;
+
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .secondary-btn:hover {
+            background: #f5f7f8;
+        }
+
+        /* =========================
+           RESPONSIVE
+        ========================= */
+
+        @media (max-width: 950px) {
+
+            .sidebar {
+                width: 190px;
+            }
+
+            .main {
+                width: calc(100% - 190px);
+                margin-left: 190px;
+            }
+
+            .summary-row {
+                grid-template-columns: 1fr;
+            }
+
+            .search {
+                width: 220px;
+            }
+        }
+
+        @media (max-width: 700px) {
+
+            .sidebar {
+                width: 58px;
+            }
+
+            .brand {
+                justify-content: center;
+                padding: 0;
+            }
+
+            .brand-name,
+            .brand-subtitle,
+            .nav-label,
+            .nav a span:not(.icon),
+            .support {
+                display: none;
+            }
+
+            .nav a {
+                justify-content: center;
+                padding: 0;
+            }
+
+            .main {
+                width: calc(100% - 58px);
+                margin-left: 58px;
+            }
+
+            .content {
+                padding: 14px;
+            }
+
+            .topbar {
+                padding: 0 14px;
+            }
+
+            .search {
+                width: 170px;
+            }
+
+            .user-name,
+            .user-role,
+            .logout {
+                display: none;
+            }
+
+            .page-header {
+                align-items: flex-start;
+                gap: 10px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-group.full {
+                grid-column: auto;
+            }
+        }
+
+
+        /* FINAL DASHBOARD ICON STANDARDIZATION */
+        .nav-icon {
+            width: 18px !important;
+            height: 18px !important;
+            flex: 0 0 18px !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            color: #9fb5c8 !important;
+            text-align: initial !important;
+            font-size: initial !important;
+            opacity: 1 !important;
+        }
+
+        .nav-icon .icon {
+            width: 17px !important;
+            height: 17px !important;
+            flex: 0 0 17px !important;
+            display: block !important;
+            stroke: currentColor !important;
+            stroke-width: 1.8 !important;
+            stroke-linecap: round !important;
+            stroke-linejoin: round !important;
+            fill: none !important;
+        }
+
+        .nav a.active .nav-icon {
+            color: #ffffff !important;
+        }
+
+        .nav a:not(.active) .nav-icon {
+            color: #9fb5c8 !important;
+        }
+
+        .user-info {
+            gap: 9px !important;
+        }
+
+        .logout {
+            cursor: pointer;
+        }
+
+        /* MASTER DASHBOARD SHELL */
+        :root {
+            --navy-950: #102a43;
+            --blue-600: #2176b5;
+            --gray-800: #243b53;
+            --gray-600: #627d98;
+            --gray-500: #829ab1;
+            --gray-200: #d9e2ec;
+            --gray-100: #edf2f7;
+            --gray-50: #f5f7fa;
+            --shadow: 0 1px 3px rgba(16, 42, 67, 0.05);
+            --radius: 6px;
+        }
+
+        body {
+            background: var(--gray-50);
+            color: var(--gray-800);
+            font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        }
+
+        .sidebar {
+            width: 224px;
+            background: var(--navy-950);
+        }
+
+        .main {
+            margin-left: 224px;
+            width: calc(100% - 224px);
+        }
+
+        .brand {
+            height: 62px;
+            padding: 0 17px;
+            border-bottom: 1px solid rgba(255,255,255,.08);
+        }
+
+        .brand-mark,
+        .brand-symbol {
+            width: 29px;
+            height: 29px;
+            margin-right: 9px;
+            border-radius: 5px;
+            background: var(--blue-600);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .brand-mark svg,
+        .brand-symbol svg {
+            width: 18px;
+            height: 18px;
+            stroke: white;
+            stroke-width: 2.2;
+            fill: none;
+        }
+
+        .brand-name {
+            color: white;
+            font-size: 17px;
+            font-weight: 700;
+        }
+
+        .nav,
+        .menu-title,
+        .nav-title,
+        .nav-label {
+            padding: 18px 10px;
+        }
+
+        .menu-title,
+        .nav-title,
+        .nav-label {
+            padding: 0 10px 7px;
+            color: #7893aa;
+            font-size: 9px;
+            font-weight: 600;
+            letter-spacing: .7px;
+            text-transform: uppercase;
+        }
+
+        .nav a,
+        .nav-item {
+            min-height: 36px;
+            margin-bottom: 2px;
+            padding: 0 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-radius: 5px;
+            color: #c8d6e3;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .nav a:hover,
+        .nav-item:hover,
+        .nav a.active,
+        .nav-item.active {
+            background: #1e68a8;
+            color: white;
+        }
+
+        .nav-icon,
+        .nav a .icon {
+            width: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #9fb5c8;
+        }
+
+        .nav-icon svg,
+        .nav a .icon svg {
+            width: 17px;
+            height: 17px;
+        }
+
+        .topbar {
+            height: 62px;
+            padding: 0 22px;
+            background: white;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .search {
+            width: 330px;
+            height: 34px;
+            border: 1px solid var(--gray-200);
+            border-radius: 5px;
+            background: var(--gray-50);
+            color: var(--gray-800);
+            font-size: 11px;
+        }
+
+        .search::placeholder {
+            color: var(--gray-500);
+        }
+
+        .top-right,
+        .user-area,
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+
+        .top-right,
+        .user-area {
+            gap: 13px;
+        }
+
+
+        .user-info {
+    display: flex !important;
+    align-items: center !important;
+    gap: 9px !important;
+    padding-left: 13px !important;
+    border-left: 1px solid #e1e7ec !important;
+}
+
+.avatar {
+    width: 30px !important;
+    height: 30px !important;
+    min-width: 30px !important;
+    border-radius: 50% !important;
+    background: #eaf3fa !important;
+    color: #1769aa !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 11px !important;
+    font-weight: 500 !important;
+}
+
+.user-name {
+    color: #243b53 !important;
+    font-size: 11px !important;
+    font-weight: 600 !important;
+    line-height: 14px !important;
+    white-space: nowrap !important;
+}
+
+.user-role {
+    color: #829ab1 !important;
+    font-size: 9px !important;
+    font-weight: 400 !important;
+    line-height: 12px !important;
+    margin-top: 1px !important;
+    white-space: nowrap !important;
+}
+        .logout {
+    height: 31px !important;
+    padding: 0 12px !important;
+    border: 1px solid #e2a5a5 !important;
+    color: #d95353 !important;
+    background: #ffffff !important;
+    border-radius: 4px !important;
+    font-size: 9px !important;
+    font-weight: 500 !important;
+    cursor: pointer !important;
+}
+        .primary-button,
+        .support-btn,
+        .support button {
+            border-radius: 4px;
+            font-size: 9px;
+            font-weight: 600;
+        }
+
+        .support,
+        .help-box {
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+
+        @media (max-width: 850px) {
+            .sidebar {
+                width: 64px;
+            }
+
+            .main {
+                margin-left: 64px;
+                width: calc(100% - 64px);
+            }
+
+            .brand-name,
+            .brand-subtitle,
+            .menu-title,
+            .nav-title,
+            .nav-label,
+            .nav a span:not(.nav-icon),
+            .nav-item span:not(.nav-icon),
+            .support,
+            .help-box,
+            .user-name,
+            .user-role,
+            .logout {
+                display: none;
+            }
+
+            .search {
+                width: 260px;
+            }
+        }
+
+        @media (max-width: 650px) {
+            .topbar {
+                padding: 0 12px;
+            }
+
+            .search {
+                width: 200px;
+            }
+        }
+    </style>
+
+</head>
+
+<body>
+
+<div class="app">
+
+    <!-- =========================
+         SIDEBAR
+    ========================== -->
+
+    <aside class="sidebar">
+
+        <div class="brand">
+
+    <div class="brand-symbol">
+
+        <svg viewBox="0 0 24 24"
+             aria-hidden="true">
+
+            <path d="M12 5v14"></path>
+
+            <path d="M5 12h14"></path>
+
+        </svg>
+
+    </div>
+
+    <div class="brand-name">
+        CareSync
+    </div>
+
+</div>
+
+        <nav class="nav">
+
+            <div class="nav-label">
+                Patient Portal
+            </div>
+
+            <a th:href="@{/patient/dashboard}">
+                <span class="nav-icon"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m3 11 9-8 9 8"></path><path d="M5 10v10h14V10"></path><path d="M9 20v-6h6v6"></path></svg></span>
+                <span>Overview</span>
+            </a>
+
+            <a class="active"
+               th:href="@{/patient/medications}">
+                <span class="nav-icon"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m8 4 12 12"></path><path d="M4.5 8.5a5 5 0 0 1 7.1-7.1l9 9a5 5 0 0 1-7.1 7.1z"></path><path d="m6 6 12 12"></path></svg></span>
+                <span>Medications</span>
+            </a>
+
+            <a th:href="@{/patient/appointments}">
+                <span class="nav-icon"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="17" rx="2"></rect><path d="M16 2v4"></path><path d="M8 2v4"></path><path d="M3 10h18"></path></svg></span>
+                <span>Appointments</span>
+            </a>
+
+            <a th:href="@{/patient/documents}">
+                <span class="nav-icon"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h9l4 4v14H6z"></path><path d="M14 3v5h5"></path><path d="M9 13h6"></path><path d="M9 17h6"></path></svg></span>
+                <span>Documents</span>
+            </a>
+
+            <a th:href="@{/patient/reminders}">
+                <span class="nav-icon"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path><path d="M10 21h4"></path></svg></span>
+                <span>Reminders</span>
+            </a>
+
+            <a th:href="@{/patient/health-records}">
+                <span class="nav-icon"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16v16H4z"></path><path d="M8 8h8"></path><path d="M8 12h8"></path><path d="M8 16h5"></path></svg></span>
+                <span>Health Records</span>
+            </a>
+            <a href="/caresync/patient/health-timeline">
+    <span class="nav-icon">
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M6 4h12"></path>
+            <path d="M6 12h12"></path>
+            <path d="M6 20h12"></path>
+            <circle cx="4" cy="4" r="1.5"></circle>
+            <circle cx="4" cy="12" r="1.5"></circle>
+            <circle cx="4" cy="20" r="1.5"></circle>
+        </svg>
+    </span>
+    <span>Health Timeline</span>
+</a>
+
+            <a th:href="@{/patient/profile}">
+                <span class="nav-icon"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3"></circle><path d="M5 21a7 7 0 0 1 14 0"></path></svg></span>
+                <span>Profile</span>
+            </a>
+
+            <a th:href="@{/patient/caregivers}">
+                <span class="nav-icon"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                    <circle cx="9" cy="8" r="3"></circle>
+                    <circle cx="17" cy="9" r="2.5"></circle>
+                    <path d="M3 21a6 6 0 0 1 12 0"></path>
+                    <path d="M14 17a5 5 0 0 1 7 4"></path>
+                </svg></span>
+                <span>Caregiver Access</span>
+            </a>
+
+        </nav>
+
+        <div class="support">
+
+            <div class="support-title">
+                Need Help?
+            </div>
+
+            <div class="support-text">
+                Contact CareSync support for assistance with your account or records.
+            </div>
+
+            <a href="#" class="support-btn">
+                Contact Support
+            </a>
+
+        </div>
+
+    </aside>
+
+
+    <!-- =========================
+         MAIN
+    ========================== -->
+
+    <main class="main">
+
+        <!-- TOP BAR -->
+
+        <header class="topbar">
+
+            <input
+                    class="search"
+                    type="search"
+                    placeholder="Search healthcare information...">
+
+            <div class="top-right">
+
+            
+                <div class="user-info">
+
+                    <div class="avatar"
+                         th:text="${patientName != null and !#strings.isEmpty(patientName)
+                                  ? #strings.substring(patientName,0,1).toUpperCase()
+                                  : 'P'}">
+                        P
+                    </div>
+
+                    <div>
+
+                        <div class="user-name"
+                             th:text="${patientName}">
+                            Patient
+                        </div>
+
+                        <div class="user-role">
+                            Patient
+                        </div>
+
+                    </div>
+
+                    <button
+                        class="logout"
+                        type="button"
+                        onclick="logoutUser()">
+                        Logout
+                    </button>
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <!-- CONTENT -->
+
+        <section class="content">
+
+            <div class="breadcrumb">
+                Patient Portal / Medications
+            </div>
+
+
+            <div class="page-header">
+
+                <div>
+
+                    <h1 class="page-title">
+                        Medications
+                    </h1>
+
+                    <p class="page-subtitle">
+                        Review and manage medications recorded in your CareSync health record.
+                    </p>
+
+                </div>
+
+                <button
+        type="button"
+        class="primary-btn"
+        id="addMedicationButton">
+
+    Add Medication
+
+</button>
+
+            </div>
+
+
+            <!-- SUMMARY -->
+
+            <div class="summary-row">
+
+                <div class="summary-card">
+
+                    <div class="summary-label">
+                        Total Medications
+                    </div>
+
+                    <div class="summary-value"
+                         th:text="${#lists.size(medications)}">
+                        0
+                    </div>
+
+                </div>
+
+
+                <div class="summary-card">
+
+                    <div class="summary-label">
+                        Active Medications
+                    </div>
+
+                    <div class="summary-value"
+                         th:text="${#lists.size(medications.?[endDate == null or endDate >= T(java.time.LocalDate).now()])}">
+                        0
+                    </div>
+
+                </div>
+
+
+                <div class="summary-card">
+
+                    <div class="summary-label">
+                        Medication Management
+                    </div>
+
+                    <div class="summary-value">
+                        Active
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- MEDICATION TABLE -->
+
+            <div class="panel">
+
+                <div class="panel-header">
+
+                    <div>
+
+                        <div class="panel-title">
+                            Medication List
+                        </div>
+
+                        <div class="panel-description">
+                            Medication information currently recorded in your CareSync health record.
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="table-wrap">
+
+                    <table>
+
+                        <thead>
+
+                        <tr>
+
+                            <th>Medication</th>
+                            <th>Dosage</th>
+                            <th>Frequency</th>
+                            <th>Start Date</th>
+                            <th>End Date</th>
+                            <th>Prescribing Doctor</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+
+                        </tr>
+
+                        </thead>
+
+
+                        <tbody>
+
+                        <!-- DYNAMIC MEDICATIONS -->
+
+                        <tr th:each="medication : ${medications}">
+
+                            <td>
+
+                                <div class="medicine-name"
+                                     th:text="${medication.medicineName}">
+                                    Medicine
+                                </div>
+
+                                <div class="secondary"
+                                     th:if="${medication.prescriptionReference != null and !#strings.isEmpty(medication.prescriptionReference)}"
+                                     th:text="'Prescription: ' + ${medication.prescriptionReference}">
+                                    Prescription
+                                </div>
+
+                            </td>
+
+
+                            <td>
+
+                                <span th:text="${medication.dosage}">
+                                    500
+                                </span>
+
+                                <span
+                                        th:if="${medication.dosageUnit != null}"
+                                        th:text="' ' + ${medication.dosageUnit}">
+                                    mg
+                                </span>
+
+                            </td>
+
+
+                            <td th:text="${medication.frequency}">
+                                Twice daily
+                            </td>
+
+
+                            <td th:text="${medication.startDate}">
+                                2026-01-01
+                            </td>
+
+
+                            <td>
+
+                                <span th:if="${medication.endDate != null}"
+                                      th:text="${medication.endDate}">
+                                    2026-12-31
+                                </span>
+
+                                <span th:if="${medication.endDate == null}">
+                                    Ongoing
+                                </span>
+
+                            </td>
+
+
+                            <td th:text="${medication.prescribingDoctor != null and !#strings.isEmpty(medication.prescribingDoctor)
+                                           ? medication.prescribingDoctor
+                                           : 'Not specified'}">
+                                Doctor
+                            </td>
+
+
+                            <td>
+
+                                <span
+                                        class="status status-active"
+                                        th:if="${medication.endDate == null or medication.endDate >= T(java.time.LocalDate).now()}">
+
+                                    Active
+
+                                </span>
+
+                                <span
+                                        class="status status-ended"
+                                        th:if="${medication.endDate != null and medication.endDate < T(java.time.LocalDate).now()}">
+
+                                    Completed
+
+                                </span>
+
+                            </td>
+
+
+                            <td>
+
+                                <div class="actions">
+
+                                    <button
+                                            type="button"
+                                            class="action-btn"
+                                            th:attr="
+                                                data-id=${medication.id},
+                                                data-name=${medication.medicineName},
+                                                data-dosage=${medication.dosage},
+                                                data-unit=${medication.dosageUnit},
+                                                data-frequency=${medication.frequency},
+                                                data-start=${medication.startDate},
+                                                data-end=${medication.endDate},
+                                                data-instructions=${medication.instructions},
+                                                data-doctor=${medication.prescribingDoctor},
+                                                data-reference=${medication.prescriptionReference}"
+                                            onclick="editMedication(this)">
+
+                                        Edit
+
+                                    </button>
+
+
+                                    <button
+                                            type="button"
+                                            class="action-btn delete-btn"
+                                            th:attr="data-id=${medication.id}"
+                                            onclick="deleteMedication(this)">
+
+                                        Delete
+
+                                    </button>
+
+                                </div>
+
+                            </td>
+
+                        </tr>
+
+
+                        <!-- EMPTY STATE -->
+
+                        <tr th:if="${#lists.isEmpty(medications)}">
+
+                            <td colspan="8"
+                                class="empty-row">
+
+                                No medications have been recorded yet.
+
+                            </td>
+
+                        </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+
+            <!-- FOOTER -->
+
+            <footer class="footer">
+
+                <div>
+                    CareSync Patient Portal
+                </div>
+
+                <div class="footer-links">
+
+                    <a href="#">
+                        Privacy Policy
+                    </a>
+
+                    <a href="#">
+                        Terms
+                    </a>
+
+                    <a href="#">
+                        Help Center
+                    </a>
+
+                </div>
+
+            </footer>
+
+        </section>
+
+    </main>
+
+</div>
+
+
+<!-- =========================
+     MEDICATION MODAL
+========================== -->
+
+<div id="medicationModal"
+     class="modal-overlay">
+
+    <div class="modal">
+
+        <div class="modal-header">
+
+            <div>
+
+                <div id="modalTitle"
+                     class="modal-title">
+                    Add Medication
+                </div>
+
+                <div class="modal-subtitle">
+                    Enter the medication information below.
+                </div>
+
+            </div>
+
+            <button
+                    type="button"
+                    class="modal-close"
+                    onclick="closeMedicationModal()"
+                    aria-label="Close">
+
+                ×
+
+            </button>
+
+        </div>
+
+
+        <form id="medicationForm">
+
+            <input
+                    type="hidden"
+                    id="medicationId">
+
+
+            <div class="form-grid">
+
+                <div class="form-group full">
+
+                    <label for="medicineName">
+                        Medicine Name *
+                    </label>
+
+                    <input
+                            type="text"
+                            id="medicineName"
+                            required
+                            placeholder="e.g. Metformin">
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="dosage">
+                        Dosage *
+                    </label>
+
+                    <input
+                            type="text"
+                            id="dosage"
+                            required
+                            placeholder="e.g. 500">
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="dosageUnit">
+                        Dosage Unit
+                    </label>
+
+                    <input
+                            type="text"
+                            id="dosageUnit"
+                            placeholder="e.g. mg">
+
+                </div>
+
+
+                <div class="form-group full">
+
+                    <label for="frequency">
+                        Frequency *
+                    </label>
+
+                    <input
+                            type="text"
+                            id="frequency"
+                            required
+                            placeholder="e.g. Twice daily">
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="startDate">
+                        Start Date *
+                    </label>
+
+                    <input
+                            type="date"
+                            id="startDate"
+                            required>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="endDate">
+                        End Date
+                    </label>
+
+                    <input
+                            type="date"
+                            id="endDate">
+
+                </div>
+
+
+                <div class="form-group full">
+
+                    <label for="prescribingDoctor">
+                        Prescribing Doctor
+                    </label>
+
+                    <input
+                            type="text"
+                            id="prescribingDoctor"
+                            placeholder="Doctor name">
+
+                </div>
+
+
+                <div class="form-group full">
+
+                    <label for="prescriptionReference">
+                        Prescription Reference
+                    </label>
+
+                    <input
+                            type="text"
+                            id="prescriptionReference"
+                            placeholder="Prescription or reference number">
+
+                </div>
+
+
+                <div class="form-group full">
+
+                    <label for="instructions">
+                        Instructions
+                    </label>
+
+                    <textarea
+                            id="instructions"
+                            rows="3"
+                            placeholder="Medication instructions"></textarea>
+
+                </div>
+
+            </div>
+
+
+            <div id="formError"
+                 class="form-error">
+            </div>
+
+
+            <div class="modal-footer">
+
+                <button
+                        type="button"
+                        class="secondary-btn"
+                        onclick="closeMedicationModal()">
+
+                    Cancel
+
+                </button>
+
+
+                <button
+                        type="submit"
+                        class="primary-btn"
+                        id="saveMedicationButton">
+
+                    Save Medication
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const medicationForm =
+        document.getElementById("medicationForm");
+
+    const medicationModal =
+        document.getElementById("medicationModal");
+
+    const modalTitle =
+        document.getElementById("modalTitle");
+
+    const medicationId =
+        document.getElementById("medicationId");
+
+    const formError =
+        document.getElementById("formError");
+
+    const saveMedicationButton =
+        document.getElementById("saveMedicationButton");
+
+    const addMedicationButton =
+        document.getElementById("addMedicationButton");
+
+
+    /* ================================
+       ADD MEDICATION
+       ================================ */
+
+    addMedicationButton.addEventListener(
+        "click",
+        function () {
+
+            medicationForm.reset();
+
+            medicationId.value = "";
+
+            modalTitle.textContent =
+                "Add Medication";
+
+            saveMedicationButton.textContent =
+                "Save Medication";
+
+            formError.style.display =
+                "none";
+
+            medicationModal.style.display =
+                "flex";
+        }
+    );
+
+
+    /* ================================
+       CLOSE MODAL
+       ================================ */
+
+    window.closeMedicationModal =
+        function () {
+
+            medicationModal.style.display =
+                "none";
+
+            formError.style.display =
+                "none";
+        };
+
+
+    /* ================================
+       EDIT MEDICATION
+       ================================ */
+
+    window.editMedication =
+        function (button) {
+
+            medicationId.value =
+                button.dataset.id || "";
+
+            document.getElementById("medicineName").value =
+                button.dataset.name || "";
+
+            document.getElementById("dosage").value =
+                button.dataset.dosage || "";
+
+            document.getElementById("dosageUnit").value =
+                button.dataset.unit || "";
+
+            document.getElementById("frequency").value =
+                button.dataset.frequency || "";
+
+            document.getElementById("startDate").value =
+                button.dataset.start || "";
+
+            document.getElementById("endDate").value =
+                button.dataset.end || "";
+
+            document.getElementById("prescribingDoctor").value =
+                button.dataset.doctor || "";
+
+            document.getElementById("prescriptionReference").value =
+                button.dataset.reference || "";
+
+            document.getElementById("instructions").value =
+                button.dataset.instructions || "";
+
+            modalTitle.textContent =
+                "Edit Medication";
+
+            saveMedicationButton.textContent =
+                "Update Medication";
+
+            formError.style.display =
+                "none";
+
+            medicationModal.style.display =
+                "flex";
+        };
+
+
+    /* ================================
+       SAVE / UPDATE MEDICATION
+       ================================ */
+
+    medicationForm.addEventListener(
+        "submit",
+        async function (event) {
+
+            event.preventDefault();
+
+            formError.style.display =
+                "none";
+
+            const id =
+                medicationId.value.trim();
+
+
+            const medication = {
+
+                medicineName:
+                    document
+                        .getElementById("medicineName")
+                        .value
+                        .trim(),
+
+                dosage:
+                    document
+                        .getElementById("dosage")
+                        .value
+                        .trim(),
+
+                dosageUnit:
+                    document
+                        .getElementById("dosageUnit")
+                        .value
+                        .trim(),
+
+                frequency:
+                    document
+                        .getElementById("frequency")
+                        .value
+                        .trim(),
+
+                startDate:
+                    document
+                        .getElementById("startDate")
+                        .value,
+
+                endDate:
+                    document
+                        .getElementById("endDate")
+                        .value || null,
+
+                instructions:
+                    document
+                        .getElementById("instructions")
+                        .value
+                        .trim(),
+
+                prescribingDoctor:
+                    document
+                        .getElementById("prescribingDoctor")
+                        .value
+                        .trim(),
+
+                prescriptionReference:
+                    document
+                        .getElementById("prescriptionReference")
+                        .value
+                        .trim()
+            };
+
+
+            const url = id
+                ? "/caresync/api/patient/medications/" + id
+                : "/caresync/api/patient/medications";
+
+
+            const method = id
+                ? "PUT"
+                : "POST";
+
+
+            saveMedicationButton.disabled =
+                true;
+
+            saveMedicationButton.textContent =
+                id
+                    ? "Updating..."
+                    : "Saving...";
+
+
+            try {
+
+                const token =
+                    localStorage.getItem(
+                        "caresyncToken"
+                    );
+
+
+                if (!token) {
+
+                    formError.textContent =
+                        "Your session has expired. Please log in again.";
+
+                    formError.style.display =
+                        "block";
+
+                    saveMedicationButton.disabled =
+                        false;
+
+                    saveMedicationButton.textContent =
+                        id
+                            ? "Update Medication"
+                            : "Save Medication";
+
+                    return;
+                }
+
+
+                const response =
+                    await fetch(
+                        url,
+                        {
+                            method: method,
+
+                            headers: {
+
+                                "Content-Type":
+                                    "application/json",
+
+                                "Authorization":
+                                    "Bearer " + token
+                            },
+
+                            body:
+                                JSON.stringify(
+                                    medication
+                                )
+                        }
+                    );
+
+
+                const responseText =
+                    await response.text();
+
+
+                if (!response.ok) {
+
+                    formError.textContent =
+                        responseText ||
+                        "Unable to save medication.";
+
+                    formError.style.display =
+                        "block";
+
+                    saveMedicationButton.disabled =
+                        false;
+
+                    saveMedicationButton.textContent =
+                        id
+                            ? "Update Medication"
+                            : "Save Medication";
+
+                    return;
+                }
+
+
+                closeMedicationModal();
+
+                window.location.reload();
+
+            } catch (error) {
+
+                console.error(
+                    "Medication save error:",
+                    error
+                );
+
+                formError.textContent =
+                    "Unable to connect to the CareSync server.";
+
+                formError.style.display =
+                    "block";
+
+                saveMedicationButton.disabled =
+                    false;
+
+                saveMedicationButton.textContent =
+                    id
+                        ? "Update Medication"
+                        : "Save Medication";
+            }
+
+        }
+    );
+
+
+    /* ================================
+       DELETE MEDICATION
+       ================================ */
+
+    window.deleteMedication =
+        async function (button) {
+
+            const id =
+                button.dataset.id;
+
+
+            if (!id) {
+                return;
+            }
+
+
+            const confirmed =
+                window.confirm(
+                    "Are you sure you want to delete this medication?"
+                );
+
+
+            if (!confirmed) {
+                return;
+            }
+
+
+            try {
+
+                const token =
+                    localStorage.getItem(
+                        "caresyncToken"
+                    );
+
+
+                if (!token) {
+
+                    window.alert(
+                        "Your session has expired. Please log in again."
+                    );
+
+                    return;
+                }
+
+
+                const response =
+                    await fetch(
+                        "/caresync/api/patient/medications/" + id,
+                        {
+                            method: "DELETE",
+
+                            headers: {
+                                "Authorization":
+                                    "Bearer " + token
+                            }
+                        }
+                    );
+
+
+                const responseText =
+                    await response.text();
+
+
+                if (!response.ok) {
+
+                    window.alert(
+                        responseText ||
+                        "Unable to delete medication."
+                    );
+
+                    return;
+                }
+
+
+                window.location.reload();
+
+
+            } catch (error) {
+
+                console.error(
+                    "Medication delete error:",
+                    error
+                );
+
+                window.alert(
+                    "Unable to connect to the CareSync server."
+                );
+            }
+        };
+
+
+    /* ================================
+       CLOSE WHEN CLICKING OUTSIDE
+       ================================ */
+
+    medicationModal.addEventListener(
+        "click",
+        function (event) {
+
+            if (
+                event.target ===
+                medicationModal
+            ) {
+
+                closeMedicationModal();
+            }
+        }
+    );
+
+
+    /* ================================
+       CLOSE BUTTON
+       ================================ */
+
+    const closeButtons =
+        medicationModal.querySelectorAll(
+            "[data-close-modal]"
+        );
+
+
+    closeButtons.forEach(
+        function (button) {
+
+            button.addEventListener(
+                "click",
+                closeMedicationModal
+            );
+
+        }
+    );
+
+
+    console.log(
+        "CareSync Medication page initialized successfully."
+    );
+
+});
+
+function logoutUser() {
+    localStorage.removeItem("caresyncToken");
+    localStorage.removeItem("caresyncEmail");
+    localStorage.removeItem("caresyncRole");
+    window.location.href = "/caresync/login";
+}
+</script>
+
+</body>
+
+</html>

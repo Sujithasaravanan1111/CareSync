@@ -1,0 +1,2372 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>CareSync | Medication Reminders</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Inter, "Segoe UI", Roboto, Arial, sans-serif;
+            background: #f4f7fa;
+            color: #18324b;
+            font-size: 13px;
+        }
+
+        .app {
+            min-height: 100vh;
+            display: flex;
+        }
+
+        /* SIDEBAR */
+
+        .sidebar {
+            width: 230px;
+            position: fixed;
+            inset: 0 auto 0 0;
+            background: #102f4a;
+            color: white;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .brand {
+            height: 62px;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            border-bottom: 1px solid rgba(255,255,255,.10);
+        }
+
+        .brand-mark {
+            width: 28px;
+            height: 28px;
+            border-radius: 5px;
+            background: #1e75bd;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 18px;
+            font-weight: 700;
+            margin-right: 9px;
+        }
+
+        .brand-name {
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .menu-title {
+            padding: 20px 20px 7px;
+            color: #8fa8bb;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+        }
+
+        .nav {
+            padding: 0 10px;
+        }
+
+        .nav a {
+            height: 38px;
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            padding: 0 12px;
+            margin-bottom: 3px;
+            color: #d7e5ef;
+            text-decoration: none;
+            border-radius: 4px;
+        }
+
+        .nav a:hover {
+            background: #193f5e;
+        }
+
+        .nav a.active {
+            background: #2479b8;
+            color: white;
+            font-weight: 600;
+        }
+
+        .nav-icon {
+            width: 18px;
+            text-align: center;
+            font-size: 12px;
+        }
+
+        .support {
+            margin: auto 14px 14px;
+            padding: 14px;
+            background: #183b58;
+            border: 1px solid #2b526f;
+            border-radius: 5px;
+        }
+
+        .support-title {
+            font-weight: 700;
+            margin-bottom: 7px;
+        }
+
+        .support-text {
+            color: #b8cad8;
+            font-size: 11px;
+            line-height: 1.5;
+            margin-bottom: 11px;
+        }
+
+        .support button {
+            width: 100%;
+            height: 31px;
+            border: 0;
+            border-radius: 4px;
+            background: #2582c4;
+            color: white;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        /* MAIN */
+
+        .main {
+            margin-left: 230px;
+            width: calc(100% - 230px);
+            min-height: 100vh;
+        }
+
+        .topbar {
+            height: 62px;
+            background: white;
+            border-bottom: 1px solid #dce4eb;
+            padding: 0 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .search {
+            width: 330px;
+            height: 34px;
+            border: 1px solid #d2dde6;
+            border-radius: 4px;
+            padding: 0 12px;
+            font-size: 12px;
+            outline: none;
+        }
+
+        .top-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+         
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            padding-left: 15px;
+            border-left: 1px solid #e1e7ec;
+        }
+
+        .avatar {
+            width: 31px;
+            height: 31px;
+            border-radius: 50%;
+            background: #e8f2f9;
+            color: #17679c;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+        }
+
+        .user-name {
+            font-weight: 600;
+            font-size: 12px;
+        }
+
+        .user-role {
+            color: #8092a2;
+            font-size: 10px;
+            margin-top: 2px;
+        }
+
+        .logout {
+            height: 31px;
+            padding: 0 12px;
+            border: 1px solid #d95353;
+            color: #c63f3f;
+            background: white;
+            border-radius: 4px;
+            font-size: 11px;
+            cursor: pointer;
+        }
+
+        /* CONTENT */
+
+        .content {
+            padding: 20px 24px 14px;
+        }
+
+        .breadcrumb {
+            color: #72879a;
+            font-size: 11px;
+            margin-bottom: 5px;
+        }
+
+        .page-header {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+
+        .page-title {
+            margin: 0;
+            font-size: 23px;
+            color: #102f4a;
+        }
+
+        .page-subtitle {
+            margin: 5px 0 0;
+            color: #718597;
+            font-size: 12px;
+        }
+
+        .primary-btn {
+            height: 35px;
+            padding: 0 15px;
+            border: 0;
+            border-radius: 4px;
+            background: #2678b5;
+            color: white;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .primary-btn:hover {
+            background: #1d659a;
+        }
+
+        /* STAT ROW */
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .stat {
+            background: white;
+            border: 1px solid #d7e1e9;
+            border-radius: 4px;
+            padding: 12px 14px;
+        }
+
+        .stat-label {
+            color: #718596;
+            text-transform: uppercase;
+            letter-spacing: .04em;
+            font-size: 10px;
+            font-weight: 700;
+        }
+
+        .stat-value {
+            margin-top: 3px;
+            font-size: 21px;
+            font-weight: 700;
+            color: #163b59;
+        }
+
+        /* GRID */
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 2fr) minmax(280px, 1fr);
+            gap: 12px;
+        }
+
+        .panel {
+            background: white;
+            border: 1px solid #d5e0e8;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .panel-header {
+            min-height: 48px;
+            padding: 0 14px;
+            border-bottom: 1px solid #e1e7ec;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .panel-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: #173a58;
+        }
+
+        .panel-count {
+            color: #718596;
+            font-size: 11px;
+        }
+
+        /* REMINDER ROW */
+
+        .reminder-row {
+            min-height: 75px;
+            padding: 11px 14px;
+            border-bottom: 1px solid #e5ebef;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .reminder-row:last-child {
+            border-bottom: 0;
+        }
+
+        .medicine-icon {
+            width: 38px;
+            height: 38px;
+            border: 1px solid #cbd9e3;
+            border-radius: 4px;
+            background: #f7fafc;
+            color: #2678b5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .reminder-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .medicine-name {
+            font-size: 13px;
+            font-weight: 700;
+            color: #173b59;
+        }
+
+        .reminder-meta {
+            margin-top: 4px;
+            color: #788d9d;
+            font-size: 10px;
+        }
+
+        .status {
+            display: inline-block;
+            min-width: 62px;
+            text-align: center;
+            padding: 4px 7px;
+            border-radius: 3px;
+            font-size: 9px;
+            font-weight: 700;
+            letter-spacing: .03em;
+        }
+
+        .status-taken {
+            background: #e8f5ee;
+            color: #27724e;
+        }
+
+        .status-pending {
+            background: #edf3f8;
+            color: #45677f;
+        }
+
+        .status-missed {
+            background: #fdeceb;
+            color: #a63d38;
+        }
+
+        .status-skipped {
+            background: #f1f1f1;
+            color: #6f7478;
+        }
+
+        .status-snoozed {
+            background: #fff4df;
+            color: #94651e;
+        }
+
+        .row-actions {
+            display: flex;
+            gap: 5px;
+            flex-shrink: 0;
+        }
+
+        .action-btn {
+            height: 27px;
+            padding: 0 8px;
+            border: 1px solid #cbd8e2;
+            background: white;
+            border-radius: 3px;
+            color: #276e9f;
+            font-size: 9px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .action-btn:hover {
+            background: #f1f7fb;
+        }
+
+        .taken-btn {
+            color: #287250;
+            border-color: #bfdacb;
+        }
+
+        .skip-btn {
+            color: #9a3e3e;
+            border-color: #dfc0c0;
+        }
+
+        .snooze-btn {
+            color: #94651e;
+            border-color: #e3d0aa;
+        }
+
+        .delete-btn {
+            color: #ad3e3e;
+            border-color: #e1bcbc;
+        }
+
+        .empty-row {
+            padding: 35px 20px;
+            text-align: center;
+            color: #7b8e9d;
+        }
+
+        /* ADHERENCE */
+
+        .adherence-body {
+            padding: 15px;
+        }
+
+        .adherence-score {
+            display: flex;
+            align-items: baseline;
+            gap: 5px;
+            margin-bottom: 13px;
+        }
+
+        .score-number {
+            font-size: 32px;
+            font-weight: 700;
+            color: #173b59;
+        }
+
+        .score-percent {
+            font-size: 13px;
+            color: #718697;
+        }
+
+        .progress {
+            height: 7px;
+            background: #e8eef2;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-bottom: 14px;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: #2b8062;
+        }
+
+        .adherence-note {
+            color: #748898;
+            font-size: 10px;
+            line-height: 1.5;
+        }
+
+        /* PRIVACY */
+
+        .privacy {
+            margin-top: 12px;
+            border: 1px solid #d5e0e8;
+            background: #f8fbfd;
+            padding: 13px 14px;
+            border-radius: 4px;
+        }
+
+        .privacy-title {
+            font-weight: 700;
+            color: #294a63;
+            margin-bottom: 4px;
+        }
+
+        .privacy-text {
+            color: #718697;
+            font-size: 10px;
+            line-height: 1.5;
+        }
+
+        /* MODAL */
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 1000;
+            background: rgba(16,40,60,.48);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal {
+            width: 510px;
+            max-width: calc(100vw - 30px);
+            background: white;
+            border: 1px solid #ccd8e1;
+            border-radius: 5px;
+            box-shadow: 0 10px 35px rgba(0,0,0,.2);
+        }
+
+        .modal-header {
+            height: 50px;
+            padding: 0 17px;
+            border-bottom: 1px solid #e0e6eb;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .modal-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #163b59;
+        }
+
+        .close-btn {
+            border: 0;
+            background: transparent;
+            color: #758796;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .modal-body {
+            padding: 17px;
+        }
+
+        .field {
+            margin-bottom: 14px;
+        }
+
+        .field:last-child {
+            margin-bottom: 0;
+        }
+
+        .field label {
+            display: block;
+            margin-bottom: 5px;
+            color: #405b70;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .field select,
+        .field input {
+            width: 100%;
+            height: 35px;
+            border: 1px solid #cbd8e2;
+            border-radius: 4px;
+            padding: 0 9px;
+            background: white;
+            color: #27465e;
+            font-size: 12px;
+            outline: none;
+        }
+
+        .field select:focus,
+        .field input:focus {
+            border-color: #2678b5;
+        }
+
+        .form-error {
+            display: none;
+            margin-bottom: 12px;
+            padding: 8px 10px;
+            background: #fdeceb;
+            border: 1px solid #efc8c5;
+            border-radius: 3px;
+            color: #9d3732;
+            font-size: 11px;
+        }
+
+        .form-success {
+            display: none;
+            margin-bottom: 12px;
+            padding: 8px 10px;
+            background: #e9f5ef;
+            border: 1px solid #c4e0d0;
+            border-radius: 3px;
+            color: #28724f;
+            font-size: 11px;
+        }
+
+        .modal-footer {
+            padding: 12px 16px;
+            border-top: 1px solid #e0e6eb;
+            display: flex;
+            justify-content: flex-end;
+            gap: 7px;
+        }
+
+        .secondary-btn {
+            height: 34px;
+            padding: 0 14px;
+            border: 1px solid #ccd8e1;
+            border-radius: 4px;
+            background: white;
+            color: #526b7e;
+            cursor: pointer;
+            font-size: 11px;
+        }
+
+        /* FOOTER */
+
+        .footer {
+            margin: 14px 24px 0;
+            padding: 11px 0;
+            border-top: 1px solid #dbe4eb;
+            display: flex;
+            justify-content: space-between;
+            color: #7890a2;
+            font-size: 10px;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 18px;
+        }
+
+        @media (max-width: 850px) {
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+        @media (max-width: 700px) {
+
+            .sidebar {
+                width: 60px;
+            }
+
+            .brand {
+                justify-content: center;
+                padding: 0;
+            }
+
+            .brand-name,
+            .menu-title,
+            .nav a span:not(.nav-icon),
+            .support {
+                display: none;
+            }
+
+            .nav a {
+                justify-content: center;
+                padding: 0;
+            }
+
+            .main {
+                margin-left: 60px;
+                width: calc(100% - 60px);
+            }
+
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            .topbar {
+                padding: 0 12px;
+            }
+
+            .search {
+                width: 180px;
+            }
+
+            .reminder-row {
+                align-items: flex-start;
+            }
+
+            .row-actions {
+                flex-direction: column;
+            }
+
+        }
+        /* =========================
+   CARESYNC UI STANDARDIZATION
+   Phase 14.1.4 - Reminders
+========================= */
+
+.sidebar {
+    width: 225px;
+    background: #17324d;
+}
+
+.main {
+    margin-left: 225px;
+    width: calc(100% - 225px);
+}
+
+.brand {
+    height: 58px;
+    padding: 0 18px;
+}
+
+.brand-mark {
+    display: none;
+}
+
+.brand-name {
+    font-size: 19px;
+    font-weight: 700;
+}
+
+.menu-title {
+    padding: 12px 10px 7px;
+}
+
+.nav {
+    padding: 0 9px;
+}
+
+.nav a {
+    height: 38px;
+    margin-bottom: 2px;
+    border-radius: 4px;
+}
+
+.nav a.active {
+    background: #284f70;
+    box-shadow: inset 3px 0 0 #6ba7d4;
+}
+
+.topbar {
+    height: 58px;
+    padding: 0 22px;
+}
+
+.search {
+    width: 300px;
+}
+
+.content {
+    padding: 18px 22px 24px;
+}
+
+.page-title {
+    font-size: 22px;
+}
+
+.primary-btn {
+    height: 34px;
+    padding: 0 13px;
+    background: #2468a5;
+}
+
+.primary-btn:hover {
+    background: #1b578a;
+}
+
+.stats {
+    gap: 10px;
+    margin-bottom: 14px;
+}
+
+.stat {
+    border-color: #dce3e8;
+    box-shadow: 0 2px 8px rgba(20, 45, 65, 0.06);
+}
+
+.panel {
+    border-color: #dce3e8;
+    box-shadow: 0 2px 8px rgba(20, 45, 65, 0.06);
+}
+
+.privacy {
+    border-color: #dce3e8;
+}
+
+.footer {
+    margin: 18px 22px 0;
+}
+
+/* Responsive */
+@media (max-width: 850px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 700px) {
+
+    .sidebar {
+        width: 58px;
+    }
+
+    .main {
+        margin-left: 58px;
+        width: calc(100% - 58px);
+    }
+
+    .brand {
+        justify-content: center;
+        padding: 0;
+    }
+
+    .brand-name,
+    .menu-title,
+    .nav a span:not(.nav-icon),
+    .support {
+        display: none;
+    }
+
+    .nav a {
+        justify-content: center;
+        padding: 0;
+    }
+
+    .topbar {
+        padding: 0 12px;
+    }
+
+    .search {
+        width: 200px;
+    }
+}
+
+            /* MASTER DASHBOARD SHELL */
+            :root { --navy-950:#102a43; --blue-600:#2176b5; --gray-800:#243b53; --gray-600:#627d98; --gray-500:#829ab1; --gray-200:#d9e2ec; --gray-50:#f5f7fa; }
+            body { background:var(--gray-50); color:var(--gray-800); font-family:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+            .sidebar { width:224px; background:var(--navy-950); }
+            .main { margin-left:224px; width:calc(100% - 224px); }
+            .brand { height:62px; padding:0 17px; border-bottom:1px solid rgba(255,255,255,.08); }
+            .brand-mark,.brand-symbol { width:29px; height:29px; margin-right:9px; border-radius:5px; background:var(--blue-600); display:flex; align-items:center; justify-content:center; }
+            .brand-mark svg,.brand-symbol svg { width:18px; height:18px; stroke:white; stroke-width:2.2; fill:none; }
+            .brand-name { color:white; font-size:17px; font-weight:700; }
+            .menu-title,.nav-title,.nav-label { padding:0 10px 7px; color:#7893aa; font-size:9px; font-weight:600; letter-spacing:.7px; text-transform:uppercase; }
+            .nav { padding:18px 10px; }
+            .nav a,.nav-item { min-height:36px; margin-bottom:2px; padding:0 10px; display:flex; align-items:center; gap:10px; border-radius:5px; color:#c8d6e3; font-size:12px; font-weight:500; }
+            .nav a:hover,.nav-item:hover,.nav a.active,.nav-item.active { background:#1e68a8; color:white; }
+            .nav-icon { width:18px; display:flex; align-items:center; justify-content:center; color:#9fb5c8; }
+            .nav-icon svg { width:17px; height:17px; }
+            .topbar { height:62px; padding:0 22px; background:white; border-bottom:1px solid var(--gray-200); }
+            .search { width:330px; height:34px; border:1px solid var(--gray-200); border-radius:5px; background:var(--gray-50) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23829ab1' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='m20 20-4-4'/%3E%3C/svg%3E") 10px center / 15px no-repeat; padding-left:32px; color:var(--gray-800); font-size:11px; }
+            .search::placeholder { color:var(--gray-500); }
+            .top-right,.user-area,.user-info { display:flex; align-items:center; }
+            .top-right,.user-area { gap:13px; }
+            .avatar { width:30px; height:30px; border-radius:50%; background:#eaf3fa; color:#1769aa; }
+            .user-name { color:var(--gray-800); font-size:11px; font-weight:600; }
+            .user-role { color:var(--gray-500); font-size:9px; }
+            .logout,.primary-button,.support button { border-radius:4px; font-size:9px; font-weight:600; }
+            @media (max-width:850px) { .sidebar{width:64px;} .main{margin-left:64px;width:calc(100% - 64px);} .brand-name,.brand-subtitle,.menu-title,.nav-title,.nav-label,.nav a span:not(.nav-icon),.nav-item span:not(.nav-icon),.support,.user-name,.user-role,.logout{display:none;} .search{width:260px;} }
+            @media (max-width:650px) { .topbar{padding:0 12px;} .search{width:200px;} }
+        
+
+/* FINAL CARESYNC DASHBOARD SHELL - REMINDERS */
+body {
+    background: #f5f7fa !important;
+    color: #243b53 !important;
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
+}
+
+.sidebar {
+    width: 224px !important;
+    background: #102a43 !important;
+}
+
+.main {
+    margin-left: 224px !important;
+    width: calc(100% - 224px) !important;
+}
+
+.brand {
+    height: 62px !important;
+    padding: 0 17px !important;
+}
+
+.brand-mark {
+    width: 29px !important;
+    height: 29px !important;
+    margin-right: 9px !important;
+    border-radius: 5px !important;
+    background: #2176b5 !important;
+    font-size: 0 !important;
+    position: relative !important;
+}
+
+.brand-name {
+    color: #fff !important;
+    font-size: 17px !important;
+    font-weight: 700 !important;
+}
+
+.menu-title {
+    padding: 18px 10px 7px !important;
+    color: #7893aa !important;
+    font-size: 9px !important;
+    font-weight: 600 !important;
+    letter-spacing: .7px !important;
+}
+
+.nav {
+    padding: 0 10px !important;
+}
+
+.nav a {
+    height: 36px !important;
+    min-height: 36px !important;
+    margin-bottom: 2px !important;
+    padding: 0 10px !important;
+    gap: 10px !important;
+    border-radius: 5px !important;
+    color: #c8d6e3 !important;
+    font-size: 12px !important;
+    font-weight: 500 !important;
+}
+
+.nav a:hover {
+    background: rgba(255,255,255,.065) !important;
+    color: #fff !important;
+}
+
+.nav a.active {
+    background: #1e68a8 !important;
+    color: #fff !important;
+    font-weight: 500 !important;
+}
+
+.nav-icon {
+    width: 18px !important;
+    height: 18px !important;
+    min-width: 18px !important;
+    flex: 0 0 18px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    color: #9fb5c8 !important;
+    text-align: initial !important;
+    font-size: initial !important;
+}
+
+.nav-icon .icon,
+.nav-icon svg {
+    width: 17px !important;
+    height: 17px !important;
+    min-width: 17px !important;
+    display: block !important;
+    stroke: currentColor !important;
+    stroke-width: 1.8 !important;
+    stroke-linecap: round !important;
+    stroke-linejoin: round !important;
+    fill: none !important;
+}
+
+.nav a.active .nav-icon {
+    color: #fff !important;
+}
+
+.nav a:not(.active) .nav-icon {
+    color: #9fb5c8 !important;
+}
+
+.topbar {
+    height: 62px !important;
+    padding: 0 22px !important;
+    background: #fff !important;
+    border-bottom: 1px solid #d9e2ec !important;
+}
+
+.search {
+    width: 330px !important;
+    height: 34px !important;
+}
+
+.top-right {
+    gap: 13px !important;
+}
+
+
+.user-info {
+    display: flex !important;
+    align-items: center !important;
+    gap: 9px !important;
+    padding-left: 13px !important;
+    border-left: 1px solid #e1e7ec !important;
+}
+
+.avatar {
+    width: 30px !important;
+    height: 30px !important;
+    min-width: 30px !important;
+    border-radius: 50% !important;
+    background: #eaf3fa !important;
+    color: #1769aa !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 11px !important;
+    font-weight: 500 !important;
+}
+
+.user-name {
+    color: #243b53 !important;
+    font-size: 11px !important;
+    font-weight: 600 !important;
+    line-height: 14px !important;
+    white-space: nowrap !important;
+}
+
+.user-role {
+    color: #829ab1 !important;
+    font-size: 9px !important;
+    font-weight: 400 !important;
+    line-height: 12px !important;
+    margin-top: 1px !important;
+    white-space: nowrap !important;
+}
+
+.logout {
+    height: 31px !important;
+    padding: 0 12px !important;
+    border: 1px solid #e2a5a5 !important;
+    color: #d95353 !important;
+    background: #ffffff !important;
+    border-radius: 4px !important;
+    font-size: 9px !important;
+    font-weight: 500 !important;
+    cursor: pointer !important;
+}
+
+@media (max-width: 850px) {
+    .sidebar {
+        width: 64px !important;
+    }
+
+    .main {
+        margin-left: 64px !important;
+        width: calc(100% - 64px) !important;
+    }
+
+    .brand-name,
+    .menu-title,
+    .nav a span:not(.nav-icon),
+    .support,
+    .user-name,
+    .user-role,
+    .logout {
+        display: none !important;
+    }
+
+    .brand {
+        justify-content: center !important;
+        padding: 0 !important;
+    }
+
+    .nav a {
+        justify-content: center !important;
+        padding: 0 !important;
+    }
+}
+
+@media (max-width: 650px) {
+    .topbar {
+        padding: 0 12px !important;
+    }
+
+    .search {
+        width: 200px !important;
+    }
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="app">
+
+    <!-- SIDEBAR -->
+
+    <aside class="sidebar">
+
+        <div class="brand">
+
+            <div class="brand-mark"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14"></path><path d="M5 12h14"></path></svg></div>
+
+            <div class="brand-name">
+                CareSync
+            </div>
+
+        </div>
+
+        <div class="menu-title">
+            Main Menu
+        </div>
+
+        <nav class="nav">
+
+            <a th:href="@{/patient/dashboard}">
+                <span class="nav-icon"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m3 11 9-8 9 8"></path><path d="M5 10v10h14V10"></path><path d="M9 20v-6h6v6"></path></svg></span>
+                <span>Overview</span>
+            </a>
+
+            <a th:href="@{/patient/medications}">
+                <span class="nav-icon"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m8 4 12 12"></path><path d="M4.5 8.5a5 5 0 0 1 7.1-7.1l9 9a5 5 0 0 1-7.1 7.1z"></path><path d="m6 6 12 12"></path></svg></span>
+                <span>Medications</span>
+            </a>
+
+            <a th:href="@{/patient/appointments}">
+                <span class="nav-icon"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="17" rx="2"></rect><path d="M16 2v4"></path><path d="M8 2v4"></path><path d="M3 10h18"></path></svg></span>
+                <span>Appointments</span>
+            </a>
+
+            <a th:href="@{/patient/documents}">
+                <span class="nav-icon"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h9l4 4v14H6z"></path><path d="M14 3v5h5"></path><path d="M9 13h6"></path><path d="M9 17h6"></path></svg></span>
+                <span>Documents</span>
+            </a>
+
+            <a class="active"
+               th:href="@{/patient/reminders}">
+                <span class="nav-icon"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path><path d="M10 21h4"></path></svg></span>
+                <span>Reminders</span>
+            </a>
+
+            <a th:href="@{/patient/health-records}">
+                <span class="nav-icon"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16v16H4z"></path><path d="M8 8h8"></path><path d="M8 12h8"></path><path d="M8 16h5"></path></svg></span>
+                <span>Health Records</span>
+            </a>
+            <a href="/caresync/patient/health-timeline">
+    <span class="nav-icon">
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M6 4h12"></path>
+            <path d="M6 12h12"></path>
+            <path d="M6 20h12"></path>
+            <circle cx="4" cy="4" r="1.5"></circle>
+            <circle cx="4" cy="12" r="1.5"></circle>
+            <circle cx="4" cy="20" r="1.5"></circle>
+        </svg>
+    </span>
+    <span>Health Timeline</span>
+</a>
+
+            <a th:href="@{/patient/profile}">
+                <span class="nav-icon"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3"></circle><path d="M5 21a7 7 0 0 1 14 0"></path></svg></span>
+                <span>Profile</span>
+            </a>
+            <a th:href="@{/patient/caregivers}">
+                <span class="nav-icon"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3"></circle><circle cx="17" cy="9" r="2.5"></circle><path d="M3 21a6 6 0 0 1 12 0"></path><path d="M14 17a5 5 0 0 1 7 4"></path></svg></span>
+                <span>Caregiver Access</span>
+            </a>
+
+
+        </nav>
+
+        <div class="support">
+
+            <div class="support-title">
+                Need Help?
+            </div>
+
+            <div class="support-text">
+                Contact CareSync support if you need assistance with your healthcare information.
+            </div>
+
+            <button type="button">
+                Contact Support
+            </button>
+
+        </div>
+
+    </aside>
+
+
+    <!-- MAIN -->
+
+    <main class="main">
+
+        <!-- TOP BAR -->
+
+        <header class="topbar">
+
+            <input
+                    class="search"
+                    type="search"
+                    placeholder="Search healthcare information..."
+                    aria-label="Search healthcare information">
+
+            <div class="top-right">
+
+<div class="user-info">
+
+                    <div class="avatar"
+                         th:text="${#strings.substring(patientName,0,1).toUpperCase()}">
+                        P
+                    </div>
+
+                    <div>
+
+                        <div class="user-name"
+                             th:text="${patientName}">
+                            Patient
+                        </div>
+
+                        <div class="user-role">
+                            Patient
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <button
+                        class="logout"
+                        type="button"
+                        onclick="logoutUser()">
+                    Logout
+                </button>
+
+            </div>
+
+        </header>
+
+
+        <!-- CONTENT -->
+
+        <section class="content">
+
+            <div class="breadcrumb">
+                Patient Portal / Medication Reminders
+            </div>
+
+            <div class="page-header">
+
+                <div>
+
+                    <h1 class="page-title">
+                        Medication Reminders
+                    </h1>
+
+                    <p class="page-subtitle">
+                        Track medication doses and keep your treatment schedule on time.
+                    </p>
+
+                </div>
+
+                <button
+                        type="button"
+                        class="primary-btn"
+                        id="addReminderButton">
+                    + Add Reminder
+                </button>
+
+            </div>
+
+
+            <!-- STATS -->
+
+            <div class="stats">
+
+                <div class="stat">
+
+                    <div class="stat-label">
+                        Total Reminders
+                    </div>
+
+                    <div class="stat-value"
+                         th:text="${#lists.size(reminders)}">
+                        0
+                    </div>
+
+                </div>
+
+                <div class="stat">
+
+                    <div class="stat-label">
+                        Taken
+                    </div>
+
+                    <div class="stat-value"
+                         id="takenCount">
+                        0
+                    </div>
+
+                </div>
+
+                <div class="stat">
+
+                    <div class="stat-label">
+                        Pending
+                    </div>
+
+                    <div class="stat-value"
+                         id="pendingCount">
+                        0
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- MAIN GRID -->
+
+            <div class="dashboard-grid">
+
+                <!-- REMINDERS -->
+
+                <section class="panel">
+
+                    <div class="panel-header">
+
+                        <div class="panel-title">
+                            Medication Schedule
+                        </div>
+
+                        <div class="panel-count"
+                             th:text="${#lists.size(reminders)} + ' reminder(s)'">
+                            0 reminders
+                        </div>
+
+                    </div>
+
+
+                    <div>
+
+                        <div
+                                class="reminder-row"
+                                th:each="reminder : ${reminders}">
+
+                            <div class="medicine-icon">
+                                Rx
+                            </div>
+
+
+                            <div class="reminder-info">
+
+                                <div
+                                        class="medicine-name"
+                                        th:text="${reminder.medication.medicineName}">
+                                    Medicine
+                                </div>
+
+                                <div class="reminder-meta">
+
+                                    <span
+                                            th:text="${#temporals.format(reminder.reminderDate,'dd MMM yyyy')}">
+                                        01 Jan 2026
+                                    </span>
+
+                                    <span>
+                                        |
+                                    </span>
+
+                                    <span
+                                            th:text="${#temporals.format(reminder.reminderTime,'HH:mm')}">
+                                        08:00
+                                    </span>
+
+                                    <span
+                                            th:if="${reminder.snoozedUntil != null}">
+                                        |
+                                        Snoozed until
+                                        <span
+                                                th:text="${#temporals.format(reminder.snoozedUntil,'HH:mm')}">
+                                            10:00
+                                        </span>
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+
+                            <div>
+
+                                <span
+    class="status"
+    th:classappend="${reminder.status == 'TAKEN'} ? ' status-taken' : 
+                    (${reminder.status == 'MISSED'} ? ' status-missed' : 
+                    (${reminder.status == 'SKIPPED'} ? ' status-skipped' : 
+                    (${reminder.status == 'SNOOZED'} ? ' status-snoozed' : ' status-pending')))"
+    th:text="${reminder.status}">
+    PENDING
+</span>
+
+                            </div>
+
+
+                            <div class="row-actions">
+
+                                <button
+                                        type="button"
+                                        class="action-btn taken-btn"
+                                        th:attr="data-id=${reminder.id}"
+                                        onclick="updateReminderStatus(this,'TAKEN')">
+                                    Taken
+                                </button>
+
+                                <button
+                                        type="button"
+                                        class="action-btn snooze-btn"
+                                        th:attr="data-id=${reminder.id}"
+                                        onclick="snoozeReminder(this)">
+                                    Snooze
+                                </button>
+
+                                <button
+                                        type="button"
+                                        class="action-btn skip-btn"
+                                        th:attr="data-id=${reminder.id}"
+                                        onclick="updateReminderStatus(this,'SKIPPED')">
+                                    Skip
+                                </button>
+
+                                <button
+                                        type="button"
+                                        class="action-btn delete-btn"
+                                        th:attr="data-id=${reminder.id}"
+                                        onclick="deleteReminder(this)">
+                                    Delete
+                                </button>
+
+                            </div>
+
+                        </div>
+
+
+                        <div
+                                class="empty-row"
+                                th:if="${#lists.isEmpty(reminders)}">
+
+                            No medication reminders have been scheduled.
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- ADHERENCE -->
+
+                <div>
+
+                    <section class="panel">
+
+                        <div class="panel-header">
+
+                            <div class="panel-title">
+                                Medication Adherence
+                            </div>
+
+                        </div>
+
+                        <div class="adherence-body">
+
+                            <div class="adherence-score">
+
+                                <span
+                                        class="score-number"
+                                        id="adherenceScore">
+                                    —
+                                </span>
+
+                                <span class="score-percent">
+                                    %
+                                </span>
+
+                            </div>
+
+                            <div class="progress">
+
+                                <div
+                                        class="progress-bar"
+                                        id="adherenceBar">
+                                </div>
+
+                            </div>
+
+                            <div class="adherence-note">
+
+                                Your adherence percentage is calculated from recorded medication reminder outcomes.
+
+                            </div>
+
+                        </div>
+
+                    </section>
+
+
+                    <div class="privacy">
+
+                        <div>
+
+                            <div class="privacy-title">
+                                Medication data
+                            </div>
+
+                            <div class="privacy-text">
+                                Reminder activity is associated with your authenticated patient account and is not shared through the public application.
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <footer class="footer">
+
+            <div>
+                CareSync Patient Portal
+            </div>
+
+            <div class="footer-links">
+                <span>Privacy Policy</span>
+                <span>Terms</span>
+                <span>Help Center</span>
+            </div>
+
+        </footer>
+
+    </main>
+
+</div>
+
+
+<!-- ADD REMINDER MODAL -->
+
+<div
+        id="reminderModal"
+        class="modal-overlay">
+
+    <div class="modal">
+
+        <div class="modal-header">
+
+            <div class="modal-title">
+                Add Medication Reminder
+            </div>
+
+            <button
+                    type="button"
+                    class="close-btn"
+                    id="closeReminderButton">
+                ×
+            </button>
+
+        </div>
+
+
+        <form id="reminderForm">
+
+            <div class="modal-body">
+
+                <div
+                        id="reminderError"
+                        class="form-error">
+                </div>
+
+                <div
+                        id="reminderSuccess"
+                        class="form-success">
+                </div>
+
+
+                <div class="field">
+
+                    <label for="medicationId">
+                        Medication
+                    </label>
+
+                    <select
+                            id="medicationId"
+                            required>
+
+                        <option value="">
+                            Select medication
+                        </option>
+
+                        <option
+                                th:each="medication : ${medications}"
+                                th:value="${medication.id}"
+                                th:text="${medication.medicineName}">
+                            Medication
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="field">
+
+                    <label for="reminderDate">
+                        Reminder Date
+                    </label>
+
+                    <input
+                            id="reminderDate"
+                            type="date"
+                            required>
+
+                </div>
+
+
+                <div class="field">
+
+                    <label for="reminderTime">
+                        Reminder Time
+                    </label>
+
+                    <input
+                            id="reminderTime"
+                            type="time"
+                            required>
+
+                </div>
+
+            </div>
+
+
+            <div class="modal-footer">
+
+                <button
+                        type="button"
+                        class="secondary-btn"
+                        id="cancelReminderButton">
+                    Cancel
+                </button>
+
+                <button
+                        type="submit"
+                        class="primary-btn"
+                        id="saveReminderButton">
+                    Create Reminder
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<script>
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        const token =
+            localStorage.getItem(
+                "caresyncToken"
+            );
+
+        const modal =
+            document.getElementById(
+                "reminderModal"
+            );
+
+        const form =
+            document.getElementById(
+                "reminderForm"
+            );
+
+        const errorBox =
+            document.getElementById(
+                "reminderError"
+            );
+
+        const successBox =
+            document.getElementById(
+                "reminderSuccess"
+            );
+
+        const saveButton =
+            document.getElementById(
+                "saveReminderButton"
+            );
+
+
+        /* OPEN MODAL */
+
+        document.getElementById(
+            "addReminderButton"
+        ).addEventListener(
+            "click",
+            function () {
+
+                form.reset();
+
+                errorBox.style.display =
+                    "none";
+
+                successBox.style.display =
+                    "none";
+
+                modal.style.display =
+                    "flex";
+            }
+        );
+
+
+        /* CLOSE MODAL */
+
+        function closeModal() {
+
+            modal.style.display =
+                "none";
+
+        }
+
+
+        document.getElementById(
+            "closeReminderButton"
+        ).addEventListener(
+            "click",
+            closeModal
+        );
+
+
+        document.getElementById(
+            "cancelReminderButton"
+        ).addEventListener(
+            "click",
+            closeModal
+        );
+
+
+        /* CREATE REMINDER */
+
+        form.addEventListener(
+            "submit",
+            async function (event) {
+
+                event.preventDefault();
+
+                errorBox.style.display =
+                    "none";
+
+                successBox.style.display =
+                    "none";
+
+
+                if (!token) {
+
+                    errorBox.textContent =
+                        "Your session has expired. Please log in again.";
+
+                    errorBox.style.display =
+                        "block";
+
+                    return;
+                }
+
+
+                const medicationId =
+                    document.getElementById(
+                        "medicationId"
+                    ).value;
+
+                const reminderDate =
+                    document.getElementById(
+                        "reminderDate"
+                    ).value;
+
+                const reminderTime =
+                    document.getElementById(
+                        "reminderTime"
+                    ).value;
+
+
+                if (
+                    !medicationId ||
+                    !reminderDate ||
+                    !reminderTime
+                ) {
+
+                    errorBox.textContent =
+                        "Please complete all reminder fields.";
+
+                    errorBox.style.display =
+                        "block";
+
+                    return;
+                }
+
+
+                saveButton.disabled =
+                    true;
+
+                saveButton.textContent =
+                    "Creating...";
+
+
+                try {
+
+                    const params =
+                        new URLSearchParams();
+
+                    params.append(
+                        "medicationId",
+                        medicationId
+                    );
+
+                    params.append(
+                        "reminderDate",
+                        reminderDate
+                    );
+
+                    params.append(
+                        "reminderTime",
+                        reminderTime
+                    );
+
+
+                    const response =
+                        await fetch(
+                            "/caresync/api/patient/reminders",
+                            {
+                                method: "POST",
+
+                                headers: {
+                                    "Authorization":
+                                        "Bearer " + token,
+
+                                    "Content-Type":
+                                        "application/x-www-form-urlencoded"
+                                },
+
+                                body: params.toString()
+                            }
+                        );
+
+
+                    const text =
+                        await response.text();
+
+
+                    if (!response.ok) {
+
+                        errorBox.textContent =
+                            text ||
+                            "Unable to create reminder.";
+
+                        errorBox.style.display =
+                            "block";
+
+                        saveButton.disabled =
+                            false;
+
+                        saveButton.textContent =
+                            "Create Reminder";
+
+                        return;
+                    }
+
+
+                    successBox.textContent =
+                        "Reminder created successfully.";
+
+                    successBox.style.display =
+                        "block";
+
+
+                    setTimeout(
+                        function () {
+
+                            window.location.reload();
+
+                        },
+                        600
+                    );
+
+
+                } catch (error) {
+
+                    console.error(error);
+
+                    errorBox.textContent =
+                        "Unable to connect to the CareSync server.";
+
+                    errorBox.style.display =
+                        "block";
+
+                    saveButton.disabled =
+                        false;
+
+                    saveButton.textContent =
+                        "Create Reminder";
+                }
+
+            }
+        );
+
+
+        /* STATUS */
+
+        window.updateReminderStatus = async function(button, status) {
+
+    const id = button.dataset.id;
+
+    const token =
+        localStorage.getItem("caresyncToken");
+
+    if (!token) {
+        alert("Your session has expired. Please log in again.");
+        return;
+    }
+
+    if (!id) {
+        alert("Reminder ID is missing.");
+        return;
+    }
+
+    try {
+
+        const response = await fetch(
+            "/caresync/api/patient/reminders/"
+            + encodeURIComponent(id)
+            + "/status",
+            {
+                method: "PUT",
+
+                headers: {
+                    "Authorization":
+                        "Bearer " + token,
+
+                    "Content-Type":
+                        "application/json",
+
+                    "Accept":
+                        "application/json"
+                },
+
+                body: JSON.stringify({
+                    status: status
+                })
+            }
+        );
+
+        const responseText =
+            await response.text();
+
+        console.log(
+            "Reminder status response:",
+            response.status,
+            responseText
+        );
+
+        if (!response.ok) {
+
+            alert(
+                responseText ||
+                "Unable to update reminder."
+            );
+
+            return;
+        }
+
+        window.location.reload();
+
+    } catch (error) {
+
+        console.error(
+            "Reminder status error:",
+            error
+        );
+
+        alert(
+            "Unable to connect to the CareSync server."
+        );
+    }
+};
+        window.snoozeReminder = async function(button) {
+
+    const id = button.dataset.id;
+
+    const token =
+        localStorage.getItem("caresyncToken");
+
+    if (!token) {
+        alert("Your session has expired. Please log in again.");
+        return;
+    }
+
+    const time =
+        prompt(
+            "Enter snooze time (HH:mm):",
+            "21:00"
+        );
+
+    if (!time) {
+        return;
+    }
+
+    if (!/^(?:[01]\d|2[0-3]):[0-5]\d$/.test(time)) {
+
+        alert(
+            "Please enter a valid time such as 21:00."
+        );
+
+        return;
+    }
+
+    try {
+
+        const response = await fetch(
+            "/caresync/api/patient/reminders/"
+            + encodeURIComponent(id)
+            + "/status",
+            {
+                method: "PUT",
+
+                headers: {
+                    "Authorization":
+                        "Bearer " + token,
+
+                    "Content-Type":
+                        "application/json",
+
+                    "Accept":
+                        "application/json"
+                },
+
+                body: JSON.stringify({
+                    status: "SNOOZED",
+                    snoozedUntil: time
+                })
+            }
+        );
+
+        const responseText =
+            await response.text();
+
+        console.log(
+            "Snooze response:",
+            response.status,
+            responseText
+        );
+
+        if (!response.ok) {
+
+            alert(
+                responseText ||
+                "Unable to snooze reminder."
+            );
+
+            return;
+        }
+
+        window.location.reload();
+
+    } catch (error) {
+
+        console.error(
+            "Snooze error:",
+            error
+        );
+
+        alert(
+            "Unable to connect to the CareSync server."
+        );
+    }
+};
+
+
+        /* DELETE */
+
+        window.deleteReminder =
+            async function (button) {
+
+                const id =
+                    button.dataset.id;
+
+
+                if (!confirm(
+                    "Delete this medication reminder?"
+                )) {
+                    return;
+                }
+
+
+                if (!token) {
+
+                    alert(
+                        "Your session has expired. Please log in again."
+                    );
+
+                    return;
+                }
+
+
+                try {
+
+                    const response =
+                        await fetch(
+                            "/caresync/api/patient/reminders/" +
+                            id,
+                            {
+                                method: "DELETE",
+
+                                headers: {
+                                    "Authorization":
+                                        "Bearer " + token
+                                }
+                            }
+                        );
+
+
+                    const text =
+                        await response.text();
+
+
+                    if (!response.ok) {
+
+                        alert(
+                            text ||
+                            "Unable to delete reminder."
+                        );
+
+                        return;
+                    }
+
+
+                    window.location.reload();
+
+
+                } catch (error) {
+
+                    console.error(error);
+
+                    alert(
+                        "Unable to connect to the CareSync server."
+                    );
+                }
+
+            };
+
+
+        /* ADHERENCE */
+
+        async function loadAdherence() {
+
+            if (!token) {
+                return;
+            }
+
+
+            try {
+
+                const response =
+                    await fetch(
+                        "/caresync/api/patient/reminders/adherence",
+                        {
+                            headers: {
+                                "Authorization":
+                                    "Bearer " + token
+                            }
+                        }
+                    );
+
+
+                if (!response.ok) {
+                    return;
+                }
+
+
+                const data =
+                    await response.json();
+
+
+                /*
+                 * The service may return different
+                 * property names depending on the
+                 * adherence implementation.
+                 */
+
+                const percentage =
+                    data.percentage ??
+                    data.adherencePercentage ??
+                    data.rate ??
+                    data.score;
+
+
+                if (
+                    percentage !== undefined &&
+                    percentage !== null
+                ) {
+
+                    const numeric =
+                        Number(percentage);
+
+
+                    if (!Number.isNaN(numeric)) {
+
+                        const value =
+                            Math.max(
+                                0,
+                                Math.min(
+                                    100,
+                                    numeric
+                                )
+                            );
+
+
+                        document.getElementById(
+                            "adherenceScore"
+                        ).textContent =
+                            value.toFixed(0);
+
+
+                        document.getElementById(
+                            "adherenceBar"
+                        ).style.width =
+                            value + "%";
+                    }
+
+                }
+
+
+            } catch (error) {
+
+                console.log(
+                    "Adherence data unavailable."
+                );
+            }
+
+        }
+
+
+        loadAdherence();
+
+
+        /* LOCAL COUNTS */
+
+        const statuses =
+            document.querySelectorAll(
+                ".status"
+            );
+
+
+        let taken =
+            0;
+
+        let pending =
+            0;
+
+
+        statuses.forEach(
+            function (status) {
+
+                const value =
+                    status.textContent
+                        .trim()
+                        .toUpperCase();
+
+
+                if (value === "TAKEN") {
+                    taken++;
+                }
+
+                if (
+                    value === "PENDING" ||
+                    value === "SCHEDULED"
+                ) {
+                    pending++;
+                }
+
+            }
+        );
+
+
+        document.getElementById(
+            "takenCount"
+        ).textContent = taken;
+
+
+        document.getElementById(
+            "pendingCount"
+        ).textContent = pending;
+
+
+        /* LOGOUT */
+
+        window.logout =
+            function () {
+
+                localStorage.removeItem(
+                    "caresyncToken"
+                );
+
+                localStorage.removeItem(
+                    "caresyncEmail"
+                );
+
+                localStorage.removeItem(
+                    "caresyncRole"
+                );
+
+                window.location.href =
+                    "/caresync/login";
+
+            };
+
+    });
+
+</script>
+
+
+<script>
+function logoutUser() {
+    localStorage.removeItem("caresyncToken");
+    localStorage.removeItem("caresyncEmail");
+    localStorage.removeItem("caresyncRole");
+    window.location.href = "/caresync/login";
+}
+</script>
+</body>
+
+</html>

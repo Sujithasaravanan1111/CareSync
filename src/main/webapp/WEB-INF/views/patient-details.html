@@ -1,0 +1,2388 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>CareSync | Patient Details</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+          rel="stylesheet">
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        :root {
+            --navy: #123451;
+            --navy-dark: #0d2941;
+            --blue: #1769aa;
+            --blue-light: #eaf3fb;
+
+            --bg: #f4f7fa;
+            --white: #ffffff;
+
+            --border: #d9e2eb;
+
+            --text: #17324d;
+            --muted: #65798d;
+
+            --success: #247a52;
+            --success-bg: #eaf6ef;
+
+            --warning: #9a6800;
+            --warning-bg: #fff6df;
+
+            --danger: #a33b3b;
+            --danger-bg: #fbeeee;
+        }
+
+        body {
+            margin: 0;
+            font-family: "Inter", Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            font-size: 13px;
+        }
+
+        button,
+        input {
+            font-family: inherit;
+        }
+
+        .app {
+            min-height: 100vh;
+            display: flex;
+        }
+
+        /* SIDEBAR */
+
+        .sidebar {
+            width: 220px;
+            background: var(--navy-dark);
+            color: white;
+
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+
+            display: flex;
+            flex-direction: column;
+        }
+
+        .brand {
+            height: 64px;
+
+            display: flex;
+            align-items: center;
+
+            gap: 10px;
+
+            padding: 0 18px;
+
+            border-bottom: 1px solid rgba(255,255,255,.10);
+
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .brand-mark {
+            width: 30px;
+            height: 30px;
+
+            border-radius: 5px;
+
+            background: #247dbd;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .menu-title {
+            padding: 20px 20px 8px;
+
+            color: #8fa8bd;
+
+            font-size: 9px;
+            font-weight: 700;
+
+            letter-spacing: .8px;
+            text-transform: uppercase;
+        }
+
+        .nav {
+            padding: 0 10px;
+        }
+
+        .nav-item {
+            height: 40px;
+
+            display: flex;
+            align-items: center;
+
+            gap: 12px;
+
+            padding: 0 12px;
+
+            margin-bottom: 3px;
+
+            color: #d8e4ee;
+
+            text-decoration: none;
+
+            border-radius: 4px;
+
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .nav-item:hover,
+        .nav-item.active {
+            background: #2177b6;
+            color: white;
+        }
+
+        .nav-icon {
+            width: 18px;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .support {
+            margin: auto 13px 13px;
+
+            padding: 15px;
+
+            border: 1px solid rgba(255,255,255,.12);
+
+            border-radius: 6px;
+
+            background: rgba(255,255,255,.04);
+        }
+
+        .support-title {
+            font-size: 12px;
+            font-weight: 700;
+
+            margin-bottom: 7px;
+        }
+
+        .support-text {
+            color: #b8cad9;
+
+            font-size: 10px;
+            line-height: 1.55;
+
+            margin-bottom: 11px;
+        }
+
+        .support button {
+            width: 100%;
+
+            border: 0;
+
+            background: #1e75bd;
+            color: white;
+
+            height: 31px;
+
+            border-radius: 4px;
+
+            font-size: 10px;
+            font-weight: 600;
+
+            cursor: pointer;
+        }
+
+        /* MAIN */
+
+        .main {
+            margin-left: 220px;
+
+            width: calc(100% - 220px);
+
+            min-height: 100vh;
+        }
+
+        .topbar {
+            height: 64px;
+
+            background: white;
+
+            border-bottom: 1px solid var(--border);
+
+            display: flex;
+            align-items: center;
+
+            padding: 0 25px;
+
+            justify-content: space-between;
+        }
+
+        .back-button {
+            height: 32px;
+
+            padding: 0 12px;
+
+            border: 1px solid var(--border);
+
+            background: white;
+
+            color: var(--blue);
+
+            border-radius: 4px;
+
+            font-size: 11px;
+            font-weight: 600;
+
+            cursor: pointer;
+        }
+
+        .back-button:hover {
+            background: var(--blue-light);
+        }
+
+        .user-area {
+            display: flex;
+            align-items: center;
+
+            gap: 13px;
+        }
+
+        .avatar {
+            width: 32px;
+            height: 32px;
+
+            border-radius: 50%;
+
+            background: #edf4f9;
+
+            color: var(--blue);
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-weight: 600;
+        }
+
+        .user-info {
+            line-height: 1.25;
+        }
+
+        .user-name {
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .user-role {
+            color: var(--muted);
+            font-size: 9px;
+        }
+
+        .logout {
+            height: 30px;
+
+            padding: 0 13px;
+
+            border: 1px solid #d66a6a;
+
+            background: white;
+
+            color: #b23d3d;
+
+            border-radius: 4px;
+
+            font-size: 10px;
+
+            cursor: pointer;
+        }
+
+        .logout:hover {
+            background: var(--danger-bg);
+        }
+
+        /* CONTENT */
+
+        .content {
+            padding: 22px 26px 20px;
+
+            max-width: 1250px;
+        }
+
+        .breadcrumb {
+            color: #71869a;
+
+            font-size: 10px;
+
+            margin-bottom: 5px;
+        }
+
+        .page-title {
+            margin: 0;
+
+            font-size: 23px;
+
+            line-height: 1.25;
+
+            font-weight: 700;
+
+            color: #123552;
+        }
+
+        .page-subtitle {
+            margin: 5px 0 18px;
+
+            color: var(--muted);
+
+            font-size: 12px;
+        }
+
+        /* PATIENT HEADER */
+
+        .patient-header {
+            background: white;
+
+            border: 1px solid var(--border);
+
+            padding: 16px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            margin-bottom: 14px;
+        }
+
+        .patient-info {
+            display: flex;
+
+            align-items: center;
+
+            gap: 13px;
+        }
+
+        .patient-avatar {
+            width: 48px;
+            height: 48px;
+
+            border-radius: 50%;
+
+            background: #edf4f9;
+
+            color: var(--blue);
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 17px;
+
+            font-weight: 700;
+        }
+
+        .patient-name {
+            font-size: 16px;
+            font-weight: 700;
+
+            margin-bottom: 3px;
+        }
+
+        .patient-email {
+            color: var(--muted);
+
+            font-size: 11px;
+        }
+
+        .access-badge {
+            padding: 5px 9px;
+
+            border-radius: 3px;
+
+            background: var(--success-bg);
+
+            color: var(--success);
+
+            font-size: 9px;
+
+            font-weight: 700;
+
+            text-transform: uppercase;
+        }
+
+        /* ACCESS */
+
+        .access-section {
+            background: white;
+
+            border: 1px solid var(--border);
+
+            margin-bottom: 14px;
+        }
+
+        .section-header {
+            min-height: 48px;
+
+            padding: 0 15px;
+
+            border-bottom: 1px solid var(--border);
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+        }
+
+        .section-title {
+            font-size: 15px;
+            font-weight: 700;
+        }
+
+        .section-description {
+            color: var(--muted);
+            font-size: 10px;
+        }
+
+        .access-grid {
+            display: grid;
+
+            grid-template-columns: repeat(5, 1fr);
+
+            gap: 0;
+        }
+
+        .access-item {
+            padding: 12px 14px;
+
+            border-right: 1px solid #e7edf2;
+        }
+
+        .access-item:last-child {
+            border-right: 0;
+        }
+
+        .access-label {
+            color: #718496;
+
+            font-size: 9px;
+
+            font-weight: 700;
+
+            text-transform: uppercase;
+
+            margin-bottom: 5px;
+        }
+
+        .access-value {
+            font-size: 11px;
+
+            font-weight: 600;
+        }
+
+        .access-granted {
+            color: var(--success);
+        }
+
+        .access-denied {
+            color: var(--muted);
+        }
+
+        /* DATA GRID */
+
+        .data-grid {
+            display: grid;
+
+            grid-template-columns: 1fr 1fr;
+
+            gap: 14px;
+        }
+
+        .section {
+            background: white;
+
+            border: 1px solid var(--border);
+        }
+
+        .list {
+            min-height: 70px;
+        }
+
+        .list-row {
+            padding: 11px 14px;
+
+            border-bottom: 1px solid #e7edf2;
+        }
+
+        .list-row:last-child {
+            border-bottom: 0;
+        }
+
+        .row-title {
+            font-size: 12px;
+
+            font-weight: 700;
+
+            margin-bottom: 3px;
+        }
+
+        .row-meta {
+            color: var(--muted);
+
+            font-size: 10px;
+
+            line-height: 1.5;
+        }
+
+        .status {
+            display: inline-flex;
+
+            padding: 3px 7px;
+
+            border-radius: 3px;
+
+            font-size: 9px;
+
+            font-weight: 600;
+        }
+
+        .status.confirmed,
+        .status.taken {
+            color: var(--success);
+
+            background: var(--success-bg);
+        }
+
+        .status.pending,
+        .status.snoozed {
+            color: var(--warning);
+
+            background: var(--warning-bg);
+        }
+
+        .status.cancelled,
+        .status.missed {
+            color: var(--danger);
+
+            background: var(--danger-bg);
+        }
+
+        .empty {
+            padding: 20px 14px;
+
+            color: var(--muted);
+
+            font-size: 11px;
+
+            text-align: center;
+        }
+
+        .denied {
+            padding: 20px 14px;
+
+            color: var(--muted);
+
+            font-size: 11px;
+
+            text-align: center;
+
+            background: #fafbfc;
+        }
+
+        .download-btn {
+            margin-top: 7px;
+
+            height: 27px;
+
+            padding: 0 10px;
+
+            border: 1px solid #2a74a9;
+
+            color: var(--blue);
+
+            background: white;
+
+            border-radius: 4px;
+
+            font-size: 9px;
+
+            font-weight: 600;
+
+            cursor: pointer;
+        }
+
+        .download-btn:hover {
+            background: var(--blue-light);
+        }
+
+        .error {
+            padding: 11px 14px;
+
+            background: var(--danger-bg);
+
+            border: 1px solid #edcaca;
+
+            color: var(--danger);
+
+            margin-bottom: 12px;
+
+            font-size: 11px;
+
+            display: none;
+        }
+
+        .loading {
+            color: var(--muted);
+
+            font-size: 11px;
+        }
+
+        .footer {
+            margin-top: 18px;
+
+            padding-top: 12px;
+
+            border-top: 1px solid var(--border);
+
+            color: #7890a3;
+
+            font-size: 9px;
+
+            display: flex;
+
+            justify-content: space-between;
+        }
+
+        @media (max-width: 900px) {
+
+            .sidebar {
+                width: 62px;
+            }
+
+            .brand {
+                justify-content: center;
+                padding: 0;
+            }
+
+            .brand span,
+            .menu-title,
+            .nav-item span:not(.nav-icon),
+            .support {
+                display: none;
+            }
+
+            .nav-item {
+                justify-content: center;
+                padding: 0;
+            }
+
+            .main {
+                margin-left: 62px;
+
+                width: calc(100% - 62px);
+            }
+
+            .data-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .access-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+        }
+
+        @media (max-width: 600px) {
+
+            .topbar {
+                padding: 0 12px;
+            }
+
+            .content {
+                padding: 18px 14px;
+            }
+
+            .patient-header {
+                align-items: flex-start;
+
+                gap: 10px;
+
+                flex-direction: column;
+            }
+
+            .access-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .access-item {
+                border-right: 0;
+
+                border-bottom: 1px solid #e7edf2;
+            }
+
+            .footer {
+                flex-direction: column;
+
+                gap: 5px;
+            }
+
+        }
+
+        /* MASTER DASHBOARD SHELL */
+        :root { --navy-950:#102a43; --blue-600:#2176b5; --gray-800:#243b53; --gray-600:#627d98; --gray-500:#829ab1; --gray-200:#d9e2ec; --gray-50:#f5f7fa; }
+        body { background:var(--gray-50); color:var(--gray-800); font-family:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+        .sidebar { width:224px; background:var(--navy-950); }
+        .main { margin-left:224px; width:calc(100% - 224px); }
+        .brand { height:62px; padding:0 17px; border-bottom:1px solid rgba(255,255,255,.08); }
+        .brand-mark,.brand-symbol { width:29px; height:29px; margin-right:9px; border-radius:5px; background:var(--blue-600); display:flex; align-items:center; justify-content:center; }
+        .brand-mark svg,.brand-symbol svg { width:18px; height:18px; stroke:white; stroke-width:2.2; fill:none; }
+        .brand-name { color:white; font-size:17px; font-weight:700; }
+        .menu-title,.nav-title,.nav-label { padding:0 10px 7px; color:#7893aa; font-size:9px; font-weight:600; letter-spacing:.7px; text-transform:uppercase; }
+        .nav { padding:18px 10px; }
+        .nav a,.nav-item { min-height:36px; margin-bottom:2px; padding:0 10px; display:flex; align-items:center; gap:10px; border-radius:5px; color:#c8d6e3; font-size:12px; font-weight:500; }
+        .nav a:hover,.nav-item:hover,.nav a.active,.nav-item.active { background:#1e68a8; color:white; }
+        .nav-icon { width:18px; display:flex; align-items:center; justify-content:center; color:#9fb5c8; }
+        .nav-icon svg { width:17px; height:17px; }
+        .topbar { height:62px; padding:0 22px; background:white; border-bottom:1px solid var(--gray-200); }
+        .top-right,.user-area,.user-info { display:flex; align-items:center; }
+        .top-right,.user-area { gap:13px; }
+        .avatar { width:30px; height:30px; border-radius:50%; background:#eaf3fa; color:#1769aa; }
+        .user-name { color:var(--gray-800); font-size:11px; font-weight:600; }
+        .user-role { color:var(--gray-500); font-size:9px; }
+        .logout,.back-button,.support button { border-radius:4px; font-size:9px; font-weight:600; }
+        @media (max-width:900px) { .sidebar{width:64px;} .main{margin-left:64px;width:calc(100% - 64px);} .brand-name,.brand-subtitle,.menu-title,.nav-title,.nav-label,.nav a span:not(.nav-icon),.nav-item span:not(.nav-icon),.support,.user-name,.user-role,.logout{display:none;} }
+        @media (max-width:650px) { .topbar{padding:0 12px;} }
+    
+
+        /* FINAL DASHBOARD UI CONSISTENCY */
+        .sidebar {
+            width: 224px !important;
+            background: #102a43 !important;
+        }
+
+        .main {
+            margin-left: 224px !important;
+            width: calc(100% - 224px) !important;
+        }
+
+        .brand {
+            height: 62px !important;
+            padding: 0 17px !important;
+            gap: 0 !important;
+        }
+
+        .brand-mark {
+            width: 29px !important;
+            height: 29px !important;
+            margin-right: 9px !important;
+            border-radius: 5px !important;
+            background: #2176b5 !important;
+            font-size: 0 !important;
+        }
+
+        .brand-mark svg {
+            width: 18px !important;
+            height: 18px !important;
+            stroke: #fff !important;
+            stroke-width: 2.2 !important;
+            stroke-linecap: round !important;
+            stroke-linejoin: round !important;
+            fill: none !important;
+        }
+
+        .brand > span {
+            color: #fff !important;
+            font-size: 17px !important;
+            font-weight: 700 !important;
+        }
+
+        .menu-title {
+            padding: 0 10px 7px !important;
+            margin-top: 18px !important;
+            color: #7893aa !important;
+            font-size: 9px !important;
+            font-weight: 600 !important;
+            letter-spacing: .7px !important;
+        }
+
+        .nav {
+            padding: 0 10px !important;
+        }
+
+        .nav-item {
+            min-height: 36px !important;
+            height: 36px !important;
+            margin-bottom: 2px !important;
+            padding: 0 10px !important;
+            gap: 10px !important;
+            border-radius: 5px !important;
+            color: #c8d6e3 !important;
+            font-size: 12px !important;
+            font-weight: 500 !important;
+        }
+
+        .nav-item:hover,
+        .nav-item.active {
+            background: #1e68a8 !important;
+            color: #fff !important;
+        }
+
+        .nav-icon {
+            width: 18px !important;
+            height: 18px !important;
+            flex: 0 0 18px !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            color: #9fb5c8 !important;
+            text-align: initial !important;
+            font-size: initial !important;
+            opacity: 1 !important;
+        }
+
+        .nav-icon .icon,
+        .nav-icon svg {
+            width: 17px !important;
+            height: 17px !important;
+            flex: 0 0 17px !important;
+            display: block !important;
+            stroke: currentColor !important;
+            stroke-width: 1.8 !important;
+            stroke-linecap: round !important;
+            stroke-linejoin: round !important;
+            fill: none !important;
+        }
+
+        .nav-item.active .nav-icon {
+            color: #fff !important;
+        }
+
+        .nav-item:not(.active) .nav-icon {
+            color: #9fb5c8 !important;
+        }
+
+        .topbar {
+            height: 62px !important;
+            padding: 0 22px !important;
+        }
+
+
+        .user-info {
+    display: flex !important;
+    align-items: center !important;
+    gap: 9px !important;
+    padding-left: 13px !important;
+    border-left: 1px solid #e1e7ec !important;
+}
+
+.avatar {
+    width: 30px !important;
+    height: 30px !important;
+    min-width: 30px !important;
+    border-radius: 50% !important;
+    background: #eaf3fa !important;
+    color: #1769aa !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 11px !important;
+    font-weight: 500 !important;
+}
+
+.user-name {
+    color: #243b53 !important;
+    font-size: 11px !important;
+    font-weight: 600 !important;
+    line-height: 14px !important;
+    white-space: nowrap !important;
+}
+
+.user-role {
+    color: #829ab1 !important;
+    font-size: 9px !important;
+    font-weight: 400 !important;
+    line-height: 12px !important;
+    margin-top: 1px !important;
+    white-space: nowrap !important;
+}
+
+        .logout {
+    height: 31px !important;
+    padding: 0 12px !important;
+    border: 1px solid #e2a5a5 !important;
+    color: #d95353 !important;
+    background: #ffffff !important;
+    border-radius: 4px !important;
+    font-size: 9px !important;
+    font-weight: 500 !important;
+    cursor: pointer !important;
+}
+
+        @media (max-width: 900px) {
+            .sidebar {
+                width: 64px !important;
+            }
+
+            .main {
+                margin-left: 64px !important;
+                width: calc(100% - 64px) !important;
+            }
+
+            .brand > span,
+            .menu-title,
+            .nav-item > span:not(.nav-icon),
+            .support,
+            .user-name,
+            .user-role,
+            .logout {
+                display: none !important;
+            }
+
+            .brand {
+                justify-content: center !important;
+                padding: 0 !important;
+            }
+
+            .nav-item {
+                justify-content: center !important;
+                padding: 0 !important;
+            }
+        }
+
+        @media (max-width: 650px) {
+            .topbar {
+                padding: 0 12px !important;
+            }
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<div class="app">
+
+    <!-- SIDEBAR -->
+
+    <aside class="sidebar">
+
+        <div class="brand">
+
+            <div class="brand-mark"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14"></path><path d="M5 12h14"></path></svg></div>
+
+            <span>CareSync</span>
+
+        </div>
+
+        <div class="menu-title">
+            Caregiver Portal
+        </div>
+
+        <nav class="nav">
+
+            <a href="/caresync/caregiver/dashboard"
+               class="nav-item">
+
+                <span class="nav-icon"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m3 11 9-8 9 8"></path><path d="M5 10v10h14V10"></path><path d="M9 20v-6h6v6"></path></svg></span>
+
+                <span>Overview</span>
+
+            </a>
+
+            <a href="/caresync/caregiver/dashboard"
+               class="nav-item active">
+
+                <span class="nav-icon"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3"></circle><circle cx="17" cy="9" r="2.5"></circle><path d="M3 21a6 6 0 0 1 12 0"></path><path d="M14 17a5 5 0 0 1 7 4"></path></svg></span>
+
+                <span>Shared Patients</span>
+
+            </a>
+
+        </nav>
+
+
+        <div class="support">
+
+            <div class="support-title">
+                Need Help?
+            </div>
+
+            <div class="support-text">
+                Contact CareSync support for assistance with caregiver access.
+            </div>
+
+            <button type="button"
+                    onclick="alert('CareSync Support')">
+                Contact Support
+            </button>
+
+        </div>
+
+    </aside>
+
+
+    <!-- MAIN -->
+
+    <main class="main">
+
+
+        <header class="topbar">
+
+            <button class="back-button"
+                    type="button"
+                    onclick="goBack()">
+
+                Back to Patients
+
+            </button>
+
+
+            <div class="user-area">
+
+                <div class="avatar"
+                     id="caregiverAvatar">
+                    C
+                </div>
+
+                <div class="user-info">
+
+                    <div class="user-name"
+                         id="caregiverName">
+                        Caregiver
+                    </div>
+
+                    <div class="user-role">
+                        Caregiver
+                    </div>
+
+                </div>
+
+                <button class="logout"
+                        type="button"
+                        onclick="logoutUser()">
+
+                    Logout
+
+                </button>
+
+            </div>
+
+        </header>
+
+
+        <section class="content">
+
+
+            <div class="breadcrumb">
+                Caregiver Portal / Shared Patients / Patient Details
+            </div>
+
+
+            <h1 class="page-title">
+                Patient Details
+            </h1>
+
+
+            <p class="page-subtitle">
+                View healthcare information shared with you by the patient.
+            </p>
+
+
+            <div id="errorMessage"
+                 class="error">
+            </div>
+
+
+            <!-- PATIENT HEADER -->
+
+            <section class="patient-header">
+
+                <div class="patient-info">
+
+                    <div class="patient-avatar"
+                         id="patientAvatar">
+                        P
+                    </div>
+
+                    <div>
+
+                        <div class="patient-name"
+                             id="patientName">
+
+                            Loading patient...
+
+                        </div>
+
+                        <div class="patient-email"
+                             id="patientEmail">
+
+                            Loading patient information...
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="access-badge">
+                    Authorized Access
+                </div>
+
+            </section>
+
+
+            <!-- ACCESS SUMMARY -->
+
+            <section class="access-section">
+
+                <div class="section-header">
+
+                    <div>
+
+                        <div class="section-title">
+                            Shared Access
+                        </div>
+
+                        <div class="section-description">
+                            Permissions granted by the patient
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="access-grid">
+
+                    <div class="access-item">
+
+                        <div class="access-label">
+                            Medications
+                        </div>
+
+                        <div id="medicationAccess"
+                             class="access-value">
+                            Checking...
+                        </div>
+
+                    </div>
+
+
+                    <div class="access-item">
+
+                        <div class="access-label">
+                            Appointments
+                        </div>
+
+                        <div id="appointmentAccess"
+                             class="access-value">
+                            Checking...
+                        </div>
+
+                    </div>
+
+
+                    <div class="access-item">
+
+                        <div class="access-label">
+                            Health History
+                        </div>
+
+                        <div id="healthAccess"
+                             class="access-value">
+                            Checking...
+                        </div>
+
+                    </div>
+
+
+                    <div class="access-item">
+
+                        <div class="access-label">
+                            Reminders
+                        </div>
+
+                        <div id="reminderAccess"
+                             class="access-value">
+                            Checking...
+                        </div>
+
+                    </div>
+
+
+                    <div class="access-item">
+
+                        <div class="access-label">
+                            Documents
+                        </div>
+
+                        <div id="documentAccess"
+                             class="access-value">
+                            Checking...
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- DATA -->
+
+            <div class="data-grid">
+
+
+                <!-- MEDICATIONS -->
+
+                <section class="section">
+
+                    <div class="section-header">
+
+                        <div class="section-title">
+                            Medications
+                        </div>
+
+                    </div>
+
+                    <div id="medications"
+                         class="list">
+
+                        <div class="empty">
+                            Loading...
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- APPOINTMENTS -->
+
+                <section class="section">
+
+                    <div class="section-header">
+
+                        <div class="section-title">
+                            Appointments
+                        </div>
+
+                    </div>
+
+                    <div id="appointments"
+                         class="list">
+
+                        <div class="empty">
+                            Loading...
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- HEALTH HISTORY -->
+
+                <section class="section">
+
+                    <div class="section-header">
+
+                        <div class="section-title">
+                            Health History
+                        </div>
+
+                    </div>
+
+                    <div id="healthHistory"
+                         class="list">
+
+                        <div class="empty">
+                            Loading...
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- REMINDERS -->
+
+                <section class="section">
+
+                    <div class="section-header">
+
+                        <div class="section-title">
+                            Medication Reminders
+                        </div>
+
+                    </div>
+
+                    <div id="reminders"
+                         class="list">
+
+                        <div class="empty">
+                            Loading...
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- DOCUMENTS -->
+
+                <section class="section">
+
+                    <div class="section-header">
+
+                        <div class="section-title">
+                            Medical Documents
+                        </div>
+
+                    </div>
+
+                    <div id="documents"
+                         class="list">
+
+                        <div class="empty">
+                            Loading...
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+            </div>
+
+
+            <footer class="footer">
+
+                <span>
+                    CareSync Caregiver Portal
+                </span>
+
+                <span>
+                    Privacy Policy &nbsp;&nbsp;
+                    Terms of Service &nbsp;&nbsp;
+                    Help Center
+                </span>
+
+            </footer>
+
+
+        </section>
+
+    </main>
+
+</div>
+
+
+<script>
+
+    const token =
+        localStorage.getItem("caresyncToken");
+
+    const caregiverEmail =
+        localStorage.getItem("caresyncEmail");
+
+
+    const params =
+        new URLSearchParams(
+            window.location.search
+        );
+
+    const patientId =
+        params.get("patientId");
+
+
+    if (!token) {
+
+        window.location.href =
+            "/caresync/login";
+
+    }
+
+
+    if (!patientId) {
+
+        showError(
+            "No patient was selected."
+        );
+
+    }
+
+
+    function authHeaders() {
+
+        return {
+            "Authorization":
+                "Bearer " + token
+        };
+
+    }
+
+
+    function escapeHtml(value) {
+
+        if (
+            value === null ||
+            value === undefined
+        ) {
+            return "";
+        }
+
+        return String(value)
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+
+    }
+
+
+    function initials(value) {
+
+        if (!value) {
+            return "P";
+        }
+
+        return String(value)
+            .charAt(0)
+            .toUpperCase();
+
+    }
+
+
+    function logoutUser() {
+        localStorage.removeItem("caresyncToken");
+        localStorage.removeItem("caresyncEmail");
+        localStorage.removeItem("caresyncRole");
+        window.location.href = "/caresync/login";
+    }
+
+    function logout() {
+
+        localStorage.removeItem(
+            "caresyncToken"
+        );
+
+        localStorage.removeItem(
+            "caresyncEmail"
+        );
+
+        localStorage.removeItem(
+            "caresyncRole"
+        );
+
+        window.location.href =
+            "/caresync/login";
+
+    }
+
+
+    function goBack() {
+
+        window.location.href =
+            "/caresync/caregiver/dashboard";
+
+    }
+
+
+    function showError(message) {
+
+        const box =
+            document.getElementById(
+                "errorMessage"
+            );
+
+        box.textContent =
+            message;
+
+        box.style.display =
+            "block";
+
+    }
+
+
+    function setAccess(
+        elementId,
+        allowed
+    ) {
+
+        const element =
+            document.getElementById(
+                elementId
+            );
+
+        if (allowed) {
+
+            element.textContent =
+                "Granted";
+
+            element.className =
+                "access-value access-granted";
+
+        } else {
+
+            element.textContent =
+                "Not granted";
+
+            element.className =
+                "access-value access-denied";
+
+        }
+
+    }
+
+
+    async function getJson(url) {
+
+        const response =
+            await fetch(
+                url,
+                {
+                    method: "GET",
+                    headers: authHeaders()
+                }
+            );
+
+
+        if (response.status === 401) {
+
+            logout();
+
+            return null;
+
+        }
+
+
+        const text =
+            await response.text();
+
+
+        let data;
+
+        try {
+
+            data =
+                text
+                    ? JSON.parse(text)
+                    : null;
+
+        } catch (e) {
+
+            data = text;
+
+        }
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                typeof data === "string"
+                    ? data
+                    : "Unable to load patient information."
+            );
+
+        }
+
+
+        return data;
+
+    }
+
+
+    async function loadAccess() {
+
+        try {
+
+            const access =
+                await getJson(
+                    "/caresync/api/caregiver/patients/"
+                    + encodeURIComponent(patientId)
+                    + "/access"
+                );
+
+
+            if (!access) {
+                return;
+            }
+
+
+            setAccess(
+                "medicationAccess",
+                access.medicationAccess
+            );
+
+            setAccess(
+                "appointmentAccess",
+                access.appointmentAccess
+            );
+
+            setAccess(
+                "healthAccess",
+                access.healthHistoryAccess
+            );
+
+            setAccess(
+                "reminderAccess",
+                access.reminderAccess
+            );
+
+            setAccess(
+                "documentAccess",
+                access.documentAccess
+            );
+
+
+            if (access.patientId) {
+
+                loadAllData(
+                    access
+                );
+
+            }
+
+        } catch (error) {
+
+            showError(
+                error.message
+            );
+
+        }
+
+    }
+
+
+    async function loadAllData(access) {
+
+        const base =
+            "/caresync/api/caregiver/patients/"
+            + encodeURIComponent(patientId);
+
+
+        if (access.medicationAccess) {
+
+            loadMedications(
+                base + "/medications"
+            );
+
+        } else {
+
+            showDenied(
+                "medications"
+            );
+
+        }
+
+
+        if (access.appointmentAccess) {
+
+            loadAppointments(
+                base + "/appointments"
+            );
+
+        } else {
+
+            showDenied(
+                "appointments"
+            );
+
+        }
+
+
+        if (access.healthHistoryAccess) {
+
+            loadHealthHistory(
+                base + "/health-history"
+            );
+
+        } else {
+
+            showDenied(
+                "healthHistory"
+            );
+
+        }
+
+
+        if (access.reminderAccess) {
+
+            loadReminders(
+                base + "/reminders"
+            );
+
+        } else {
+
+            showDenied(
+                "reminders"
+            );
+
+        }
+
+
+        if (access.documentAccess) {
+
+            loadDocuments(
+                base + "/documents"
+            );
+
+        } else {
+
+            showDenied(
+                "documents"
+            );
+
+        }
+
+    }
+
+
+    function showDenied(elementId) {
+
+        document.getElementById(
+            elementId
+        ).innerHTML =
+            '<div class="denied">' +
+            'Access not granted by patient.' +
+            '</div>';
+
+    }
+
+
+    async function loadMedications(url) {
+
+        try {
+
+            const data =
+                await getJson(url);
+
+            renderMedications(data);
+
+        } catch (error) {
+
+            document.getElementById(
+                "medications"
+            ).innerHTML =
+                '<div class="denied">' +
+                escapeHtml(error.message) +
+                '</div>';
+
+        }
+
+    }
+
+
+    function renderMedications(data) {
+
+        const container =
+            document.getElementById(
+                "medications"
+            );
+
+
+        if (!data || !data.length) {
+
+            container.innerHTML =
+                '<div class="empty">' +
+                'No medications available.' +
+                '</div>';
+
+            return;
+
+        }
+
+
+        container.innerHTML =
+            data.map(medication => `
+
+                <div class="list-row">
+
+                    <div class="row-title">
+                        ${escapeHtml(
+                            medication.medicineName
+                        )}
+                    </div>
+
+                    <div class="row-meta">
+
+                        Dosage:
+                        ${escapeHtml(
+                            medication.dosage
+                        )}
+                        ${escapeHtml(
+                            medication.dosageUnit
+                        )}
+
+                        <br>
+
+                        Frequency:
+                        ${escapeHtml(
+                            medication.frequency
+                        )}
+
+                        <br>
+
+                        Prescribing doctor:
+                        ${escapeHtml(
+                            medication.prescribingDoctor
+                        )}
+
+                    </div>
+
+                </div>
+
+            `).join("");
+
+    }
+
+
+    async function loadAppointments(url) {
+
+        try {
+
+            const data =
+                await getJson(url);
+
+            renderAppointments(data);
+
+        } catch (error) {
+
+            document.getElementById(
+                "appointments"
+            ).innerHTML =
+                '<div class="denied">' +
+                escapeHtml(error.message) +
+                '</div>';
+
+        }
+
+    }
+
+
+    function renderAppointments(data) {
+
+        const container =
+            document.getElementById(
+                "appointments"
+            );
+
+
+        if (!data || !data.length) {
+
+            container.innerHTML =
+                '<div class="empty">' +
+                'No appointments available.' +
+                '</div>';
+
+            return;
+
+        }
+
+
+        container.innerHTML =
+            data.map(appointment => `
+
+                <div class="list-row">
+
+                    <div class="row-title">
+
+                        Dr.
+                        ${escapeHtml(
+                            appointment.doctorName
+                        )}
+
+                    </div>
+
+                    <div class="row-meta">
+
+                        ${escapeHtml(
+                            appointment.hospitalOrClinic
+                        )}
+
+                        <br>
+
+                        ${escapeHtml(
+                            appointment.appointmentDate
+                        )}
+
+                        at
+
+                        ${escapeHtml(
+                            appointment.appointmentTime
+                        )}
+
+                        <br>
+
+                        <span class="status ${
+                            String(
+                                appointment.status || ""
+                            ).toLowerCase()
+                        }">
+
+                            ${escapeHtml(
+                                appointment.status
+                            )}
+
+                        </span>
+
+                    </div>
+
+                </div>
+
+            `).join("");
+
+    }
+
+
+    async function loadHealthHistory(url) {
+
+        try {
+
+            const data =
+                await getJson(url);
+
+            renderHealthHistory(data);
+
+        } catch (error) {
+
+            document.getElementById(
+                "healthHistory"
+            ).innerHTML =
+                '<div class="denied">' +
+                escapeHtml(error.message) +
+                '</div>';
+
+        }
+
+    }
+
+
+    function renderHealthHistory(data) {
+
+        const container =
+            document.getElementById(
+                "healthHistory"
+            );
+
+
+        if (!data || !data.length) {
+
+            container.innerHTML =
+                '<div class="empty">' +
+                'No health records available.' +
+                '</div>';
+
+            return;
+
+        }
+
+
+        const first =
+            data[0];
+
+
+        if (first.patientName) {
+
+            document.getElementById(
+                "patientName"
+            ).textContent =
+                first.patientName;
+
+            document.getElementById(
+                "patientAvatar"
+            ).textContent =
+                initials(
+                    first.patientName
+                );
+
+        }
+
+        if (first.patientEmail) {
+
+            document.getElementById(
+                "patientEmail"
+            ).textContent =
+                first.patientEmail;
+
+        }
+
+
+        container.innerHTML =
+            data.map(record => `
+
+                <div class="list-row">
+
+                    <div class="row-title">
+
+                        ${escapeHtml(
+                            record.diagnosis
+                        )}
+
+                    </div>
+
+                    <div class="row-meta">
+
+                        Doctor:
+                        ${escapeHtml(
+                            record.doctorName
+                        )}
+
+                        <br>
+
+                        Date:
+                        ${escapeHtml(
+                            record.recordDate
+                        )}
+
+                        <br>
+
+                        ${escapeHtml(
+                            record.description
+                        )}
+
+                        <br>
+
+                        Treatment:
+                        ${escapeHtml(
+                            record.treatment
+                        )}
+
+                    </div>
+
+                </div>
+
+            `).join("");
+
+    }
+
+
+    async function loadReminders(url) {
+
+        try {
+
+            const data =
+                await getJson(url);
+
+            renderReminders(data);
+
+        } catch (error) {
+
+            document.getElementById(
+                "reminders"
+            ).innerHTML =
+                '<div class="denied">' +
+                escapeHtml(error.message) +
+                '</div>';
+
+        }
+
+    }
+
+
+    function renderReminders(data) {
+
+        const container =
+            document.getElementById(
+                "reminders"
+            );
+
+
+        if (!data || !data.length) {
+
+            container.innerHTML =
+                '<div class="empty">' +
+                'No medication reminders available.' +
+                '</div>';
+
+            return;
+
+        }
+
+
+        container.innerHTML =
+            data.map(reminder => `
+
+                <div class="list-row">
+
+                    <div class="row-title">
+
+                        ${escapeHtml(
+                            reminder.medicineName
+                        )}
+
+                    </div>
+
+                    <div class="row-meta">
+
+                        ${escapeHtml(
+                            reminder.reminderDate
+                        )}
+
+                        at
+
+                        ${escapeHtml(
+                            reminder.reminderTime
+                        )}
+
+                        <br>
+
+                        <span class="status">
+
+                            ${escapeHtml(
+                                reminder.status
+                            )}
+
+                        </span>
+
+                    </div>
+
+                </div>
+
+            `).join("");
+
+    }
+
+
+    async function loadDocuments(url) {
+
+        try {
+
+            const data =
+                await getJson(url);
+
+            renderDocuments(data);
+
+        } catch (error) {
+
+            document.getElementById(
+                "documents"
+            ).innerHTML =
+                '<div class="denied">' +
+                escapeHtml(error.message) +
+                '</div>';
+
+        }
+
+    }
+
+
+    function renderDocuments(data) {
+
+        const container =
+            document.getElementById(
+                "documents"
+            );
+
+
+        if (!data || !data.length) {
+
+            container.innerHTML =
+                '<div class="empty">' +
+                'No medical documents available.' +
+                '</div>';
+
+            return;
+
+        }
+
+
+        container.innerHTML =
+            data.map(document => `
+
+                <div class="list-row">
+
+                    <div class="row-title">
+
+                        ${escapeHtml(
+                            document.fileName
+                        )}
+
+                    </div>
+
+                    <div class="row-meta">
+
+                        Type:
+                        ${escapeHtml(
+                            document.fileType
+                        )}
+
+                        <br>
+
+                        Category:
+                        ${escapeHtml(
+                            document.documentCategory
+                        )}
+
+                        <br>
+
+                        Uploaded:
+                        ${escapeHtml(
+                            document.uploadedAt
+                        )}
+
+                        <br>
+
+                        <button
+                            type="button"
+                            class="download-btn"
+                            onclick="downloadDocument(
+                                ${document.id}
+                            )">
+
+                            Download Document
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+            `).join("");
+
+    }
+
+
+    async function downloadDocument(
+        documentId
+    ) {
+
+        try {
+
+            const response =
+                await fetch(
+                    "/caresync/api/caregiver/patients/"
+                    + encodeURIComponent(patientId)
+                    + "/documents/"
+                    + encodeURIComponent(documentId)
+                    + "/download",
+                    {
+                        method: "GET",
+                        headers: authHeaders()
+                    }
+                );
+
+
+            if (response.status === 401) {
+
+                logout();
+
+                return;
+
+            }
+
+
+            if (!response.ok) {
+
+                const message =
+                    await response.text();
+
+                throw new Error(
+                    message ||
+                    "Unable to download document."
+                );
+
+            }
+
+
+            const blob =
+                await response.blob();
+
+
+            const url =
+                window.URL.createObjectURL(
+                    blob
+                );
+
+
+            const link =
+                document.createElement(
+                    "a"
+                );
+
+            link.href = url;
+
+            link.download =
+                "medical-document";
+
+
+            document.body.appendChild(
+                link
+            );
+
+            link.click();
+
+            link.remove();
+
+            window.URL.revokeObjectURL(
+                url
+            );
+
+        } catch (error) {
+
+            showError(
+                error.message
+            );
+
+        }
+
+    }
+
+
+    async function initialize() {
+
+        if (!token || !patientId) {
+            return;
+        }
+
+
+        if (caregiverEmail) {
+
+            document.getElementById(
+                "caregiverName"
+            ).textContent =
+                caregiverEmail;
+
+            document.getElementById(
+                "caregiverAvatar"
+            ).textContent =
+                initials(
+                    caregiverEmail
+                );
+
+        }
+
+
+        await loadAccess();
+
+    }
+
+
+    initialize();
+
+</script>
+
+</body>
+
+</html>

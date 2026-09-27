@@ -1,0 +1,3101 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>CareSync | Patient Dashboard</title>
+
+    <link rel="preconnect"
+          href="https://fonts.googleapis.com">
+
+    <link rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+          rel="stylesheet">
+
+
+    <style>
+
+        /* =========================================================
+           CARESYNC ENTERPRISE PATIENT PORTAL
+        ========================================================= */
+
+        :root {
+
+            --navy-950: #102a43;
+            --navy-900: #173f63;
+            --navy-800: #1d4d78;
+
+            --blue-700: #1769aa;
+            --blue-600: #2176b5;
+            --blue-100: #eaf3fa;
+            --blue-50: #f5f9fc;
+
+            --teal-700: #167575;
+
+            --gray-950: #172b4d;
+            --gray-800: #243b53;
+            --gray-700: #486581;
+            --gray-600: #627d98;
+            --gray-500: #829ab1;
+            --gray-400: #9fb3c8;
+            --gray-300: #cbd5e1;
+            --gray-200: #d9e2ec;
+            --gray-150: #e6edf3;
+            --gray-100: #edf2f7;
+            --gray-50: #f5f7fa;
+
+            --white: #ffffff;
+
+            --green: #18794e;
+            --green-bg: #eaf7f0;
+
+            --amber: #9a6700;
+            --amber-bg: #fff7df;
+
+            --red: #b42318;
+            --red-bg: #fff1f0;
+
+            --purple: #6941c6;
+            --purple-bg: #f4f1ff;
+
+            --shadow: 0 1px 3px rgba(16, 42, 67, 0.05);
+
+            --border: 1px solid var(--gray-200);
+
+            --radius: 6px;
+        }
+
+
+        /* =========================================================
+           RESET
+        ========================================================= */
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            font-size: 14px;
+        }
+
+        body {
+
+            margin: 0;
+
+            background: var(--gray-50);
+
+            color: var(--gray-800);
+
+            font-family:
+                "Inter",
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                sans-serif;
+
+            font-size: 13px;
+
+            line-height: 1.45;
+
+            -webkit-font-smoothing: antialiased;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        button,
+        input {
+            font: inherit;
+        }
+
+        button {
+            cursor: pointer;
+        }
+
+
+        /* =========================================================
+           ICON SYSTEM
+        ========================================================= */
+
+        .icon {
+
+            width: 17px;
+            height: 17px;
+
+            flex: 0 0 17px;
+
+            display: inline-block;
+
+            stroke: currentColor;
+
+            stroke-width: 1.8;
+
+            stroke-linecap: round;
+
+            stroke-linejoin: round;
+
+            fill: none;
+        }
+
+        .icon-sm {
+
+            width: 15px;
+            height: 15px;
+
+            flex-basis: 15px;
+        }
+
+        .icon-lg {
+
+            width: 20px;
+            height: 20px;
+
+            flex-basis: 20px;
+        }
+
+
+        /* =========================================================
+           APPLICATION SHELL
+        ========================================================= */
+
+        .app {
+
+            min-height: 100vh;
+
+            display: flex;
+        }
+
+
+        /* =========================================================
+           SIDEBAR
+        ========================================================= */
+
+        .sidebar {
+
+            position: fixed;
+
+            top: 0;
+            bottom: 0;
+            left: 0;
+
+            width: 224px;
+
+            background: var(--navy-950);
+
+            color: #dce8f2;
+
+            display: flex;
+
+            flex-direction: column;
+
+            z-index: 1000;
+        }
+
+
+        /* BRAND */
+
+        .brand {
+
+            height: 62px;
+
+            padding: 0 17px;
+
+            display: flex;
+
+            align-items: center;
+
+            border-bottom:
+                1px solid rgba(255,255,255,0.08);
+        }
+
+        .brand-symbol {
+
+            width: 29px;
+            height: 29px;
+
+            margin-right: 9px;
+
+            border-radius: 5px;
+
+            background: var(--blue-600);
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            color: white;
+        }
+
+        .brand-symbol svg {
+
+            width: 18px;
+            height: 18px;
+
+            stroke: white;
+
+            stroke-width: 2.2;
+
+            fill: none;
+        }
+
+        .brand-name {
+
+            color: white;
+
+            font-size: 17px;
+
+            font-weight: 700;
+
+            letter-spacing: -0.25px;
+        }
+
+
+        /* NAV */
+
+        .nav {
+
+            padding: 18px 10px;
+        }
+
+        .nav-section-label {
+
+            padding:
+                0 10px 7px;
+
+            color: #7893aa;
+
+            font-size: 9px;
+
+            font-weight: 600;
+
+            letter-spacing: .7px;
+
+            text-transform: uppercase;
+        }
+
+        .nav-link {
+
+            min-height: 36px;
+
+            width: 100%;
+
+            margin-bottom: 2px;
+
+            padding:
+                0 10px;
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 10px;
+
+            border-radius: 5px;
+
+            color: #c8d6e3;
+
+            font-size: 12px;
+
+            font-weight: 500;
+
+            transition:
+                background .15s ease,
+                color .15s ease;
+        }
+
+        .nav-link:hover {
+
+            background:
+                rgba(255,255,255,.065);
+
+            color: white;
+        }
+
+        .nav-link.active {
+
+            background: #1e68a8;
+
+            color: white;
+        }
+
+        .nav-link.active .icon {
+
+            color: white;
+        }
+
+        .nav-icon {
+
+            width: 18px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            color: #9fb5c8;
+        }
+
+
+        /* SIDEBAR FOOTER */
+
+        .sidebar-bottom {
+
+            margin-top: auto;
+
+            padding: 13px;
+        }
+
+        .support-box {
+
+            padding: 13px;
+
+            border:
+                1px solid rgba(255,255,255,.09);
+
+            border-radius: 6px;
+
+            background:
+                rgba(255,255,255,.045);
+        }
+
+        .support-title {
+
+            margin: 0 0 4px;
+
+            color: white;
+
+            font-size: 11px;
+
+            font-weight: 600;
+        }
+
+        .support-description {
+
+            margin: 0 0 10px;
+
+            color: #9db2c5;
+
+            font-size: 9px;
+
+            line-height: 1.45;
+        }
+
+        .support-button {
+
+            width: 100%;
+
+            height: 29px;
+
+            border: 0;
+
+            border-radius: 4px;
+
+            background: #1e75bd;
+
+            color: white;
+
+            font-size: 9px;
+
+            font-weight: 600;
+        }
+
+        .support-button:hover {
+
+            background: #2782cb;
+        }
+
+        .sidebar-footer-text {
+
+            padding-top: 10px;
+
+            color: #718ba2;
+
+            text-align: center;
+
+            font-size: 8px;
+
+            line-height: 1.4;
+        }
+
+
+        /* =========================================================
+           MAIN
+        ========================================================= */
+
+        .main {
+
+            margin-left: 224px;
+
+            width:
+                calc(100% - 224px);
+
+            min-height: 100vh;
+        }
+
+
+        /* =========================================================
+           TOP BAR
+        ========================================================= */
+
+        .topbar {
+
+            height: 62px;
+
+            padding:
+                0 22px;
+
+            background: white;
+
+            border-bottom:
+                1px solid var(--gray-200);
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+        }
+
+
+        /* SEARCH */
+
+        .search-wrapper {
+
+            width: 330px;
+
+            height: 34px;
+
+            display: flex;
+
+            align-items: center;
+
+            border:
+                1px solid var(--gray-200);
+
+            border-radius: 5px;
+
+            background: var(--gray-50);
+
+            padding:
+                0 9px;
+        }
+
+        .search-wrapper:focus-within {
+
+            border-color:
+                #8ab8d9;
+
+            background: white;
+        }
+
+        .search-wrapper .icon {
+
+            color: var(--gray-500);
+
+            margin-right: 7px;
+        }
+
+        .search-wrapper input {
+
+            width: 100%;
+
+            height: 100%;
+
+            padding: 0;
+
+            border: 0;
+
+            outline: 0;
+
+            background: transparent;
+
+            color: var(--gray-800);
+
+            font-size: 11px;
+        }
+
+        .search-wrapper input::placeholder {
+
+            color: var(--gray-500);
+        }
+
+        .search-shortcut {
+
+            padding:
+                2px 5px;
+
+            border:
+                1px solid var(--gray-200);
+
+            border-radius: 3px;
+
+            background: white;
+
+            color: var(--gray-500);
+
+            font-size: 8px;
+
+            white-space: nowrap;
+        }
+
+
+        /* TOP RIGHT */
+
+        .top-right {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 13px;
+        }
+
+
+        /* NOTIFICATION */
+
+        /* USER */
+
+        .user-info {
+    display: flex !important;
+    align-items: center !important;
+    gap: 9px !important;
+    padding-left: 13px !important;
+    border-left: 1px solid #e1e7ec !important;
+}
+
+.avatar {
+    width: 30px !important;
+    height: 30px !important;
+    min-width: 30px !important;
+    border-radius: 50% !important;
+    background: #eaf3fa !important;
+    color: #1769aa !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 11px !important;
+    font-weight: 500 !important;
+}
+
+.user-name {
+    color: #243b53 !important;
+    font-size: 11px !important;
+    font-weight: 600 !important;
+    line-height: 14px !important;
+    white-space: nowrap !important;
+}
+
+.user-role {
+    color: #829ab1 !important;
+    font-size: 9px !important;
+    font-weight: 400 !important;
+    line-height: 12px !important;
+    margin-top: 1px !important;
+    white-space: nowrap !important;
+}
+
+
+        /* LOGOUT */
+
+        .logout {
+    height: 31px !important;
+    padding: 0 12px !important;
+    border: 1px solid #e2a5a5 !important;
+    color: #d95353 !important;
+    background: #ffffff !important;
+    border-radius: 4px !important;
+    font-size: 9px !important;
+    font-weight: 500 !important;
+    cursor: pointer !important;
+}
+.logout-button:hover {
+    background: #ffffff !important;
+    color: #d95353 !important;
+}
+        
+
+        /* =========================================================
+           CONTENT
+        ========================================================= */
+
+        .content {
+
+            max-width: 1500px;
+
+            margin: 0 auto;
+
+            padding:
+                21px 22px 18px;
+        }
+
+
+        /* PAGE HEADER */
+
+        .page-header {
+
+            margin-bottom: 16px;
+        }
+
+        .page-title {
+
+            margin: 0;
+
+            color: var(--gray-950);
+
+            font-size: 22px;
+
+            line-height: 1.25;
+
+            font-weight: 700;
+
+            letter-spacing: -.3px;
+        }
+
+        .page-subtitle {
+
+            margin:
+                3px 0 0;
+
+            color: var(--gray-600);
+
+            font-size: 11px;
+        }
+
+
+        /* =========================================================
+           STATISTICS
+        ========================================================= */
+
+        .stat-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(4, 1fr);
+
+            gap: 10px;
+
+            margin-bottom: 14px;
+        }
+
+        .stat-card {
+
+            min-height: 82px;
+
+            padding:
+                12px 13px;
+
+            background: white;
+
+            border:
+                1px solid var(--gray-200);
+
+            border-radius: 5px;
+
+            box-shadow: var(--shadow);
+
+            display: flex;
+
+            flex-direction: column;
+
+            justify-content: space-between;
+        }
+
+        .stat-card:hover {
+
+            border-color:
+                #c3d3e1;
+        }
+
+        .stat-main {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 10px;
+        }
+
+        .stat-icon {
+
+            width: 31px;
+            height: 31px;
+
+            border-radius: 5px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+        }
+
+        .stat-icon.blue {
+
+            color: var(--blue-700);
+
+            background: var(--blue-100);
+        }
+
+        .stat-icon.teal {
+
+            color: var(--teal-700);
+
+            background: var(--teal-light);
+        }
+
+        .stat-icon.purple {
+
+            color: var(--purple);
+
+            background: var(--purple-bg);
+        }
+
+        .stat-icon.amber {
+
+            color: var(--amber);
+
+            background: var(--amber-bg);
+        }
+
+        .stat-value {
+
+            color: var(--gray-950);
+
+            font-size: 19px;
+
+            line-height: 1;
+
+            font-weight: 700;
+        }
+
+        .stat-label {
+
+            margin-top: 3px;
+
+            color: var(--gray-600);
+
+            font-size: 10px;
+
+            font-weight: 500;
+        }
+
+        .stat-bottom {
+
+            margin-top: 6px;
+
+            display: flex;
+
+            justify-content: flex-end;
+        }
+
+        .stat-link {
+
+            color: var(--blue-700);
+
+            font-size: 9px;
+
+            font-weight: 600;
+        }
+
+        .stat-link:hover {
+
+            text-decoration: underline;
+        }
+
+
+        /* =========================================================
+           MAIN TWO COLUMN AREA
+        ========================================================= */
+
+        .dashboard-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                minmax(0, 1.35fr)
+                minmax(320px, .8fr);
+
+            gap: 14px;
+
+            align-items: start;
+        }
+
+        .left-column,
+        .right-column {
+
+            min-width: 0;
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 14px;
+        }
+
+
+        /* =========================================================
+           PANEL
+        ========================================================= */
+
+        .panel {
+
+            background: white;
+
+            border:
+                1px solid var(--gray-200);
+
+            border-radius: 5px;
+
+            overflow: hidden;
+
+            box-shadow: var(--shadow);
+        }
+
+        .panel-header {
+
+            min-height: 43px;
+
+            padding:
+                0 13px;
+
+            border-bottom:
+                1px solid var(--gray-150);
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+        }
+
+        .panel-title {
+
+            margin: 0;
+
+            color: var(--gray-950);
+
+            font-size: 13px;
+
+            font-weight: 600;
+        }
+
+        .panel-action {
+
+            color: var(--blue-700);
+
+            font-size: 9px;
+
+            font-weight: 600;
+        }
+
+        .panel-action:hover {
+
+            text-decoration: underline;
+        }
+
+
+        /* =========================================================
+           APPOINTMENT LIST
+        ========================================================= */
+
+        .appointment-row {
+
+            min-height: 69px;
+
+            padding:
+                9px 13px;
+
+            display: flex;
+
+            align-items: center;
+
+            border-bottom:
+                1px solid var(--gray-100);
+        }
+
+        .appointment-row:last-child {
+
+            border-bottom: 0;
+        }
+
+
+        /* DATE */
+
+        .appointment-date {
+
+            width: 45px;
+            height: 47px;
+
+            flex: 0 0 45px;
+
+            margin-right: 11px;
+
+            border:
+                1px solid #d4e2ed;
+
+            border-radius: 4px;
+
+            background: var(--blue-50);
+
+            display: flex;
+
+            flex-direction: column;
+
+            align-items: center;
+
+            justify-content: center;
+        }
+
+        .appointment-month {
+
+            color: var(--blue-700);
+
+            font-size: 7px;
+
+            font-weight: 700;
+
+            text-transform: uppercase;
+        }
+
+        .appointment-day {
+
+            color: var(--gray-950);
+
+            font-size: 16px;
+
+            line-height: 17px;
+
+            font-weight: 700;
+        }
+
+        .appointment-weekday {
+
+            color: var(--gray-500);
+
+            font-size: 7px;
+        }
+
+
+        /* DETAILS */
+
+        .appointment-details {
+
+            flex: 1;
+
+            min-width: 0;
+        }
+
+        .appointment-doctor {
+
+            color: var(--gray-950);
+
+            font-size: 11px;
+
+            font-weight: 600;
+        }
+
+        .appointment-reason {
+
+            margin-top: 1px;
+
+            color: var(--blue-700);
+
+            font-size: 9px;
+        }
+
+        .appointment-location {
+
+            margin-top: 2px;
+
+            color: var(--gray-600);
+
+            font-size: 8px;
+
+            white-space: nowrap;
+
+            overflow: hidden;
+
+            text-overflow: ellipsis;
+        }
+
+
+        /* TIME / STATUS */
+
+        .appointment-meta {
+
+            min-width: 76px;
+
+            text-align: right;
+        }
+
+        .appointment-time {
+
+            color: var(--gray-700);
+
+            font-size: 9px;
+
+            font-weight: 600;
+        }
+
+
+        /* =========================================================
+           STATUS BADGES
+        ========================================================= */
+
+        .status {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            margin-top: 4px;
+
+            padding:
+                2px 6px;
+
+            border-radius: 3px;
+
+            font-size: 7px;
+
+            line-height: 1.4;
+
+            font-weight: 600;
+
+            text-transform: uppercase;
+        }
+
+        .status-confirmed {
+
+            background: var(--green-bg);
+
+            color: var(--green);
+        }
+
+        .status-pending {
+
+            background: var(--amber-bg);
+
+            color: var(--amber);
+        }
+
+        .status-cancelled {
+
+            background: var(--red-bg);
+
+            color: var(--red);
+        }
+
+
+        /* =========================================================
+           MEDICATION REMINDERS
+        ========================================================= */
+
+        .reminder-row {
+
+            min-height: 57px;
+
+            padding:
+                8px 13px;
+
+            display: flex;
+
+            align-items: center;
+
+            border-bottom:
+                1px solid var(--gray-100);
+        }
+
+        .reminder-row:last-child {
+
+            border-bottom: 0;
+        }
+
+        .medicine-icon {
+
+            width: 30px;
+            height: 30px;
+
+            flex: 0 0 30px;
+
+            margin-right: 10px;
+
+            border-radius: 4px;
+
+            background: var(--blue-100);
+
+            color: var(--blue-700);
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+        }
+
+        .reminder-details {
+
+            flex: 1;
+
+            min-width: 0;
+        }
+
+        .reminder-name {
+
+            color: var(--gray-950);
+
+            font-size: 10px;
+
+            font-weight: 600;
+        }
+
+        .reminder-subtitle {
+
+            margin-top: 2px;
+
+            color: var(--gray-500);
+
+            font-size: 8px;
+        }
+
+        .reminder-meta {
+
+            text-align: right;
+
+            min-width: 70px;
+        }
+
+        .reminder-time {
+
+            color: var(--gray-700);
+
+            font-size: 9px;
+
+            font-weight: 600;
+        }
+
+
+        /* =========================================================
+           DOCUMENT LIST
+        ========================================================= */
+
+        .document-row {
+
+            min-height: 58px;
+
+            padding:
+                8px 13px;
+
+            display: flex;
+
+            align-items: center;
+
+            border-bottom:
+                1px solid var(--gray-100);
+        }
+
+        .document-row:last-child {
+
+            border-bottom: 0;
+        }
+
+        .document-icon {
+
+            width: 30px;
+            height: 30px;
+
+            flex: 0 0 30px;
+
+            margin-right: 10px;
+
+            border-radius: 4px;
+
+            background: var(--gray-100);
+
+            color: var(--gray-600);
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+        }
+
+        .document-details {
+
+            flex: 1;
+
+            min-width: 0;
+        }
+
+        .document-name {
+
+            overflow: hidden;
+
+            color: var(--gray-950);
+
+            font-size: 10px;
+
+            font-weight: 600;
+
+            white-space: nowrap;
+
+            text-overflow: ellipsis;
+        }
+
+        .document-meta {
+
+            margin-top: 2px;
+
+            color: var(--gray-500);
+
+            font-size: 8px;
+        }
+
+        .download-link {
+
+            width: 27px;
+            height: 27px;
+
+            border-radius: 4px;
+
+            color: var(--blue-700);
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+        }
+
+        .download-link:hover {
+
+            background: var(--blue-100);
+        }
+
+
+        /* =========================================================
+           EMPTY ROW
+        ========================================================= */
+
+        .empty-row {
+
+            min-height: 46px;
+
+            padding:
+                0 13px;
+
+            display: flex;
+
+            align-items: center;
+
+            color: var(--gray-500);
+
+            font-size: 10px;
+
+            border-bottom:
+                1px solid var(--gray-100);
+        }
+
+
+        /* =========================================================
+           PRIVACY NOTICE
+        ========================================================= */
+
+        .privacy-notice {
+
+            padding:
+                12px 13px;
+
+            border:
+                1px solid #cddfeb;
+
+            border-radius: 5px;
+
+            background: #f2f8fc;
+
+            display: flex;
+
+            align-items: flex-start;
+
+            gap: 9px;
+        }
+
+        .privacy-icon {
+
+            width: 29px;
+            height: 29px;
+
+            flex: 0 0 29px;
+
+            border-radius: 4px;
+
+            background: white;
+
+            color: var(--blue-700);
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+        }
+
+        .privacy-content {
+
+            flex: 1;
+        }
+
+        .privacy-title {
+
+            margin: 0;
+
+            color: var(--gray-950);
+
+            font-size: 10px;
+
+            font-weight: 600;
+        }
+
+        .privacy-text {
+
+            margin:
+                3px 0 0;
+
+            color: var(--gray-600);
+
+            font-size: 8px;
+
+            line-height: 1.45;
+        }
+
+        .privacy-link {
+
+            display: inline-block;
+
+            margin-top: 5px;
+
+            color: var(--blue-700);
+
+            font-size: 8px;
+
+            font-weight: 600;
+        }
+
+
+        /* =========================================================
+           FOOTER
+        ========================================================= */
+
+        .footer {
+
+            margin-top: 17px;
+
+            padding:
+                10px 0 2px;
+
+            border-top:
+                1px solid var(--gray-200);
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            color: var(--gray-500);
+
+            font-size: 8px;
+        }
+
+        .footer-links {
+
+            display: flex;
+
+            gap: 15px;
+        }
+
+        .footer-links a:hover {
+
+            color: var(--blue-700);
+        }
+
+
+        /* =========================================================
+           MOBILE
+        ========================================================= */
+
+        .mobile-menu {
+
+            display: none;
+
+            width: 32px;
+            height: 32px;
+
+            padding: 0;
+
+            border: 0;
+
+            background: transparent;
+
+            color: var(--gray-700);
+        }
+
+
+        @media (max-width: 1100px) {
+
+            .sidebar {
+
+                width: 205px;
+            }
+
+            .main {
+
+                margin-left: 205px;
+
+                width:
+                    calc(100% - 205px);
+            }
+
+            .dashboard-grid {
+
+                grid-template-columns: 1fr;
+            }
+        }
+
+
+        @media (max-width: 850px) {
+
+            .sidebar {
+
+                transform:
+                    translateX(-100%);
+
+                transition:
+                    transform .2s ease;
+            }
+
+            .sidebar.open {
+
+                transform:
+                    translateX(0);
+            }
+
+            .main {
+
+                margin-left: 0;
+
+                width: 100%;
+            }
+
+            .mobile-menu {
+
+                display: flex;
+
+                align-items: center;
+
+                justify-content: center;
+
+                margin-right: 8px;
+            }
+
+            .topbar {
+
+                padding:
+                    0 14px;
+            }
+
+            .search-wrapper {
+
+                width: 270px;
+            }
+        }
+
+
+        @media (max-width: 650px) {
+
+            .content {
+
+                padding:
+                    16px 12px;
+            }
+
+            .topbar {
+
+                height: 56px;
+            }
+
+            .search-wrapper {
+
+                display: none;
+            }
+
+            .user-details {
+
+                display: none;
+            }
+
+            .stat-grid {
+
+                grid-template-columns:
+                    repeat(2, 1fr);
+
+                gap: 8px;
+            }
+
+            .stat-card {
+
+                min-height: 76px;
+            }
+
+            .page-title {
+
+                font-size: 19px;
+            }
+
+            .footer {
+
+                align-items: flex-start;
+
+                flex-direction: column;
+
+                gap: 7px;
+            }
+        }
+
+
+        @media (max-width: 420px) {
+
+            .stat-grid {
+
+                grid-template-columns: 1fr;
+            }
+
+            .appointment-meta {
+
+                min-width: 60px;
+            }
+
+            .user-block {
+
+                padding-left: 8px;
+            }
+
+            .logout-button {
+    padding: 0 12px !important;
+}
+        }
+
+
+        /* FINAL DASHBOARD ICON CONSISTENCY */
+        .nav-icon {
+            width: 18px !important;
+            height: 18px !important;
+            flex: 0 0 18px !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            color: #9fb5c8 !important;
+            opacity: 1 !important;
+        }
+
+        .nav-icon .icon,
+        .nav-icon svg {
+            width: 17px !important;
+            height: 17px !important;
+            flex: 0 0 17px !important;
+            display: block !important;
+            stroke: currentColor !important;
+            stroke-width: 1.8 !important;
+            stroke-linecap: round !important;
+            stroke-linejoin: round !important;
+            fill: none !important;
+        }
+
+        .nav-link.active .nav-icon {
+            color: #ffffff !important;
+        }
+
+        .nav-link:not(.active) .nav-icon {
+            color: #9fb5c8 !important;
+        }
+
+        
+
+
+        /* =========================================================
+           FINAL CARESYNC SHELL STANDARD
+           Keep the Dashboard header/sidebar identical to all
+           standardized patient pages.
+        ========================================================= */
+
+        .sidebar {
+            width: 224px !important;
+        }
+
+        .brand {
+            height: 62px !important;
+            padding: 0 17px !important;
+        }
+
+        .brand-symbol {
+            width: 29px !important;
+            height: 29px !important;
+            margin-right: 9px !important;
+        }
+
+        .brand-name {
+            font-size: 17px !important;
+            font-weight: 700 !important;
+        }
+
+        .nav {
+            padding: 18px 10px !important;
+        }
+
+        .nav-section-label {
+            font-size: 9px !important;
+        }
+
+        .nav-link {
+            min-height: 36px !important;
+            padding: 0 10px !important;
+            gap: 10px !important;
+            font-size: 12px !important;
+            font-weight: 500 !important;
+        }
+
+        .main {
+            margin-left: 224px !important;
+            width: calc(100% - 224px) !important;
+        }
+
+        .topbar {
+            height: 62px !important;
+            padding: 0 22px !important;
+        }
+
+        .search-wrapper {
+            width: 330px !important;
+            height: 34px !important;
+        }
+
+        .search-wrapper input {
+            font-size: 11px !important;
+        }
+
+        .top-right {
+            display: flex !important;
+            align-items: center !important;
+            gap: 13px !important;
+        }
+
+        /* Correct header user layout.
+           The HTML uses .user-block, not .user-info. */
+        .user-block {
+            display: flex !important;
+            align-items: center !important;
+            gap: 9px !important;
+            padding-left: 13px !important;
+            border-left: 1px solid #e1e7ec !important;
+            white-space: nowrap !important;
+        }
+
+        .user-block .avatar {
+            width: 30px !important;
+            height: 30px !important;
+            min-width: 30px !important;
+            border-radius: 50% !important;
+            background: #eaf3fa !important;
+            color: #1769aa !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            font-size: 11px !important;
+            font-weight: 500 !important;
+        }
+
+        .user-details {
+            display: flex !important;
+            flex-direction: column !important;
+            justify-content: center !important;
+            min-width: 0 !important;
+        }
+
+        .user-block .user-name {
+            color: #243b53 !important;
+            font-size: 11px !important;
+            font-weight: 600 !important;
+            line-height: 14px !important;
+            white-space: nowrap !important;
+        }
+
+        .user-block .user-role {
+            color: #829ab1 !important;
+            font-size: 9px !important;
+            font-weight: 400 !important;
+            line-height: 12px !important;
+            margin-top: 1px !important;
+            white-space: nowrap !important;
+        }
+
+        /* Same Logout button as the other corrected pages. */
+        .logout-button {
+            height: 31px !important;
+            min-height: 31px !important;
+            padding: 0 12px !important;
+            margin-left: 0 !important;
+            border: 1px solid #e2a5a5 !important;
+            color: #d95353 !important;
+            background: #ffffff !important;
+            border-radius: 4px !important;
+            font-size: 9px !important;
+            font-weight: 500 !important;
+            line-height: 29px !important;
+            cursor: pointer !important;
+            white-space: nowrap !important;
+        }
+
+        .logout-button:hover {
+            background: #ffffff !important;
+            color: #d95353 !important;
+        }
+
+        /* Keep Dashboard content typography aligned with the
+           standardized patient pages. */
+        body {
+            font-size: 13px !important;
+        }
+
+        .page-title {
+            font-size: 22px !important;
+        }
+
+        .page-subtitle {
+            font-size: 11px !important;
+        }
+
+        .panel-title {
+            font-size: 13px !important;
+        }
+
+        @media (max-width: 1100px) {
+            .sidebar {
+                width: 224px !important;
+            }
+
+            .main {
+                margin-left: 224px !important;
+                width: calc(100% - 224px) !important;
+            }
+        }
+
+        @media (max-width: 850px) {
+            .sidebar {
+                width: 224px !important;
+            }
+
+            .main {
+                margin-left: 0 !important;
+                width: 100% !important;
+            }
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="app">
+
+
+    <!-- =========================================================
+         SIDEBAR
+    ========================================================== -->
+
+    <aside class="sidebar"
+           id="sidebar">
+
+
+        <!-- BRAND -->
+
+        <div class="brand">
+
+            <div class="brand-symbol">
+
+                <svg viewBox="0 0 24 24"
+                     aria-hidden="true">
+
+                    <path d="M12 5v14"></path>
+
+                    <path d="M5 12h14"></path>
+
+                </svg>
+
+            </div>
+
+            <div class="brand-name">
+                CareSync
+            </div>
+
+        </div>
+
+
+        <!-- NAVIGATION -->
+
+        <nav class="nav"
+             aria-label="Patient navigation">
+
+
+            <div class="nav-section-label">
+                Main Menu
+            </div>
+
+
+            <!-- OVERVIEW -->
+
+            <a class="nav-link active"
+               th:href="@{/patient/dashboard}">
+
+                <span class="nav-icon">
+
+                    <svg class="icon"
+                         viewBox="0 0 24 24"
+                         aria-hidden="true">
+
+                        <path d="m3 11 9-8 9 8"></path>
+
+                        <path d="M5 10v10h14V10"></path>
+
+                        <path d="M9 20v-6h6v6"></path>
+
+                    </svg>
+
+                </span>
+
+                <span>Overview</span>
+
+            </a>
+
+
+            <!-- MEDICATIONS -->
+
+            <a class="nav-link"
+               th:href="@{/patient/medications}">
+
+                <span class="nav-icon">
+
+                    <svg class="icon"
+                         viewBox="0 0 24 24"
+                         aria-hidden="true">
+
+                        <path d="m8 4 12 12"></path>
+
+                        <path d="M4.5 8.5a5 5 0 0 1 7.1-7.1l9 9a5 5 0 0 1-7.1 7.1z"></path>
+
+                        <path d="m6 6 12 12"></path>
+
+                    </svg>
+
+                </span>
+
+                <span>Medications</span>
+
+            </a>
+
+
+            <!-- APPOINTMENTS -->
+
+            <a class="nav-link"
+               th:href="@{/patient/appointments}">
+
+                <span class="nav-icon">
+
+                    <svg class="icon"
+                         viewBox="0 0 24 24"
+                         aria-hidden="true">
+
+                        <rect x="3"
+                              y="4"
+                              width="18"
+                              height="17"
+                              rx="2"></rect>
+
+                        <path d="M16 2v4"></path>
+
+                        <path d="M8 2v4"></path>
+
+                        <path d="M3 10h18"></path>
+
+                    </svg>
+
+                </span>
+
+                <span>Appointments</span>
+
+            </a>
+
+
+            <!-- DOCUMENTS -->
+
+            <a class="nav-link"
+               th:href="@{/patient/documents}">
+
+                <span class="nav-icon">
+
+                    <svg class="icon"
+                         viewBox="0 0 24 24"
+                         aria-hidden="true">
+
+                        <path d="M6 3h9l4 4v14H6z"></path>
+
+                        <path d="M14 3v5h5"></path>
+
+                        <path d="M9 13h6"></path>
+
+                        <path d="M9 17h6"></path>
+
+                    </svg>
+
+                </span>
+
+                <span>Documents</span>
+
+            </a>
+
+
+            <!-- REMINDERS -->
+
+            <a class="nav-link"
+               th:href="@{/patient/reminders}">
+
+                <span class="nav-icon">
+
+                    <svg class="icon"
+                         viewBox="0 0 24 24"
+                         aria-hidden="true">
+
+                        <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path>
+
+                        <path d="M10 21h4"></path>
+
+                    </svg>
+
+                </span>
+
+                <span>Reminders</span>
+
+            </a>
+
+
+            <!-- HEALTH RECORDS -->
+
+            <a class="nav-link"
+               th:href="@{/patient/health-records}">
+
+                <span class="nav-icon">
+
+                    <svg class="icon"
+                         viewBox="0 0 24 24"
+                         aria-hidden="true">
+
+                        <path d="M4 4h16v16H4z"></path>
+
+                        <path d="M8 8h8"></path>
+
+                        <path d="M8 12h8"></path>
+
+                        <path d="M8 16h5"></path>
+
+                    </svg>
+
+                </span>
+
+                <span>Health Records</span>
+
+            </a>
+
+
+            <!-- HEALTH TIMELINE -->
+
+            <a class="nav-link"
+               th:href="@{/patient/health-timeline}">
+
+                <span class="nav-icon">
+
+                    <svg class="icon"
+                         viewBox="0 0 24 24"
+                         aria-hidden="true">
+
+                        <path d="M6 4h12"></path>
+                        <path d="M6 12h12"></path>
+                        <path d="M6 20h12"></path>
+
+                        <circle cx="4"
+                                cy="4"
+                                r="1.5"></circle>
+
+                        <circle cx="4"
+                                cy="12"
+                                r="1.5"></circle>
+
+                        <circle cx="4"
+                                cy="20"
+                                r="1.5"></circle>
+
+                    </svg>
+
+                </span>
+
+                <span>Health Timeline</span>
+
+            </a>
+
+
+            <!-- PROFILE -->
+
+            <a class="nav-link"
+               th:href="@{/patient/profile}">
+
+                <span class="nav-icon">
+
+                    <svg class="icon"
+                         viewBox="0 0 24 24"
+                         aria-hidden="true">
+
+                        <circle cx="12"
+                                cy="8"
+                                r="3"></circle>
+
+                        <path d="M5 21a7 7 0 0 1 14 0"></path>
+
+                    </svg>
+
+                </span>
+
+                <span>Profile</span>
+
+            </a>
+            <!-- CAREGIVER ACCESS -->
+
+<a class="nav-link"
+   th:href="@{/patient/caregivers}">
+
+    <span class="nav-icon">
+
+        <svg class="icon"
+             viewBox="0 0 24 24"
+             aria-hidden="true">
+
+            <circle cx="9"
+                    cy="8"
+                    r="3"></circle>
+
+            <circle cx="17"
+                    cy="9"
+                    r="2.5"></circle>
+
+            <path d="M3 21a6 6 0 0 1 12 0"></path>
+
+            <path d="M14 17a5 5 0 0 1 7 4"></path>
+
+        </svg>
+
+    </span>
+
+    <span>Caregiver Access</span>
+
+</a>
+
+        </nav>
+
+
+        <!-- SIDEBAR BOTTOM -->
+
+        <div class="sidebar-bottom">
+
+            <div class="support-box">
+
+                <h3 class="support-title">
+                    Need Help?
+                </h3>
+
+                <p class="support-description">
+                    Contact CareSync support if you
+                    need assistance with your account
+                    or healthcare information.
+                </p>
+
+                <button class="support-button"
+                        type="button">
+
+                    Contact Support
+
+                </button>
+
+            </div>
+
+            <div class="sidebar-footer-text">
+
+                © 2026 CareSync<br>
+
+                All rights reserved.
+
+            </div>
+
+        </div>
+
+    </aside>
+
+
+
+    <!-- =========================================================
+         MAIN
+    ========================================================== -->
+
+    <main class="main">
+
+
+        <!-- =====================================================
+             TOP BAR
+        ====================================================== -->
+
+        <header class="topbar">
+
+
+            <div style="display:flex;align-items:center;">
+
+                <button class="mobile-menu"
+                        type="button"
+                        onclick="toggleSidebar()"
+                        aria-label="Open navigation">
+
+                    <svg class="icon"
+                         viewBox="0 0 24 24">
+
+                        <path d="M4 6h16"></path>
+
+                        <path d="M4 12h16"></path>
+
+                        <path d="M4 18h16"></path>
+
+                    </svg>
+
+                </button>
+
+
+                <div class="search-wrapper">
+
+                    <svg class="icon icon-sm"
+                         viewBox="0 0 24 24"
+                         aria-hidden="true">
+
+                        <circle cx="11"
+                                cy="11"
+                                r="7"></circle>
+
+                        <path d="m20 20-4-4"></path>
+
+                    </svg>
+
+                    <input type="search"
+                           placeholder="Search healthcare information..."
+                           aria-label="Search healthcare information">
+
+                    <span class="search-shortcut">
+                        Ctrl /
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="top-right">
+
+
+                <!-- NOTIFICATIONS -->
+
+                
+  <!-- USER -->
+
+                <div class="user-block">
+
+
+                    <div class="avatar"
+
+                         th:text="${patientName != null and !#strings.isEmpty(patientName)
+                                  ? #strings.substring(patientName,0,1).toUpperCase()
+                                  : 'P'}">
+
+                        P
+
+                    </div>
+
+
+                    <div class="user-details">
+
+                        <div class="user-name"
+                             th:text="${patientName != null
+                                       ? patientName
+                                       : 'Patient'}">
+
+                            Patient
+
+                        </div>
+
+                        <div class="user-role">
+                            Patient
+                        </div>
+
+                    </div>
+
+
+                    <button class="logout-button"
+                            type="button"
+                            onclick="logoutUser()">
+
+                        Logout
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+
+        <!-- =====================================================
+             CONTENT
+        ====================================================== -->
+
+        <section class="content">
+
+
+            <!-- PAGE HEADER -->
+
+            <header class="page-header">
+
+                <h1 class="page-title">
+
+                    Welcome back,
+                    <span th:text="${patientName != null
+                                    ? patientName
+                                    : 'Patient'}">
+
+                        Patient
+
+                    </span>
+
+                </h1>
+
+                <p class="page-subtitle">
+
+                    Review your medications,
+                    appointments, documents and reminders.
+
+                </p>
+
+            </header>
+
+
+
+            <!-- =================================================
+                 STAT ROW
+            ================================================== -->
+
+            <section class="stat-grid"
+                     aria-label="Healthcare summary">
+
+
+                <!-- MEDICATIONS -->
+
+                <article class="stat-card">
+
+                    <div class="stat-main">
+
+                        <div class="stat-icon blue">
+
+                            <svg class="icon"
+                                 viewBox="0 0 24 24">
+
+                                <path d="m8 4 12 12"></path>
+
+                                <path d="M4.5 8.5a5 5 0 0 1 7.1-7.1l9 9a5 5 0 0 1-7.1 7.1z"></path>
+
+                                <path d="m6 6 12 12"></path>
+
+                            </svg>
+
+                        </div>
+
+                        <div>
+
+                            <div class="stat-value"
+                                 th:text="${medicationCount != null
+                                           ? medicationCount
+                                           : 0}">
+
+                                0
+
+                            </div>
+
+                            <div class="stat-label">
+                                Medications
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="stat-bottom">
+
+                        <a class="stat-link"
+                           th:href="@{/patient/medications}">
+
+                            View all
+
+                        </a>
+
+                    </div>
+
+                </article>
+
+
+
+                <!-- APPOINTMENTS -->
+
+                <article class="stat-card">
+
+                    <div class="stat-main">
+
+                        <div class="stat-icon teal">
+
+                            <svg class="icon"
+                                 viewBox="0 0 24 24">
+
+                                <rect x="3"
+                                      y="4"
+                                      width="18"
+                                      height="17"
+                                      rx="2"></rect>
+
+                                <path d="M16 2v4"></path>
+
+                                <path d="M8 2v4"></path>
+
+                                <path d="M3 10h18"></path>
+
+                            </svg>
+
+                        </div>
+
+                        <div>
+
+                            <div class="stat-value"
+                                 th:text="${appointmentCount != null
+                                           ? appointmentCount
+                                           : 0}">
+
+                                0
+
+                            </div>
+
+                            <div class="stat-label">
+                                Appointments
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="stat-bottom">
+
+                        <a class="stat-link"
+                           th:href="@{/patient/appointments}">
+
+                            View all
+
+                        </a>
+
+                    </div>
+
+                </article>
+
+
+
+                <!-- DOCUMENTS -->
+
+                <article class="stat-card">
+
+                    <div class="stat-main">
+
+                        <div class="stat-icon purple">
+
+                            <svg class="icon"
+                                 viewBox="0 0 24 24">
+
+                                <path d="M6 3h9l4 4v14H6z"></path>
+
+                                <path d="M14 3v5h5"></path>
+
+                                <path d="M9 13h6"></path>
+
+                                <path d="M9 17h6"></path>
+
+                            </svg>
+
+                        </div>
+
+                        <div>
+
+                            <div class="stat-value"
+                                 th:text="${documentCount != null
+                                           ? documentCount
+                                           : 0}">
+
+                                0
+
+                            </div>
+
+                            <div class="stat-label">
+                                Documents
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="stat-bottom">
+
+                        <a class="stat-link"
+                           th:href="@{/patient/documents}">
+
+                            View all
+
+                        </a>
+
+                    </div>
+
+                </article>
+
+
+
+                <!-- REMINDERS -->
+
+                <article class="stat-card">
+
+                    <div class="stat-main">
+
+                        <div class="stat-icon amber">
+
+                            <svg class="icon"
+                                 viewBox="0 0 24 24">
+
+                                <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path>
+
+                                <path d="M10 21h4"></path>
+
+                            </svg>
+
+                        </div>
+
+                        <div>
+
+                            <div class="stat-value"
+                                 th:text="${reminderCount != null
+                                           ? reminderCount
+                                           : 0}">
+
+                                0
+
+                            </div>
+
+                            <div class="stat-label">
+                                Reminders
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="stat-bottom">
+
+                        <a class="stat-link"
+                           th:href="@{/patient/reminders}">
+
+                            View all
+
+                        </a>
+
+                    </div>
+
+                </article>
+
+
+            </section>
+
+
+
+            <!-- =================================================
+                 TWO COLUMN BODY
+            ================================================== -->
+
+            <div class="dashboard-grid">
+
+
+                <!-- =================================================
+                     LEFT
+                ================================================= -->
+
+                <div class="left-column">
+
+
+                    <!-- APPOINTMENTS -->
+
+                    <section class="panel">
+
+                        <div class="panel-header">
+
+                            <h2 class="panel-title">
+                                Upcoming Appointments
+                            </h2>
+
+                            <a class="panel-action"
+                               th:href="@{/patient/appointments}">
+
+                                View all
+
+                            </a>
+
+                        </div>
+
+
+                        <!-- APPOINTMENT LIST -->
+
+                        <div th:if="${appointments != null
+                                    and !#lists.isEmpty(appointments)}">
+
+
+                            <div class="appointment-row"
+                                 th:each="appointment : ${appointments}">
+
+
+                                <!-- DATE -->
+
+                                <div class="appointment-date">
+
+                                    <span class="appointment-month"
+                                          th:text="${appointment.appointmentDate != null
+                                                    ? #temporals.format(
+                                                        appointment.appointmentDate,
+                                                        'MMM')
+                                                    : '--'}">
+
+                                        AUG
+
+                                    </span>
+
+                                    <span class="appointment-day"
+                                          th:text="${appointment.appointmentDate != null
+                                                    ? #temporals.format(
+                                                        appointment.appointmentDate,
+                                                        'dd')
+                                                    : '--'}">
+
+                                        25
+
+                                    </span>
+
+                                    <span class="appointment-weekday"
+                                          th:text="${appointment.appointmentDate != null
+                                                    ? #temporals.format(
+                                                        appointment.appointmentDate,
+                                                        'EEE')
+                                                    : '--'}">
+
+                                        TUE
+
+                                    </span>
+
+                                </div>
+
+
+                                <!-- DETAILS -->
+
+                                <div class="appointment-details">
+
+                                    <div class="appointment-doctor"
+                                         th:text="${appointment.doctorName != null
+                                                   ? appointment.doctorName
+                                                   : 'Doctor'}">
+
+                                        Dr. Kumar
+
+                                    </div>
+
+                                    <div class="appointment-reason"
+                                         th:text="${appointment.reason != null
+                                                   ? appointment.reason
+                                                   : 'Medical consultation'}">
+
+                                        General Check-up
+
+                                    </div>
+
+                                    <div class="appointment-location">
+
+                                        <span>Location: </span>
+
+                                        <span th:text="${appointment.hospitalOrClinic != null
+                                                        ? appointment.hospitalOrClinic
+                                                        : 'Healthcare facility'}">
+
+                                            City Care Hospital
+
+                                        </span>
+
+                                    </div>
+
+                                </div>
+
+
+                                <!-- META -->
+
+                                <div class="appointment-meta">
+
+                                    <div class="appointment-time"
+                                         th:text="${appointment.appointmentTime != null
+                                                   ? #temporals.format(
+                                                       appointment.appointmentTime,
+                                                       'HH:mm')
+                                                   : '--:--'}">
+
+                                        10:30
+
+                                    </div>
+
+
+                                    <span class="status"
+
+                                          th:classappend="${appointment.status != null
+                                              and appointment.status.toUpperCase() == 'CONFIRMED'}
+                                              ? ' status-confirmed'
+                                              : (${appointment.status != null
+                                                  and appointment.status.toUpperCase() == 'CANCELLED'}
+                                                  ? ' status-cancelled'
+                                                  : ' status-pending')"
+
+                                          th:text="${appointment.status != null
+                                                    ? appointment.status
+                                                    : 'PENDING'}">
+
+                                        CONFIRMED
+
+                                    </span>
+
+                                </div>
+
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- EMPTY -->
+
+                        <div class="empty-row"
+                             th:if="${appointments == null
+                                     or #lists.isEmpty(appointments)}">
+
+                            No upcoming appointments.
+
+                        </div>
+
+                    </section>
+
+
+
+                    <!-- =================================================
+                         MEDICATION REMINDERS
+                    ================================================== -->
+
+                    <section class="panel">
+
+                        <div class="panel-header">
+
+                            <h2 class="panel-title">
+                                Medication Reminders
+                            </h2>
+
+                            <a class="panel-action"
+                               th:href="@{/patient/reminders}">
+
+                                View all
+
+                            </a>
+
+                        </div>
+
+
+                        <div th:if="${reminders != null
+                                    and !#lists.isEmpty(reminders)}">
+
+
+                            <div class="reminder-row"
+                                 th:each="reminder : ${reminders}">
+
+
+                                <div class="medicine-icon">
+
+                                    <svg class="icon"
+                                         viewBox="0 0 24 24">
+
+                                        <path d="m8 4 12 12"></path>
+
+                                        <path d="M4.5 8.5a5 5 0 0 1 7.1-7.1l9 9a5 5 0 0 1-7.1 7.1z"></path>
+
+                                    </svg>
+
+                                </div>
+
+
+                                <div class="reminder-details">
+
+                                    <div class="reminder-name"
+                                         th:text="${reminder.medication != null
+                                                   ? reminder.medication.medicineName
+                                                   : 'Medication'}">
+
+                                        Medication
+
+                                    </div>
+
+                                    <div class="reminder-subtitle"
+                                         th:text="${reminder.medication != null
+                                                   and reminder.medication.dosage != null
+                                                   ? reminder.medication.dosage
+                                                   : 'Scheduled medication'}">
+
+                                        500 mg
+
+                                    </div>
+
+                                </div>
+
+
+                                <div class="reminder-meta">
+
+                                    <div class="reminder-time"
+                                         th:text="${reminder.reminderTime != null
+                                                   ? #temporals.format(
+                                                       reminder.reminderTime,
+                                                       'HH:mm')
+                                                   : '--:--'}">
+
+                                        20:00
+
+                                    </div>
+
+                                    <span class="status status-pending"
+                                          th:text="${reminder.status != null
+                                                    ? reminder.status
+                                                    : 'PENDING'}">
+
+                                        PENDING
+
+                                    </span>
+
+                                </div>
+
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="empty-row"
+                             th:if="${reminders == null
+                                     or #lists.isEmpty(reminders)}">
+
+                            No medication reminders.
+
+                        </div>
+
+                    </section>
+
+
+                </div>
+
+
+
+                <!-- =================================================
+                     RIGHT
+                ================================================== -->
+
+                <div class="right-column">
+
+
+                    <!-- DOCUMENTS -->
+
+                    <section class="panel">
+
+                        <div class="panel-header">
+
+                            <h2 class="panel-title">
+                                Recent Documents
+                            </h2>
+
+                            <a class="panel-action"
+                               th:href="@{/patient/documents}">
+
+                                View all
+
+                            </a>
+
+                        </div>
+
+
+                        <div th:if="${documents != null
+                                    and !#lists.isEmpty(documents)}">
+
+
+                            <div class="document-row"
+                                 th:each="document : ${documents}">
+
+
+                                <div class="document-icon">
+
+                                    <svg class="icon"
+                                         viewBox="0 0 24 24">
+
+                                        <path d="M6 3h9l4 4v14H6z"></path>
+
+                                        <path d="M14 3v5h5"></path>
+
+                                    </svg>
+
+                                </div>
+
+
+                                <div class="document-details">
+
+                                    <div class="document-name"
+                                         th:text="${document.fileName != null
+                                                   ? document.fileName
+                                                   : 'Medical document'}">
+
+                                        lab-report.pdf
+
+                                    </div>
+
+
+                                    <div class="document-meta">
+
+                                        <span th:text="${document.fileType != null
+                                                        ? document.fileType
+                                                        : 'Medical document'}">
+
+                                            application/pdf
+
+                                        </span>
+
+                                        <span
+                                            th:if="${document.fileSize != null}">
+
+                                            ·
+
+                                        </span>
+
+                                        <span
+                                            th:if="${document.fileSize != null}"
+                                            th:text="${document.fileSize >= 1024
+                                                      ? (document.fileSize / 1024) + ' KB'
+                                                      : document.fileSize + ' B'}">
+
+                                            63 KB
+
+                                        </span>
+
+                                    </div>
+
+                                </div>
+
+
+                                <a class="download-link"
+
+                                   th:href="@{/api/patient/documents/{id}/download(
+                                                id=${document.id})}"
+
+                                   aria-label="Download document">
+
+                                    <svg class="icon icon-sm"
+                                         viewBox="0 0 24 24">
+
+                                        <path d="M12 3v12"></path>
+
+                                        <path d="m7 10 5 5 5-5"></path>
+
+                                        <path d="M5 21h14"></path>
+
+                                    </svg>
+
+                                </a>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="empty-row"
+                             th:if="${documents == null
+                                     or #lists.isEmpty(documents)}">
+
+                            No medical documents available.
+
+                        </div>
+
+                    </section>
+
+
+
+                    <!-- =================================================
+                         PRIVACY / TRUST
+                    ================================================== -->
+
+                    <section class="privacy-notice">
+
+
+                        <div class="privacy-icon">
+
+                            <svg class="icon icon-sm"
+                                 viewBox="0 0 24 24">
+
+                                <path d="M12 3 5 6v5c0 4.5 3 8.5 7 10 4-1.5 7-5.5 7-10V6z"></path>
+
+                                <path d="m9 12 2 2 4-4"></path>
+
+                            </svg>
+
+                        </div>
+
+
+                        <div class="privacy-content">
+
+                            <h3 class="privacy-title">
+
+                                Your health information is protected.
+
+                            </h3>
+
+                            <p class="privacy-text">
+
+                                CareSync is designed to keep your
+                                healthcare information private and
+                                accessible only to authorized users.
+
+                            </p>
+
+                            <a class="privacy-link"
+                               href="#">
+
+                                View privacy information
+
+                            </a>
+
+                        </div>
+
+
+                    </section>
+
+
+                </div>
+
+
+            </div>
+
+
+
+            <!-- =================================================
+                 FOOTER
+            ================================================== -->
+
+            <footer class="footer">
+
+                <div>
+                    CareSync Patient Portal
+                </div>
+
+
+                <div class="footer-links">
+
+                    <a href="#">
+                        Privacy Policy
+                    </a>
+
+                    <a href="#">
+                        Terms of Service
+                    </a>
+
+                    <a href="#">
+                        Help Center
+                    </a>
+
+                </div>
+
+            </footer>
+
+
+        </section>
+
+    </main>
+
+</div>
+
+
+
+<script>
+
+    function toggleSidebar() {
+
+        const sidebar =
+            document.getElementById("sidebar");
+
+        sidebar.classList.toggle("open");
+    }
+
+</script>
+
+
+
+    <script>
+        function logoutUser() {
+            localStorage.removeItem("caresyncToken");
+            localStorage.removeItem("caresyncEmail");
+            localStorage.removeItem("caresyncRole");
+
+            window.location.href = "/caresync/login";
+        }
+    </script>
+</body>
+
+</html>

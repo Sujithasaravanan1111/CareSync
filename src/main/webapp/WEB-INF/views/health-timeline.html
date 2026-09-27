@@ -1,0 +1,1115 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Health Timeline - CareSync</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Inter, Arial, sans-serif;
+            background: #f6f9fc;
+            color: #243b53;
+            font-size: 12px;
+        }
+
+        .app {
+            min-height: 100vh;
+        }
+
+        /* ================= SIDEBAR ================= */
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 224px;
+            background: #12344d;
+            color: #fff;
+            padding: 18px 12px;
+            z-index: 10;
+        }
+
+        .brand {
+            height: 30px;
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            padding: 0 10px;
+            margin-bottom: 27px;
+        }
+
+        .brand-mark {
+            width: 29px;
+            height: 29px;
+            border-radius: 6px;
+            background: #1e75bd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 21px;
+            font-weight: 400;
+            line-height: 1;
+        }
+
+        .brand span {
+            font-size: 17px;
+            font-weight: 700;
+            letter-spacing: -0.2px;
+        }
+
+        .nav-title {
+            padding: 0 10px;
+            margin-bottom: 8px;
+            color: #7892a8;
+            font-size: 9px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: .6px;
+        }
+
+        .nav {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .nav a {
+            height: 36px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 0 10px;
+            border-radius: 5px;
+            color: #9fb5c8;
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .nav a:hover,
+        .nav a.active {
+            background: #1e75bd;
+            color: #fff;
+        }
+
+        .nav-icon {
+            width: 18px !important;
+            height: 18px !important;
+            flex: 0 0 18px !important;
+            display: flex !important;
+            align-items: center;
+            justify-content: center;
+            color: #9fb5c8 !important;
+        }
+
+        .nav a.active .nav-icon {
+            color: #fff !important;
+        }
+
+        .nav-icon svg {
+            width: 17px;
+            height: 17px;
+            display: block;
+            stroke: currentColor;
+            stroke-width: 1.8;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            fill: none;
+        }
+
+        .help-box {
+            position: absolute;
+            left: 12px;
+            right: 12px;
+            bottom: 18px;
+            padding: 13px 12px;
+            background: #173e58;
+            border: 1px solid #28556f;
+            border-radius: 6px;
+        }
+
+        .help-box strong {
+            display: block;
+            color: #fff;
+            font-size: 10px;
+            margin-bottom: 6px;
+        }
+
+        .help-box p {
+            margin: 0 0 10px;
+            color: #9fb5c8;
+            font-size: 9px;
+            line-height: 14px;
+        }
+
+        .help-box button {
+            width: 100%;
+            height: 28px;
+            border: 1px solid #1e75bd;
+            border-radius: 4px;
+            background: #1e75bd;
+            color: #fff;
+            font-size: 9px;
+            cursor: pointer;
+        }
+
+        /* ================= MAIN ================= */
+
+        .main {
+            margin-left: 224px;
+            min-height: 100vh;
+        }
+
+        .topbar {
+            height: 62px;
+            background: #fff;
+            border-bottom: 1px solid #e4ebf0;
+            display: flex;
+            align-items: center;
+            padding: 0 25px;
+        }
+
+        .search {
+            width: 330px;
+            height: 34px;
+            border: 1px solid #dbe4ea;
+            border-radius: 5px;
+            padding: 0 12px;
+            outline: none;
+            color: #243b53;
+            font-size: 10px;
+            background: #fbfdfe;
+        }
+
+        .search:focus {
+            border-color: #8fb9d6;
+        }
+
+        .top-spacer {
+            flex: 1;
+        }
+
+        .user-area {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            padding-left: 13px;
+            border-left: 1px solid #e1e7ec;
+        }
+
+        .avatar {
+            width: 30px;
+            height: 30px;
+            min-width: 30px;
+            border-radius: 50%;
+            background: #eaf3fa;
+            color: #1769aa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .user-details {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .user-name {
+            color: #243b53;
+            font-size: 11px;
+            font-weight: 600;
+            line-height: 14px;
+            white-space: nowrap;
+        }
+
+        .user-role {
+            color: #829ab1;
+            font-size: 9px;
+            line-height: 12px;
+            margin-top: 1px;
+            white-space: nowrap;
+        }
+
+        .logout {
+            height: 31px;
+            padding: 0 12px;
+            margin-left: 5px;
+            border: 1px solid #e2a5a5;
+            color: #d95353;
+            background: #fff;
+            border-radius: 4px;
+            font-size: 9px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        /* ================= CONTENT ================= */
+
+        .content {
+            padding: 24px 28px 40px;
+            max-width: 1180px;
+        }
+
+        .breadcrumb {
+            color: #829ab1;
+            font-size: 9px;
+            margin-bottom: 8px;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 22px;
+        }
+
+        .page-header h1 {
+            margin: 0 0 5px;
+            font-size: 22px;
+            color: #243b53;
+            font-weight: 700;
+        }
+
+        .page-header p {
+            margin: 0;
+            color: #829ab1;
+            font-size: 11px;
+        }
+
+        .refresh-button {
+            height: 32px;
+            padding: 0 13px;
+            border: 1px solid #1e75bd;
+            border-radius: 4px;
+            background: #1e75bd;
+            color: #fff;
+            font-size: 9px;
+            cursor: pointer;
+        }
+
+        .status {
+            display: none;
+            margin-bottom: 15px;
+            padding: 10px 12px;
+            border-radius: 5px;
+            font-size: 10px;
+        }
+
+        .status.error {
+            display: block;
+            color: #a94442;
+            background: #fff2f2;
+            border: 1px solid #f0caca;
+        }
+
+        .loading {
+            padding: 30px;
+            text-align: center;
+            color: #829ab1;
+            background: #fff;
+            border: 1px solid #e3ebf1;
+            border-radius: 7px;
+        }
+
+        /* ================= TIMELINE ================= */
+
+        .timeline-card {
+            background: #fff;
+            border: 1px solid #e3ebf1;
+            border-radius: 7px;
+            padding: 22px 24px;
+        }
+
+        .timeline-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #edf2f5;
+        }
+
+        .timeline-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: #243b53;
+        }
+
+        .timeline-subtitle {
+            margin-top: 4px;
+            color: #829ab1;
+            font-size: 9px;
+        }
+
+        .timeline-count {
+            color: #1769aa;
+            background: #eaf3fa;
+            border-radius: 12px;
+            padding: 5px 9px;
+            font-size: 9px;
+            font-weight: 600;
+        }
+
+        .timeline {
+            position: relative;
+            margin-top: 20px;
+            padding-left: 34px;
+        }
+
+        .timeline::before {
+            content: "";
+            position: absolute;
+            left: 9px;
+            top: 5px;
+            bottom: 5px;
+            width: 2px;
+            background: #dbe8f1;
+        }
+
+        .timeline-event {
+            position: relative;
+            padding: 0 0 22px 18px;
+        }
+
+        .timeline-event:last-child {
+            padding-bottom: 3px;
+        }
+
+        .event-dot {
+            position: absolute;
+            left: -31px;
+            top: 2px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #eaf3fa;
+            border: 2px solid #6ea9d1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .event-dot svg {
+            width: 10px;
+            height: 10px;
+            stroke: #1769aa;
+            stroke-width: 1.8;
+            fill: none;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .event-top {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 5px;
+        }
+
+        .event-type {
+            display: inline-block;
+            padding: 3px 7px;
+            border-radius: 3px;
+            background: #edf5fa;
+            color: #1769aa;
+            font-size: 8px;
+            font-weight: 600;
+            letter-spacing: .2px;
+        }
+
+        .event-date {
+            color: #829ab1;
+            font-size: 9px;
+        }
+
+        .event-title {
+            color: #243b53;
+            font-size: 12px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .event-description {
+            color: #627d98;
+            font-size: 10px;
+            line-height: 16px;
+            max-width: 850px;
+        }
+
+        .empty-state {
+            padding: 45px 20px;
+            text-align: center;
+            color: #829ab1;
+        }
+
+        .empty-state strong {
+            display: block;
+            color: #486581;
+            font-size: 12px;
+            margin-bottom: 5px;
+        }
+
+        @media (max-width: 800px) {
+            .sidebar {
+                width: 190px;
+            }
+
+            .main {
+                margin-left: 190px;
+            }
+
+            .search {
+                width: 250px;
+            }
+
+            .content {
+                padding: 20px;
+            }
+        }
+    
+/* EXACT SIDEBAR STYLE FROM USER-PROVIDED REFERENCE FILE */
+.sidebar {
+    width: 224px !important;
+    background: #102a43 !important;
+    padding: 0 !important;
+}
+
+.sidebar .brand {
+    height: 62px !important;
+    padding: 0 17px !important;
+    margin: 0 !important;
+}
+
+.sidebar .brand-mark {
+    width: 29px !important;
+    height: 29px !important;
+    margin-right: 9px !important;
+    border-radius: 5px !important;
+    background: #2176b5 !important;
+    font-size: 0 !important;
+}
+
+.sidebar .brand-name {
+    color: #fff !important;
+    font-size: 17px !important;
+    font-weight: 700 !important;
+}
+
+.sidebar .menu-title,
+.sidebar .nav-title {
+    padding: 18px 10px 7px !important;
+    color: #7893aa !important;
+    font-size: 9px !important;
+    font-weight: 600 !important;
+    line-height: 1 !important;
+    letter-spacing: .7px !important;
+}
+
+.sidebar .nav {
+    padding: 0 10px !important;
+    gap: 0 !important;
+}
+
+.sidebar .nav a {
+    height: 36px !important;
+    min-height: 36px !important;
+    margin-bottom: 2px !important;
+    padding: 0 10px !important;
+    gap: 10px !important;
+    border-radius: 5px !important;
+    color: #c8d6e3 !important;
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
+    font-size: 12px !important;
+    font-weight: 500 !important;
+    line-height: 1 !important;
+    text-decoration: none !important;
+}
+
+.sidebar .nav a:hover {
+    background: rgba(255,255,255,.065) !important;
+    color: #fff !important;
+}
+
+.sidebar .nav a.active {
+    background: #1e68a8 !important;
+    color: #fff !important;
+    font-weight: 500 !important;
+}
+
+.sidebar .nav-icon {
+    width: 18px !important;
+    height: 18px !important;
+    min-width: 18px !important;
+    flex: 0 0 18px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    color: #9fb5c8 !important;
+}
+
+.sidebar .nav-icon svg,
+.sidebar .nav-icon .icon {
+    width: 17px !important;
+    height: 17px !important;
+    min-width: 17px !important;
+    display: block !important;
+    stroke: currentColor !important;
+    stroke-width: 1.8 !important;
+    stroke-linecap: round !important;
+    stroke-linejoin: round !important;
+    fill: none !important;
+}
+
+.sidebar .nav a.active .nav-icon {
+    color: #fff !important;
+}
+
+
+/* ===== CARESYNC BRAND + HELP BOX MATCHED TO REFERENCE ===== */
+.sidebar .brand {
+    height: 62px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 9px !important;
+    padding: 0 17px !important;
+    margin: 0 !important;
+}
+.sidebar .brand-mark {
+    width: 29px !important;
+    height: 29px !important;
+    min-width: 29px !important;
+    border-radius: 5px !important;
+    background: #2176b5 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    margin: 0 !important;
+}
+.sidebar .brand span {
+    font-size: 17px !important;
+    font-weight: 700 !important;
+    line-height: 1 !important;
+    color: #fff !important;
+    white-space: nowrap !important;
+}
+.sidebar .help-box {
+    margin: 52px 12px 16px !important;
+    padding: 13px 12px 14px !important;
+    border: 1px solid #31546e !important;
+    border-radius: 5px !important;
+    background: #173f5c !important;
+}
+.sidebar .help-box strong {
+    font-size: 10px !important;
+    margin-bottom: 6px !important;
+}
+.sidebar .help-box p {
+    margin: 0 0 10px !important;
+    font-size: 9px !important;
+    line-height: 14px !important;
+}
+.sidebar .help-box button {
+    width: 100% !important;
+    height: 28px !important;
+    border: 1px solid #1e75bd !important;
+    border-radius: 4px !important;
+    background: #1e75bd !important;
+    color: #fff !important;
+    font-size: 9px !important;
+}
+
+
+/* FINAL SIDEBAR MATCH */
+.sidebar{width:224px!important;background:#102a43!important;padding:0!important;color:#fff!important}
+.sidebar .brand{height:62px!important;display:flex!important;align-items:center!important;gap:9px!important;padding:0 17px!important;margin:0!important}
+.sidebar .brand-mark{width:29px!important;height:29px!important;min-width:29px!important;border-radius:5px!important;background:#2176b5!important;display:flex!important;align-items:center!important;justify-content:center!important;margin:0!important;color:#fff!important}
+.sidebar .brand-mark svg{width:17px!important;height:17px!important;stroke:#fff!important;stroke-width:1.8!important;fill:none!important;stroke-linecap:round!important}
+.sidebar .brand>span{color:#fff!important;font-size:17px!important;font-weight:700!important;line-height:1!important;white-space:nowrap!important}
+.sidebar .nav-title{padding:18px 10px 7px!important;margin:0!important;color:#7893aa!important;font-size:9px!important;font-weight:600!important;line-height:1!important;letter-spacing:.7px!important}
+.sidebar .nav{display:flex!important;flex-direction:column!important;padding:0 10px!important;gap:0!important}
+.sidebar .nav a{height:36px!important;min-height:36px!important;margin-bottom:2px!important;padding:0 10px!important;display:flex!important;align-items:center!important;gap:10px!important;border-radius:5px!important;color:#c8d6e3!important;font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif!important;font-size:12px!important;font-weight:500!important;line-height:1!important;text-decoration:none!important}
+.sidebar .nav a:hover{background:rgba(255,255,255,.065)!important;color:#fff!important}
+.sidebar .nav a.active{background:#1e75bd!important;color:#fff!important}
+.sidebar .nav-icon{width:18px!important;height:18px!important;min-width:18px!important;flex:0 0 18px!important;display:flex!important;align-items:center!important;justify-content:center!important;color:#9fb5c8!important}
+.sidebar .nav a.active .nav-icon{color:#fff!important}
+.sidebar .nav-icon .icon{width:17px!important;height:17px!important;display:block!important;stroke:currentColor!important;stroke-width:1.8!important;stroke-linecap:round!important;stroke-linejoin:round!important;fill:none!important}
+.sidebar .help-box{margin:52px 12px 16px!important;padding:13px 12px 14px!important;border:1px solid #31546e!important;border-radius:5px!important;background:#173f5c!important;color:#fff!important}
+.sidebar .help-box strong{display:block!important;color:#fff!important;font-size:10px!important;font-weight:700!important;line-height:1!important;margin-bottom:6px!important}
+.sidebar .help-box p{margin:0 0 10px!important;color:#9fb5c8!important;font-size:9px!important;line-height:14px!important}
+.sidebar .help-box button{width:100%!important;height:28px!important;border:1px solid #1e75bd!important;border-radius:4px!important;background:#1e75bd!important;color:#fff!important;font-size:9px!important;cursor:pointer!important}
+
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+    <!-- ================= SIDEBAR ================= -->
+
+    <aside class="sidebar">
+    <div class="brand">
+        <div class="brand-mark">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 5v14"></path>
+                <path d="M5 12h14"></path>
+            </svg>
+        </div>
+        <span>CareSync</span>
+    </div>
+
+    <div class="nav-title">MAIN MENU</div>
+
+    <nav class="nav">
+        <a href="/caresync/patient/dashboard">
+            <span class="nav-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M3 11.5 12 4l9 7.5"></path><path d="M5 10.5V20h14v-9.5"></path><path d="M9 20v-5h6v5"></path></svg></span>
+            <span>Overview</span>
+        </a>
+        <a href="/caresync/patient/medications">
+            <span class="nav-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M8 4h8"></path><path d="M7 7h10"></path><path d="M6 7v12h12V7"></path><path d="M9 12h6"></path><path d="M12 9v6"></path></svg></span>
+            <span>Medications</span>
+        </a>
+        <a href="/caresync/patient/appointments">
+            <span class="nav-icon"><svg class="icon" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="2"></rect><path d="M8 3v4"></path><path d="M16 3v4"></path><path d="M4 9h16"></path></svg></span>
+            <span>Appointments</span>
+        </a>
+        <a href="/caresync/patient/documents">
+            <span class="nav-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6z"></path><path d="M14 3v5h5"></path></svg></span>
+            <span>Documents</span>
+        </a>
+        <a href="/caresync/patient/reminders">
+            <span class="nav-icon"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7"></circle><path d="M12 8v4l3 2"></path></svg></span>
+            <span>Reminders</span>
+        </a>
+        <a href="/caresync/patient/health-records">
+            <span class="nav-icon"><svg class="icon" viewBox="0 0 24 24"><rect x="6" y="4" width="12" height="17" rx="2"></rect><path d="M9 8h6"></path><path d="M9 12h6"></path><path d="M9 16h4"></path></svg></span>
+            <span>Health Records</span>
+        </a>
+        <a class="active" href="/caresync/patient/health-timeline">
+            <span class="nav-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M6 4h12"></path><path d="M6 12h12"></path><path d="M6 20h12"></path><circle cx="4" cy="4" r="1.5"></circle><circle cx="4" cy="12" r="1.5"></circle><circle cx="4" cy="20" r="1.5"></circle></svg></span>
+            <span>Health Timeline</span>
+        </a>
+        <a href="/caresync/patient/profile">
+            <span class="nav-icon"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3"></circle><path d="M5 21a7 7 0 0 1 14 0"></path></svg></span>
+            <span>Profile</span>
+        </a>
+        <a href="/caresync/patient/caregivers">
+            <span class="nav-icon"><svg class="icon" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"></circle><circle cx="17" cy="9" r="2.5"></circle><path d="M3 21a6 6 0 0 1 12 0"></path><path d="M14 17a5 5 0 0 1 7 4"></path></svg></span>
+            <span>Caregiver Access</span>
+        </a>
+    </nav>
+
+    <div class="help-box">
+        <strong>Need Help?</strong>
+        <p>Contact CareSync support for assistance with your healthcare information.</p>
+        <button type="button">Contact Support</button>
+    </div>
+</aside>
+
+    <!-- ================= MAIN ================= -->
+
+    <main class="main">
+
+        <header class="topbar">
+
+            <input
+                class="search"
+                type="search"
+                placeholder="Search healthcare information..."
+            >
+
+            <div class="top-spacer"></div>
+
+            <div class="user-area">
+
+                <div class="avatar">T</div>
+
+                <div class="user-details">
+                    <div class="user-name">Test Patient</div>
+                    <div class="user-role">Patient</div>
+                </div>
+
+                <button
+                    class="logout"
+                    type="button"
+                    onclick="logoutUser()">
+                    Logout
+                </button>
+
+            </div>
+
+        </header>
+
+        <section class="content">
+
+            <div class="breadcrumb">
+                Patient Portal / Health Timeline
+            </div>
+
+            <div class="page-header">
+
+                <div>
+                    <h1>Health Timeline</h1>
+                    <p>
+                        View your healthcare journey in chronological order.
+                    </p>
+                </div>
+
+                <button
+                    class="refresh-button"
+                    type="button"
+                    onclick="loadTimeline()">
+                    Refresh Timeline
+                </button>
+
+            </div>
+
+            <div id="status" class="status"></div>
+
+            <div id="loading" class="loading">
+                Loading your healthcare timeline...
+            </div>
+
+            <div
+                id="timelineCard"
+                class="timeline-card"
+                style="display:none;">
+
+                <div class="timeline-header">
+
+                    <div>
+                        <div class="timeline-title">
+                            Healthcare Journey
+                        </div>
+                        <div class="timeline-subtitle">
+                            Medical records, medications, appointments,
+                            documents and healthcare instructions
+                        </div>
+                    </div>
+
+                    <div
+                        id="timelineCount"
+                        class="timeline-count">
+                        0 events
+                    </div>
+
+                </div>
+
+                <div
+                    id="timeline"
+                    class="timeline">
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+<script>
+
+    function logoutUser() {
+
+        localStorage.removeItem("caresyncToken");
+        localStorage.removeItem("caresyncEmail");
+        localStorage.removeItem("caresyncRole");
+
+        window.location.href = "/caresync/login";
+    }
+
+
+    function getEventIcon(type) {
+
+        const icons = {
+
+            "MEDICAL_RECORD":
+                '<svg viewBox="0 0 24 24">' +
+                '<rect x="5" y="4" width="14" height="17" rx="2"></rect>' +
+                '<path d="M9 8h6"></path>' +
+                '<path d="M9 12h6"></path>' +
+                '<path d="M9 16h4"></path>' +
+                '</svg>',
+
+            "MEDICATION":
+                '<svg viewBox="0 0 24 24">' +
+                '<path d="M8 4h8"></path>' +
+                '<path d="M7 7h10"></path>' +
+                '<path d="M6 7v12h12V7"></path>' +
+                '<path d="M9 12h6"></path>' +
+                '<path d="M12 9v6"></path>' +
+                '</svg>',
+
+            "APPOINTMENT":
+                '<svg viewBox="0 0 24 24">' +
+                '<rect x="4" y="5" width="16" height="15" rx="2"></rect>' +
+                '<path d="M8 3v4"></path>' +
+                '<path d="M16 3v4"></path>' +
+                '<path d="M4 9h16"></path>' +
+                '</svg>',
+
+            "DOCUMENT":
+                '<svg viewBox="0 0 24 24">' +
+                '<path d="M6 3h8l4 4v14H6z"></path>' +
+                '<path d="M14 3v5h5"></path>' +
+                '<path d="M9 13h6"></path>' +
+                '<path d="M9 17h6"></path>' +
+                '</svg>',
+
+            "HEALTHCARE_INSTRUCTION":
+                '<svg viewBox="0 0 24 24">' +
+                '<path d="M5 4h14v16H5z"></path>' +
+                '<path d="M8 8h8"></path>' +
+                '<path d="M8 12h8"></path>' +
+                '<path d="M8 16h5"></path>' +
+                '</svg>'
+        };
+
+        return icons[type] ||
+            '<svg viewBox="0 0 24 24">' +
+            '<circle cx="12" cy="12" r="7"></circle>' +
+            '</svg>';
+    }
+
+
+    function formatDate(dateValue) {
+
+        if (!dateValue) {
+            return "Date unavailable";
+        }
+
+        const date = new Date(dateValue);
+
+        if (isNaN(date.getTime())) {
+            return dateValue;
+        }
+
+        return date.toLocaleDateString(
+            "en-IN",
+            {
+                day: "2-digit",
+                month: "short",
+                year: "numeric"
+            }
+        );
+    }
+
+
+    function formatType(type) {
+
+        if (!type) {
+            return "HEALTH EVENT";
+        }
+
+        return type
+            .replaceAll("_", " ")
+            .toUpperCase();
+    }
+
+
+    function escapeHtml(value) {
+
+        if (value === null || value === undefined) {
+            return "";
+        }
+
+        return String(value)
+            .replaceAll("&", "&amp;")
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;")
+            .replaceAll('"', "&quot;")
+            .replaceAll("'", "&#039;");
+    }
+
+
+    function showError(message) {
+
+        const status =
+            document.getElementById("status");
+
+        status.textContent = message;
+        status.className = "status error";
+    }
+
+
+    function clearError() {
+
+        const status =
+            document.getElementById("status");
+
+        status.textContent = "";
+        status.className = "status";
+    }
+
+
+    function renderTimeline(events) {
+
+        const timeline =
+            document.getElementById("timeline");
+
+        const timelineCard =
+            document.getElementById("timelineCard");
+
+        const loading =
+            document.getElementById("loading");
+
+        const count =
+            document.getElementById("timelineCount");
+
+        loading.style.display = "none";
+        timelineCard.style.display = "block";
+
+        count.textContent =
+            events.length +
+            (events.length === 1 ? " event" : " events");
+
+        if (!events.length) {
+
+            timeline.innerHTML = `
+                <div class="empty-state">
+                    <strong>No healthcare events yet</strong>
+                    Your medical records, medications, appointments
+                    and documents will appear here.
+                </div>
+            `;
+
+            return;
+        }
+
+        timeline.innerHTML =
+            events.map(event => {
+
+                return (
+                    '<div class="timeline-event">' +
+
+                        '<div class="event-dot">' +
+                            getEventIcon(event.type) +
+                        '</div>' +
+
+                        '<div class="event-top">' +
+
+                            '<span class="event-type">' +
+                                escapeHtml(formatType(event.type)) +
+                            '</span>' +
+
+                            '<span class="event-date">' +
+                                escapeHtml(formatDate(event.date)) +
+                            '</span>' +
+
+                        '</div>' +
+
+                        '<div class="event-title">' +
+                            escapeHtml(event.title || "Healthcare Event") +
+                        '</div>' +
+
+                        '<div class="event-description">' +
+                            escapeHtml(
+                                event.description ||
+                                "Healthcare information recorded."
+                            ) +
+                        '</div>' +
+
+                    '</div>'
+                );
+
+            }).join("");
+    }
+
+
+    async function loadTimeline() {
+
+        const loading =
+            document.getElementById("loading");
+
+        const timelineCard =
+            document.getElementById("timelineCard");
+
+        loading.style.display = "block";
+        timelineCard.style.display = "none";
+
+        clearError();
+
+        const token =
+            localStorage.getItem("caresyncToken");
+
+        if (!token) {
+
+            window.location.href =
+                "/caresync/login";
+
+            return;
+        }
+
+        try {
+
+            const response =
+                await fetch(
+                    "/caresync/api/patient/timeline",
+                    {
+                        method: "GET",
+                        headers: {
+                            "Authorization":
+                                "Bearer " + token
+                        }
+                    }
+                );
+
+            if (response.status === 401) {
+
+                logoutUser();
+                return;
+            }
+
+            if (!response.ok) {
+
+                const message =
+                    await response.text();
+
+                throw new Error(
+                    message ||
+                    "Unable to load health timeline."
+                );
+            }
+
+            const events =
+                await response.json();
+
+            renderTimeline(
+                Array.isArray(events)
+                    ? events
+                    : []
+            );
+
+        } catch (error) {
+
+            loading.style.display = "none";
+            timelineCard.style.display = "none";
+
+            showError(
+                error.message ||
+                "Unable to load health timeline."
+            );
+        }
+    }
+
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        loadTimeline
+    );
+
+</script>
+
+</body>
+</html>

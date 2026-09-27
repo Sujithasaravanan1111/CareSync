@@ -1,0 +1,2042 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>CareSync | Profile</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Inter, "Segoe UI", Roboto, Arial, sans-serif;
+            background: #f5f7fa;
+            color: #263d52;
+            font-size: 13px;
+        }
+
+        .app {
+            min-height: 100vh;
+            display: flex;
+        }
+
+        /* SIDEBAR */
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 220px;
+            background: #102f4a;
+            color: #d9e5ef;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .brand {
+            height: 64px;
+            padding: 0 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 1px solid rgba(255,255,255,.08);
+            color: white;
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .brand-mark {
+            width: 30px;
+            height: 30px;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #287fbd;
+            color: white;
+            font-size: 19px;
+        }
+
+        .nav-title {
+            padding: 20px 20px 7px;
+            color: #88a1b8;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+        }
+
+        .nav {
+            padding: 0 10px;
+        }
+
+        .nav a {
+            height: 38px;
+            margin-bottom: 3px;
+            padding: 0 12px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            color: #d8e4ee;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .nav a:hover {
+            background: rgba(255,255,255,.07);
+        }
+
+        .nav a.active {
+            background: #2477b7;
+            color: white;
+            font-weight: 600;
+        }
+
+        .nav-icon {
+            width: 18px;
+            text-align: center;
+            font-size: 13px;
+        }
+
+        .help-box {
+            margin: auto 14px 14px;
+            padding: 14px;
+            border: 1px solid rgba(255,255,255,.12);
+            border-radius: 5px;
+            background: rgba(255,255,255,.04);
+        }
+
+        .help-box strong {
+            display: block;
+            margin-bottom: 6px;
+            color: white;
+        }
+
+        .help-box p {
+            margin: 0 0 10px;
+            color: #a9bfd1;
+            font-size: 11px;
+            line-height: 1.5;
+        }
+
+        .help-box button {
+            width: 100%;
+            height: 30px;
+            border: 0;
+            border-radius: 4px;
+            background: #1e75bd;
+            color: white;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        /* MAIN */
+
+        .main {
+            width: calc(100% - 220px);
+            margin-left: 220px;
+        }
+
+        .topbar {
+            height: 64px;
+            padding: 0 24px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            background: white;
+            border-bottom: 1px solid #dce3ea;
+        }
+
+        .search {
+            width: 330px;
+            height: 34px;
+            padding: 0 12px;
+            border: 1px solid #d5dee7;
+            border-radius: 4px;
+            outline: none;
+            font-size: 12px;
+        }
+
+        .top-spacer {
+            flex: 1;
+        }
+
+        .user-area {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+        }
+
+        .avatar {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #e8f1f8;
+            color: #12629a;
+            font-weight: 700;
+        }
+
+        .user-name {
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .user-role {
+            color: #718296;
+            font-size: 10px;
+        }
+
+        .logout {
+            height: 30px;
+            margin-left: 10px;
+            padding: 0 12px;
+            border: 1px solid #d96b6b;
+            border-radius: 4px;
+            background: white;
+            color: #b74343;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        /* CONTENT */
+
+        .content {
+            max-width: 1200px;
+            padding: 22px 26px;
+        }
+
+        .breadcrumb {
+            margin-bottom: 6px;
+            color: #718296;
+            font-size: 11px;
+        }
+
+        .page-header {
+            margin-bottom: 16px;
+        }
+
+        .page-header h1 {
+            margin: 0 0 4px;
+            color: #123454;
+            font-size: 23px;
+        }
+
+        .page-header p {
+            margin: 0;
+            color: #718296;
+            font-size: 12px;
+        }
+
+        /* ALERT */
+
+        .message {
+            display: none;
+            margin-bottom: 12px;
+            padding: 10px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        .message.success {
+            border: 1px solid #b9d8c5;
+            background: #f1faf4;
+            color: #276b43;
+        }
+
+        .message.error {
+            border: 1px solid #e1c2c2;
+            background: #fff6f6;
+            color: #a43d3d;
+        }
+
+        /* PROFILE */
+
+        .profile-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .panel {
+            background: white;
+            border: 1px solid #d6dfe7;
+            border-radius: 4px;
+        }
+
+        .panel-header {
+            min-height: 48px;
+            padding: 10px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #e1e6eb;
+        }
+
+        .panel-title {
+            color: #173c5d;
+            font-size: 15px;
+            font-weight: 700;
+        }
+
+        .panel-subtitle {
+            margin-top: 2px;
+            color: #7b8a9b;
+            font-size: 11px;
+        }
+
+        .panel-body {
+            padding: 15px 16px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .form-group.full {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            color: #455c70;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            border: 1px solid #d2dce5;
+            border-radius: 4px;
+            background: white;
+            color: #263f55;
+            font-family: inherit;
+            font-size: 12px;
+            outline: none;
+        }
+
+        input,
+        select {
+            height: 34px;
+            padding: 0 9px;
+        }
+
+        textarea {
+            min-height: 72px;
+            padding: 8px 9px;
+            resize: vertical;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            border-color: #3687bf;
+            box-shadow: 0 0 0 2px rgba(54,135,191,.08);
+        }
+
+        .readonly {
+            background: #f6f8fa;
+            color: #647689;
+        }
+
+        .section-gap {
+            margin-top: 12px;
+        }
+
+        /* SIDE INFORMATION */
+
+        .identity-card {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding-bottom: 15px;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #e2e7ec;
+        }
+
+        .large-avatar {
+            width: 58px;
+            height: 58px;
+            flex-shrink: 0;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #e8f1f8;
+            color: #12629a;
+            font-size: 21px;
+            font-weight: 700;
+        }
+
+        .identity-name {
+            color: #173c5d;
+            font-size: 17px;
+            font-weight: 700;
+        }
+
+        .identity-email {
+            margin-top: 3px;
+            color: #718296;
+            font-size: 11px;
+        }
+
+        .identity-role {
+            display: inline-block;
+            margin-top: 6px;
+            padding: 3px 7px;
+            border-radius: 3px;
+            background: #eef5fa;
+            color: #24648d;
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .info-list {
+            margin: 0;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+            padding: 9px 0;
+            border-bottom: 1px solid #edf0f3;
+        }
+
+        .info-row:last-child {
+            border-bottom: 0;
+        }
+
+        .info-label {
+            color: #778899;
+            font-size: 11px;
+        }
+
+        .info-value {
+            max-width: 60%;
+            color: #334d64;
+            text-align: right;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        /* BUTTONS */
+
+        .panel-footer {
+            padding: 11px 16px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+            border-top: 1px solid #e1e6eb;
+        }
+
+        .primary-button {
+            height: 33px;
+            padding: 0 14px;
+            border: 0;
+            border-radius: 4px;
+            background: #2375b4;
+            color: white;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .primary-button:hover {
+            background: #1c639a;
+        }
+
+        .secondary-button {
+            height: 33px;
+            padding: 0 14px;
+            border: 1px solid #cbd5df;
+            border-radius: 4px;
+            background: white;
+            color: #526579;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .security-note {
+            margin-top: 12px;
+            padding: 12px;
+            border: 1px solid #d6e3ec;
+            border-radius: 4px;
+            background: #f7fafc;
+        }
+
+        .security-note strong {
+            display: block;
+            margin-bottom: 4px;
+            color: #285a7d;
+            font-size: 11px;
+        }
+
+        .security-note p {
+            margin: 0;
+            color: #718296;
+            font-size: 10px;
+            line-height: 1.5;
+        }
+
+        .footer {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 16px;
+            padding-top: 12px;
+            border-top: 1px solid #dce3e9;
+            color: #8493a2;
+            font-size: 10px;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 18px;
+        }
+
+        .footer-links a {
+            color: #65788b;
+            text-decoration: none;
+        }
+
+        @media (max-width: 900px) {
+
+            .sidebar {
+                width: 64px;
+            }
+
+            .brand span,
+            .nav a span,
+            .nav-title,
+            .help-box {
+                display: none;
+            }
+
+            .main {
+                width: calc(100% - 64px);
+                margin-left: 64px;
+            }
+
+            .profile-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-group.full {
+                grid-column: auto;
+            }
+        }
+
+    
+        /* FINAL CARESYNC DASHBOARD ICON STANDARD */
+        .nav-icon {
+            width: 18px !important;
+            height: 18px !important;
+            min-width: 18px !important;
+            flex: 0 0 18px !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            color: #9fb5c8 !important;
+            text-align: initial !important;
+            font-size: initial !important;
+        }
+        .nav-icon .icon {
+            width: 17px !important;
+            height: 17px !important;
+            min-width: 17px !important;
+            display: block !important;
+            stroke: currentColor !important;
+            stroke-width: 1.8 !important;
+            stroke-linecap: round !important;
+            stroke-linejoin: round !important;
+            fill: none !important;
+        }
+        .nav a.active .nav-icon { color: #fff !important; }
+        .nav a:not(.active) .nav-icon { color: #9fb5c8 !important; }
+        
+
+    
+
+/* FINAL CARESYNC DASHBOARD SHELL - PROFILE */
+:root {
+    --cs-navy: #102a43;
+    --cs-blue: #2176b5;
+    --cs-text: #243b53;
+    --cs-muted: #627d98;
+    --cs-border: #d9e2ec;
+    --cs-bg: #f5f7fa;
+}
+
+body {
+    background: var(--cs-bg) !important;
+    color: var(--cs-text) !important;
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
+}
+
+.sidebar {
+    width: 224px !important;
+    background: var(--cs-navy) !important;
+}
+
+.main {
+    margin-left: 224px !important;
+    width: calc(100% - 224px) !important;
+}
+
+.brand {
+    height: 62px !important;
+    padding: 0 17px !important;
+    gap: 0 !important;
+}
+
+.brand-mark {
+    width: 29px !important;
+    height: 29px !important;
+    margin-right: 9px !important;
+    border-radius: 5px !important;
+    background: var(--cs-blue) !important;
+    font-size: 0 !important;
+}
+
+.brand-mark::before {
+    content: "+" !important;
+    color: #fff !important;
+    font-size: 20px !important;
+    line-height: 1 !important;
+    font-weight: 500 !important;
+}
+
+.brand > span {
+    color: #fff !important;
+    font-size: 17px !important;
+    font-weight: 700 !important;
+}
+
+.nav-title {
+    padding: 18px 10px 7px !important;
+    color: #7893aa !important;
+    font-size: 9px !important;
+    font-weight: 600 !important;
+    letter-spacing: .7px !important;
+}
+
+.nav {
+    padding: 0 10px !important;
+}
+
+.nav a {
+    height: 36px !important;
+    min-height: 36px !important;
+    margin-bottom: 2px !important;
+    padding: 0 10px !important;
+    gap: 10px !important;
+    border-radius: 5px !important;
+    color: #c8d6e3 !important;
+    font-size: 12px !important;
+    font-weight: 500 !important;
+}
+
+.nav a:hover {
+    background: rgba(255,255,255,.065) !important;
+    color: #fff !important;
+}
+
+.nav a.active {
+    background: #1e68a8 !important;
+    color: #fff !important;
+}
+
+.nav-icon {
+    width: 18px !important;
+    height: 18px !important;
+    min-width: 18px !important;
+    flex: 0 0 18px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    color: #9fb5c8 !important;
+    text-align: initial !important;
+    font-size: initial !important;
+}
+
+.nav-icon .icon {
+    width: 17px !important;
+    height: 17px !important;
+    min-width: 17px !important;
+    display: block !important;
+    stroke: currentColor !important;
+    stroke-width: 1.8 !important;
+    stroke-linecap: round !important;
+    stroke-linejoin: round !important;
+    fill: none !important;
+}
+
+.nav a.active .nav-icon {
+    color: #fff !important;
+}
+
+.nav a:not(.active) .nav-icon {
+    color: #9fb5c8 !important;
+}
+
+.topbar {
+    height: 62px !important;
+    padding: 0 22px !important;
+    background: #fff !important;
+    border-bottom: 1px solid var(--cs-border) !important;
+}
+
+.search {
+    width: 330px !important;
+    height: 34px !important;
+}
+
+
+.user-info {
+    display: flex !important;
+    align-items: center !important;
+    gap: 9px !important;
+    padding-left: 13px !important;
+    border-left: 1px solid #e1e7ec !important;
+}
+
+.avatar {
+    width: 30px !important;
+    height: 30px !important;
+    min-width: 30px !important;
+    border-radius: 50% !important;
+    background: #eaf3fa !important;
+    color: #1769aa !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 11px !important;
+    font-weight: 500 !important;
+}
+
+.user-name {
+    color: #243b53 !important;
+    font-size: 11px !important;
+    font-weight: 600 !important;
+    line-height: 14px !important;
+    white-space: nowrap !important;
+}
+
+.user-role {
+    color: #829ab1 !important;
+    font-size: 9px !important;
+    font-weight: 400 !important;
+    line-height: 12px !important;
+    margin-top: 1px !important;
+    white-space: nowrap !important;
+}
+
+.logout {
+    height: 31px !important;
+    padding: 0 12px !important;
+    border: 1px solid #e2a5a5 !important;
+    color: #d95353 !important;
+    background: #ffffff !important;
+    border-radius: 4px !important;
+    font-size: 9px !important;
+    font-weight: 500 !important;
+    cursor: pointer !important;
+}
+
+@media (max-width: 900px) {
+    .sidebar {
+        width: 64px !important;
+    }
+
+    .main {
+        margin-left: 64px !important;
+        width: calc(100% - 64px) !important;
+    }
+
+    .brand {
+        justify-content: center !important;
+        padding: 0 !important;
+    }
+
+    .brand > span,
+    .nav-title,
+    .nav a > span:not(.nav-icon),
+    .help-box,
+    .user-name,
+    .user-role,
+    .logout {
+        display: none !important;
+    }
+
+    .nav a {
+        justify-content: center !important;
+        padding: 0 !important;
+    }
+}
+
+@media (max-width: 650px) {
+    .topbar {
+        padding: 0 12px !important;
+    }
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+    <!-- SIDEBAR -->
+
+    <aside class="sidebar">
+
+        <div class="brand">
+            <div class="brand-mark">+</div>
+            <span>CareSync</span>
+        </div>
+
+        <div class="nav-title">Main Menu</div>
+
+        <nav class="nav">
+
+            <a th:href="@{/patient/dashboard}">
+                <span class="nav-icon"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m3 11 9-8 9 8"></path><path d="M5 10v10h14V10"></path><path d="M9 20v-6h6v6"></path></svg></span>
+                <span>Overview</span>
+            </a>
+
+            <a th:href="@{/patient/medications}">
+                <span class="nav-icon"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m8 4 12 12"></path><path d="M4.5 8.5a5 5 0 0 1 7.1-7.1l9 9a5 5 0 0 1-7.1 7.1z"></path><path d="m6 6 12 12"></path></svg></span>
+                <span>Medications</span>
+            </a>
+
+            <a th:href="@{/patient/appointments}">
+                <span class="nav-icon"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="17" rx="2"></rect><path d="M16 2v4"></path><path d="M8 2v4"></path><path d="M3 10h18"></path></svg></span>
+                <span>Appointments</span>
+            </a>
+
+            <a th:href="@{/patient/documents}">
+                <span class="nav-icon"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h9l4 4v14H6z"></path><path d="M14 3v5h5"></path><path d="M9 13h6"></path><path d="M9 17h6"></path></svg></span>
+                <span>Documents</span>
+            </a>
+
+            <a th:href="@{/patient/reminders}">
+                <span class="nav-icon"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path><path d="M10 21h4"></path></svg></span>
+                <span>Reminders</span>
+            </a>
+
+            <a th:href="@{/patient/health-records}">
+                <span class="nav-icon"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16v16H4z"></path><path d="M8 8h8"></path><path d="M8 12h8"></path><path d="M8 16h5"></path></svg></span>
+                <span>Health Records</span>
+            </a>
+            <a href="/caresync/patient/health-timeline">
+    <span class="nav-icon">
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M6 4h12"></path>
+            <path d="M6 12h12"></path>
+            <path d="M6 20h12"></path>
+            <circle cx="4" cy="4" r="1.5"></circle>
+            <circle cx="4" cy="12" r="1.5"></circle>
+            <circle cx="4" cy="20" r="1.5"></circle>
+        </svg>
+    </span>
+    <span>Health Timeline</span>
+</a>
+
+            <a class="active" th:href="@{/patient/profile}">
+                <span class="nav-icon"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3"></circle><path d="M5 21a7 7 0 0 1 14 0"></path></svg></span>
+                <span>Profile</span>
+            </a>
+
+            <a th:href="@{/patient/caregivers}">
+                <span class="nav-icon"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3"></circle><circle cx="17" cy="9" r="2.5"></circle><path d="M3 21a6 6 0 0 1 12 0"></path><path d="M14 17a5 5 0 0 1 7 4"></path></svg></span>
+                <span>Caregiver Access</span>
+            </a>
+
+        </nav>
+
+        <div class="help-box">
+
+            <strong>Need Help?</strong>
+
+            <p>
+                Contact CareSync support for assistance
+                with your healthcare information.
+            </p>
+
+            <button type="button">
+                Contact Support
+            </button>
+
+        </div>
+
+    </aside>
+
+
+    <!-- MAIN -->
+
+    <main class="main">
+
+        <header class="topbar">
+
+            <input
+                class="search"
+                type="search"
+                placeholder="Search healthcare information..."
+            >
+
+            <div class="top-spacer"></div>
+
+            <div class="user-area">
+
+                <div class="avatar"
+                     id="topAvatar">
+                    P
+                </div>
+
+                <div>
+
+                    <div class="user-name"
+                         th:text="${patientName}">
+                        Patient
+                    </div>
+
+                    <div class="user-role">
+                        Patient
+                    </div>
+
+                </div>
+
+                <button
+                    class="logout"
+                    type="button"
+                    onclick="logoutUser()">
+                    Logout
+                </button>
+
+            </div>
+
+        </header>
+
+
+        <section class="content">
+
+            <div class="breadcrumb">
+                Patient Portal / Profile
+            </div>
+
+            <div class="page-header">
+
+                <h1>Patient Profile</h1>
+
+                <p>
+                    Manage your personal and emergency healthcare information.
+                </p>
+
+            </div>
+
+
+            <div
+                id="successMessage"
+                class="message success">
+            </div>
+
+            <div
+                id="errorMessage"
+                class="message error">
+            </div>
+
+
+            <div class="profile-grid">
+
+                <!-- PERSONAL INFORMATION -->
+
+                <section class="panel">
+
+                    <div class="panel-header">
+
+                        <div>
+
+                            <div class="panel-title">
+                                Personal Information
+                            </div>
+
+                            <div class="panel-subtitle">
+                                Basic patient information
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="panel-body">
+
+                        <div class="identity-card">
+
+                            <div
+                                class="large-avatar"
+                                id="largeAvatar">
+                                P
+                            </div>
+
+                            <div>
+
+                                <div
+                                    class="identity-name"
+                                    th:text="${patientName}">
+                                    Patient
+                                </div>
+
+                                <div
+                                    class="identity-email"
+                                    th:text="${patientEmail}">
+                                    patient@example.com
+                                </div>
+
+                                <div class="identity-role">
+                                    Patient
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="form-grid">
+
+                            <div class="form-group">
+
+                                <label for="dateOfBirth">
+                                    Date of Birth
+                                </label>
+
+                                <input
+                                    id="dateOfBirth"
+                                    type="date">
+
+                            </div>
+
+
+                            <div class="form-group">
+
+                                <label for="gender">
+                                    Gender
+                                </label>
+
+                                <select id="gender">
+
+                                    <option value="">
+                                        Select
+                                    </option>
+
+                                    <option value="Male">
+                                        Male
+                                    </option>
+
+                                    <option value="Female">
+                                        Female
+                                    </option>
+
+                                    <option value="Other">
+                                        Other
+                                    </option>
+
+                                    <option value="Prefer not to say">
+                                        Prefer not to say
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+
+                            <div class="form-group">
+
+                                <label for="bloodGroup">
+                                    Blood Group
+                                </label>
+
+                                <select id="bloodGroup">
+
+                                    <option value="">
+                                        Select
+                                    </option>
+
+                                    <option value="A+">A+</option>
+                                    <option value="A-">A-</option>
+                                    <option value="B+">B+</option>
+                                    <option value="B-">B-</option>
+                                    <option value="AB+">AB+</option>
+                                    <option value="AB-">AB-</option>
+                                    <option value="O+">O+</option>
+                                    <option value="O-">O-</option>
+
+                                </select>
+
+                            </div>
+
+
+                            <div class="form-group">
+
+                                <label for="phone">
+                                    Phone
+                                </label>
+
+                                <input
+                                    id="phone"
+                                    type="tel"
+                                    placeholder="Phone number">
+
+                            </div>
+
+
+                            <div class="form-group full">
+
+                                <label for="address">
+                                    Address
+                                </label>
+
+                                <textarea
+                                    id="address"
+                                    placeholder="Enter address"></textarea>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- ACCOUNT / EMERGENCY -->
+
+                <section class="panel">
+
+                    <div class="panel-header">
+
+                        <div>
+
+                            <div class="panel-title">
+                                Emergency Contact
+                            </div>
+
+                            <div class="panel-subtitle">
+                                Contact information for urgent situations
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="panel-body">
+
+                        <div class="form-grid">
+
+                            <div class="form-group">
+
+                                <label for="emergencyContactName">
+                                    Contact Name
+                                </label>
+
+                                <input
+                                    id="emergencyContactName"
+                                    type="text"
+                                    placeholder="Full name">
+
+                            </div>
+
+
+                            <div class="form-group">
+
+                                <label for="emergencyContactRelationship">
+                                    Relationship
+                                </label>
+
+                                <input
+                                    id="emergencyContactRelationship"
+                                    type="text"
+                                    placeholder="Relationship">
+
+                            </div>
+
+
+                            <div class="form-group full">
+
+                                <label for="emergencyContactPhone">
+                                    Contact Phone
+                                </label>
+
+                                <input
+                                    id="emergencyContactPhone"
+                                    type="tel"
+                                    placeholder="Phone number">
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="security-note">
+
+                            <strong>
+                                Emergency information
+                            </strong>
+
+                            <p>
+                                Keep this information current so
+                                appropriate contacts can be identified
+                                during an emergency.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- MEDICAL INFORMATION -->
+
+                <section class="panel">
+
+                    <div class="panel-header">
+
+                        <div>
+
+                            <div class="panel-title">
+                                Medical Information
+                            </div>
+
+                            <div class="panel-subtitle">
+                                Important clinical information
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="panel-body">
+
+                        <div class="form-grid">
+
+                            <div class="form-group full">
+
+                                <label for="allergies">
+                                    Allergies
+                                </label>
+
+                                <textarea
+                                    id="allergies"
+                                    placeholder="List known allergies"></textarea>
+
+                            </div>
+
+
+                            <div class="form-group full">
+
+                                <label for="chronicConditions">
+                                    Chronic Conditions
+                                </label>
+
+                                <textarea
+                                    id="chronicConditions"
+                                    placeholder="List chronic conditions"></textarea>
+
+                            </div>
+
+
+                            <div class="form-group full">
+
+                                <label for="medicalHistory">
+                                    Medical History
+                                </label>
+
+                                <textarea
+                                    id="medicalHistory"
+                                    placeholder="Relevant medical history"></textarea>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="panel-footer">
+
+                        <button
+                            class="secondary-button"
+                            type="button"
+                            onclick="loadProfile()">
+                            Reset
+                        </button>
+
+                        <button
+                            class="primary-button"
+                            type="button"
+                            id="saveButton"
+                            onclick="saveProfile()">
+                            Save Changes
+                        </button>
+
+                    </div>
+
+                </section>
+
+
+                <!-- ACCOUNT DETAILS -->
+
+                <section class="panel">
+
+                    <div class="panel-header">
+
+                        <div>
+
+                            <div class="panel-title">
+                                Account Details
+                            </div>
+
+                            <div class="panel-subtitle">
+                                CareSync account information
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="panel-body">
+
+                        <div class="info-list">
+
+                            <div class="info-row">
+
+                                <span class="info-label">
+                                    Name
+                                </span>
+
+                                <span
+                                    class="info-value"
+                                    th:text="${patientName}">
+                                    Patient
+                                </span>
+
+                            </div>
+
+
+                            <div class="info-row">
+
+                                <span class="info-label">
+                                    Email
+                                </span>
+
+                                <span
+                                    class="info-value"
+                                    th:text="${patientEmail}">
+                                    patient@example.com
+                                </span>
+
+                            </div>
+
+
+                            <div class="info-row">
+
+                                <span class="info-label">
+                                    Account Type
+                                </span>
+
+                                <span class="info-value">
+                                    Patient
+                                </span>
+
+                            </div>
+
+
+                            <div class="info-row">
+
+                                <span class="info-label">
+                                    Authentication
+                                </span>
+
+                                <span class="info-value">
+                                    JWT Secured
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="security-note">
+
+                            <strong>
+                                Data privacy
+                            </strong>
+
+                            <p>
+                                Your healthcare information is associated
+                                with your authenticated CareSync account.
+                                Keep your account credentials secure.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+            </div>
+
+
+            <footer class="footer">
+
+                <div>
+                    CareSync Patient Portal
+                </div>
+
+                <div class="footer-links">
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms</a>
+                    <a href="#">Help Center</a>
+                </div>
+
+            </footer>
+
+        </section>
+
+    </main>
+
+</div>
+
+
+<script>
+
+let profileLoaded = false;
+
+
+function getToken() {
+
+    return localStorage.getItem(
+        "caresyncToken"
+    );
+}
+
+
+function showMessage(
+    elementId,
+    message
+) {
+
+    const element =
+        document.getElementById(elementId);
+
+    element.textContent = message;
+    element.style.display = "block";
+
+}
+
+
+function hideMessages() {
+
+    document.getElementById(
+        "successMessage"
+    ).style.display = "none";
+
+    document.getElementById(
+        "errorMessage"
+    ).style.display = "none";
+}
+
+
+function setAvatar(name) {
+
+    if (!name) {
+        return;
+    }
+
+    const letter =
+        name.trim()
+            .charAt(0)
+            .toUpperCase();
+
+    document.getElementById(
+        "topAvatar"
+    ).textContent = letter;
+
+    document.getElementById(
+        "largeAvatar"
+    ).textContent = letter;
+}
+
+
+function setValue(
+    id,
+    value
+) {
+
+    document.getElementById(id).value =
+        value == null ? "" : value;
+}
+
+
+async function loadProfile() {
+
+    hideMessages();
+
+    const token = getToken();
+
+    if (!token) {
+
+        showMessage(
+            "errorMessage",
+            "Your session has expired. Please log in again."
+        );
+
+        return;
+    }
+
+
+    try {
+
+        const response =
+            await fetch(
+                "/caresync/api/patient/profile",
+                {
+                    method: "GET",
+
+                    headers: {
+                        "Authorization":
+                            "Bearer " + token,
+
+                        "Accept":
+                            "application/json"
+                    }
+                }
+            );
+
+
+        const text =
+            await response.text();
+
+
+        let profile;
+
+        try {
+
+            profile =
+                JSON.parse(text);
+
+        } catch (error) {
+
+            profile = null;
+        }
+
+
+        if (!response.ok) {
+
+            if (response.status === 404) {
+
+                showMessage(
+                    "errorMessage",
+                    "No patient profile exists yet. Enter your information and save it."
+                );
+
+                return;
+            }
+
+            showMessage(
+                "errorMessage",
+                profile || "Unable to load your profile."
+            );
+
+            return;
+        }
+
+
+        setValue(
+            "dateOfBirth",
+            profile.dateOfBirth
+        );
+
+        setValue(
+            "gender",
+            profile.gender
+        );
+
+        setValue(
+            "bloodGroup",
+            profile.bloodGroup
+        );
+
+        setValue(
+            "phone",
+            profile.phone
+        );
+
+        setValue(
+            "address",
+            profile.address
+        );
+
+        setValue(
+            "emergencyContactName",
+            profile.emergencyContactName
+        );
+
+        setValue(
+            "emergencyContactPhone",
+            profile.emergencyContactPhone
+        );
+
+        setValue(
+            "emergencyContactRelationship",
+            profile.emergencyContactRelationship
+        );
+
+        setValue(
+            "allergies",
+            profile.allergies
+        );
+
+        setValue(
+            "chronicConditions",
+            profile.chronicConditions
+        );
+
+        setValue(
+            "medicalHistory",
+            profile.medicalHistory
+        );
+
+
+        setAvatar(profile.name);
+
+        profileLoaded = true;
+
+
+    } catch (error) {
+
+        console.error(error);
+
+        showMessage(
+            "errorMessage",
+            "Unable to connect to the CareSync server."
+        );
+    }
+
+}
+
+
+async function saveProfile() {
+
+    hideMessages();
+
+    const token = getToken();
+
+    if (!token) {
+
+        showMessage(
+            "errorMessage",
+            "Your session has expired. Please log in again."
+        );
+
+        return;
+    }
+
+
+    const profile = {
+
+        dateOfBirth:
+            document.getElementById(
+                "dateOfBirth"
+            ).value || null,
+
+        gender:
+            document.getElementById(
+                "gender"
+            ).value || null,
+
+        bloodGroup:
+            document.getElementById(
+                "bloodGroup"
+            ).value || null,
+
+        phone:
+            document.getElementById(
+                "phone"
+            ).value.trim() || null,
+
+        address:
+            document.getElementById(
+                "address"
+            ).value.trim() || null,
+
+        emergencyContactName:
+            document.getElementById(
+                "emergencyContactName"
+            ).value.trim() || null,
+
+        emergencyContactPhone:
+            document.getElementById(
+                "emergencyContactPhone"
+            ).value.trim() || null,
+
+        emergencyContactRelationship:
+            document.getElementById(
+                "emergencyContactRelationship"
+            ).value.trim() || null,
+
+        allergies:
+            document.getElementById(
+                "allergies"
+            ).value.trim() || null,
+
+        chronicConditions:
+            document.getElementById(
+                "chronicConditions"
+            ).value.trim() || null,
+
+        medicalHistory:
+            document.getElementById(
+                "medicalHistory"
+            ).value.trim() || null
+    };
+
+
+    const button =
+        document.getElementById(
+            "saveButton"
+        );
+
+    button.disabled = true;
+    button.textContent = "Saving...";
+
+
+    try {
+
+        const response =
+            await fetch(
+                "/caresync/api/patient/profile",
+                {
+                    method: "PUT",
+
+                    headers: {
+
+                        "Authorization":
+                            "Bearer " + token,
+
+                        "Content-Type":
+                            "application/json",
+
+                        "Accept":
+                            "application/json"
+                    },
+
+                    body:
+                        JSON.stringify(profile)
+                }
+            );
+
+
+        const text =
+            await response.text();
+
+
+        let data;
+
+        try {
+
+            data =
+                JSON.parse(text);
+
+        } catch (error) {
+
+            data = null;
+        }
+
+
+        if (!response.ok) {
+
+            showMessage(
+                "errorMessage",
+                text ||
+                "Unable to save your profile."
+            );
+
+            button.disabled = false;
+            button.textContent =
+                "Save Changes";
+
+            return;
+        }
+
+
+        if (data) {
+
+            setAvatar(data.name);
+
+        }
+
+
+        showMessage(
+            "successMessage",
+            "Profile updated successfully."
+        );
+
+
+        profileLoaded = true;
+
+
+    } catch (error) {
+
+        console.error(error);
+
+        showMessage(
+            "errorMessage",
+            "Unable to connect to the CareSync server."
+        );
+
+    } finally {
+
+        button.disabled = false;
+        button.textContent =
+            "Save Changes";
+    }
+
+}
+
+
+function logoutUser() {
+
+    localStorage.removeItem("caresyncToken");
+    localStorage.removeItem("caresyncEmail");
+    localStorage.removeItem("caresyncRole");
+
+    window.location.href = "/caresync/login";
+}
+
+
+function logout() {
+
+    localStorage.removeItem(
+        "caresyncToken"
+    );
+
+    localStorage.removeItem(
+        "caresyncEmail"
+    );
+
+    localStorage.removeItem(
+        "caresyncRole"
+    );
+
+    window.location.href =
+        "/caresync/login";
+}
+
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function() {
+
+        loadProfile();
+
+    }
+);
+
+</script>
+
+<!-- CARESYNC GLOBAL UI FIX: caregiver access, notification, logout -->
+<script>
+(function () {
+    "use strict";
+
+    const LOGIN_URL = "/caresync/login";
+
+    function clearCareSyncSession() {
+        localStorage.removeItem("caresyncToken");
+        localStorage.removeItem("caresyncEmail");
+        localStorage.removeItem("caresyncRole");
+    }
+
+    function logoutCareSync(event) {
+        if (event) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+        clearCareSyncSession();
+        window.location.assign(LOGIN_URL);
+        return false;
+    }
+
+    window.logout = logoutCareSync;
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const style = document.createElement("style");
+        style.textContent = `
+            .nav a.nav-link, .nav a.nav-item {
+                min-height: 36px;
+                width: 100%;
+                margin-bottom: 2px;
+                padding: 0 10px;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                border-radius: 5px;
+                color: #c8d6e3;
+                font-size: 12px;
+                font-weight: 500;
+                text-decoration: none;
+                box-sizing: border-box;
+            }
+            .nav a.nav-link:hover, .nav a.nav-item:hover {
+                background: rgba(255,255,255,.065);
+                color: white;
+            }
+            .nav .nav-link .nav-icon, .nav .nav-item .nav-icon {
+                width: 18px;
+                min-width: 18px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: #9fb5c8;
+            }
+            .nav .nav-link .icon, .nav .nav-item .icon {
+                width: 17px;
+                height: 17px;
+                stroke: currentColor;
+                stroke-width: 1.8;
+                stroke-linecap: round;
+                stroke-linejoin: round;
+                fill: none;
+            }
+            .notification {
+                position: relative;
+                width: 32px;
+                height: 32px;
+                padding: 0;
+                border: 0;
+                border-radius: 5px;
+                background: transparent;
+                color: #627d98;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            .notification .icon {
+                width: 17px;
+                height: 17px;
+                stroke: currentColor;
+                stroke-width: 1.8;
+                stroke-linecap: round;
+                stroke-linejoin: round;
+                fill: none;
+            }
+            .notification-badge, .badge-count, .badge {
+                position: absolute;
+                top: 3px;
+                right: 3px;
+                min-width: 14px;
+                height: 14px;
+                padding: 0 3px;
+                border-radius: 10px;
+                background: #b42318;
+                color: white;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 7px;
+                font-weight: 700;
+                box-sizing: border-box;
+            }
+        `;
+        document.head.appendChild(style);
+
+        document.querySelectorAll(".nav").forEach(function (nav) {
+            if (nav.querySelector('a[href*="/patient/caregivers"]')) return;
+
+            const profileLink = Array.from(nav.querySelectorAll("a")).find(function (a) {
+                const href = a.getAttribute("href") || "";
+                return href.includes("/patient/profile");
+            });
+
+            if (!profileLink) return;
+
+            const caregiverLink = document.createElement("a");
+            caregiverLink.className = "nav-link";
+            caregiverLink.href = "/caresync/patient/caregivers";
+            caregiverLink.innerHTML = `
+                <span class="nav-icon">
+                    <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                        <circle cx="9" cy="8" r="3"></circle>
+                        <circle cx="17" cy="9" r="2.5"></circle>
+                        <path d="M3 21a6 6 0 0 1 12 0"></path>
+                        <path d="M14 17a5 5 0 0 1 7 4"></path>
+                    </svg>
+                </span>
+                <span>Caregiver Access</span>
+            `;
+            profileLink.insertAdjacentElement("afterend", caregiverLink);
+        });
+
+        document.querySelectorAll(".notification").forEach(function (notification) {
+            const existingBadge = notification.querySelector(".notification-badge, .badge-count, .badge");
+            const badgeHtml = existingBadge
+                ? existingBadge.outerHTML
+                : '<span class="notification-badge">0</span>';
+
+            notification.innerHTML = `
+                <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path>
+                    <path d="M10 21h4"></path>
+                </svg>
+                ${badgeHtml}
+            `;
+            notification.setAttribute("aria-label", "Notifications");
+        });
+
+        document.querySelectorAll('form[action$="/logout"]').forEach(function (form) {
+            form.addEventListener("submit", logoutCareSync);
+        });
+
+        document.querySelectorAll(".logout, .logout-button").forEach(function (element) {
+            element.addEventListener("click", logoutCareSync);
+            if (element.tagName === "A") element.href = LOGIN_URL;
+        });
+    });
+})();
+</script>
+</body>
+</html>

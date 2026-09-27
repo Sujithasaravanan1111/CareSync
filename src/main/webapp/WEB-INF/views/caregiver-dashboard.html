@@ -1,0 +1,1299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>CareSync | Caregiver Dashboard</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        :root {
+            --navy: #123451;
+            --navy-dark: #0d2941;
+            --blue: #1769aa;
+            --blue-light: #eaf3fb;
+            --bg: #f4f7fa;
+            --white: #ffffff;
+            --border: #d9e2eb;
+            --text: #17324d;
+            --muted: #65798d;
+            --success: #247a52;
+            --success-bg: #eaf6ef;
+            --warning: #9a6800;
+            --warning-bg: #fff6df;
+            --danger: #a33b3b;
+            --danger-bg: #fbeeee;
+        }
+
+        body {
+            margin: 0;
+            font-family: "Inter", Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            font-size: 13px;
+        }
+
+        button,
+        input {
+            font-family: inherit;
+        }
+
+        .app {
+            min-height: 100vh;
+            display: flex;
+        }
+
+        /* SIDEBAR */
+
+        .sidebar {
+            width: 220px;
+            background: var(--navy-dark);
+            color: #fff;
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .brand {
+            height: 64px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 0 18px;
+            border-bottom: 1px solid rgba(255,255,255,.10);
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .brand-mark {
+            width: 30px;
+            height: 30px;
+            border-radius: 5px;
+            background: #247dbd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .menu-title {
+            padding: 20px 20px 8px;
+            color: #8fa8bd;
+            font-size: 9px;
+            font-weight: 700;
+            letter-spacing: .8px;
+            text-transform: uppercase;
+        }
+
+        .nav {
+            padding: 0 10px;
+        }
+
+        .nav-item {
+            height: 40px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0 12px;
+            margin-bottom: 3px;
+            color: #d8e4ee;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .nav-item:hover,
+        .nav-item.active {
+            background: #2177b6;
+            color: #fff;
+        }
+
+        .nav-icon {
+            width: 18px;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .support {
+            margin: auto 13px 13px;
+            padding: 15px;
+            border: 1px solid rgba(255,255,255,.12);
+            border-radius: 6px;
+            background: rgba(255,255,255,.04);
+        }
+
+        .support-title {
+            font-size: 12px;
+            font-weight: 700;
+            margin-bottom: 7px;
+        }
+
+        .support-text {
+            color: #b8cad9;
+            font-size: 10px;
+            line-height: 1.55;
+            margin-bottom: 11px;
+        }
+
+        .support button {
+            width: 100%;
+            border: 0;
+            background: #1e75bd;
+            color: white;
+            height: 31px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        /* MAIN */
+
+        .main {
+            margin-left: 220px;
+            width: calc(100% - 220px);
+            min-height: 100vh;
+        }
+
+        .topbar {
+            height: 64px;
+            background: white;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            padding: 0 25px;
+            justify-content: space-between;
+        }
+
+        .search {
+            width: 330px;
+            height: 34px;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 0 12px;
+            outline: none;
+            color: var(--text);
+            font-size: 12px;
+        }
+
+        .search:focus {
+            border-color: #6da6d1;
+        }
+
+        .user-area {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+        }
+
+        
+
+        
+
+        .avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #edf4f9;
+            color: var(--blue);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+
+        .user-info {
+            line-height: 1.25;
+        }
+
+        .user-name {
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .user-role {
+            color: var(--muted);
+            font-size: 9px;
+        }
+
+        .logout {
+            height: 30px;
+            padding: 0 13px;
+            border: 1px solid #d66a6a;
+            background: white;
+            color: #b23d3d;
+            border-radius: 4px;
+            font-size: 10px;
+            cursor: pointer;
+        }
+
+        .logout:hover {
+            background: var(--danger-bg);
+        }
+
+        /* CONTENT */
+
+        .content {
+            padding: 22px 26px 20px;
+            max-width: 1250px;
+        }
+
+        .breadcrumb {
+            color: #71869a;
+            font-size: 10px;
+            margin-bottom: 5px;
+        }
+
+        .page-title {
+            margin: 0;
+            font-size: 23px;
+            line-height: 1.25;
+            font-weight: 700;
+            color: #123552;
+        }
+
+        .page-subtitle {
+            margin: 5px 0 18px;
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        /* SUMMARY */
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+
+        .summary-card {
+            background: white;
+            border: 1px solid var(--border);
+            min-height: 78px;
+            padding: 14px 16px;
+        }
+
+        .summary-label {
+            color: #718496;
+            text-transform: uppercase;
+            letter-spacing: .4px;
+            font-size: 9px;
+            font-weight: 700;
+        }
+
+        .summary-number {
+            margin-top: 5px;
+            font-size: 21px;
+            font-weight: 700;
+            color: #123b5d;
+        }
+
+        .summary-description {
+            margin-top: 2px;
+            color: var(--muted);
+            font-size: 10px;
+        }
+
+        /* PATIENTS */
+
+        .section {
+            background: white;
+            border: 1px solid var(--border);
+        }
+
+        .section-header {
+            min-height: 48px;
+            padding: 0 15px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .section-title {
+            font-size: 15px;
+            font-weight: 700;
+        }
+
+        .section-action {
+            color: var(--blue);
+            font-size: 10px;
+        }
+
+        .patient-row {
+            min-height: 78px;
+            border-bottom: 1px solid #e7edf2;
+            display: flex;
+            align-items: center;
+            padding: 10px 15px;
+            justify-content: space-between;
+        }
+
+        .patient-row:last-child {
+            border-bottom: 0;
+        }
+
+        .patient-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .patient-avatar {
+            width: 40px;
+            height: 40px;
+            background: #edf4f9;
+            color: var(--blue);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 15px;
+            font-weight: 700;
+        }
+
+        .patient-name {
+            font-size: 13px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .patient-email {
+            color: var(--muted);
+            font-size: 10px;
+        }
+
+        .patient-meta {
+            display: flex;
+            gap: 6px;
+            margin-top: 5px;
+        }
+
+        .status {
+            display: inline-flex;
+            align-items: center;
+            padding: 3px 7px;
+            border-radius: 3px;
+            font-size: 9px;
+            font-weight: 600;
+        }
+
+        .status.accepted {
+            color: var(--success);
+            background: var(--success-bg);
+        }
+
+        .status.pending {
+            color: var(--warning);
+            background: var(--warning-bg);
+        }
+
+        .status.other {
+            color: var(--muted);
+            background: #eef2f5;
+        }
+
+        .view-btn {
+            height: 31px;
+            padding: 0 14px;
+            border: 1px solid #2a74a9;
+            color: #1769aa;
+            background: white;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .view-btn:hover {
+            background: var(--blue-light);
+        }
+
+        .empty {
+            padding: 25px 15px;
+            color: var(--muted);
+            font-size: 11px;
+            text-align: center;
+        }
+
+        .error {
+            padding: 11px 14px;
+            background: var(--danger-bg);
+            border: 1px solid #edcaca;
+            color: var(--danger);
+            margin-bottom: 12px;
+            font-size: 11px;
+            display: none;
+        }
+
+        .footer {
+            margin-top: 18px;
+            padding-top: 12px;
+            border-top: 1px solid var(--border);
+            color: #7890a3;
+            font-size: 9px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        @media (max-width: 800px) {
+
+            .sidebar {
+                width: 62px;
+            }
+
+            .brand {
+                justify-content: center;
+                padding: 0;
+            }
+
+            .brand span,
+            .menu-title,
+            .nav-item span:not(.nav-icon),
+            .support {
+                display: none;
+            }
+
+            .nav-item {
+                justify-content: center;
+                padding: 0;
+            }
+
+            .main {
+                margin-left: 62px;
+                width: calc(100% - 62px);
+            }
+
+            .summary-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .topbar {
+                padding: 0 12px;
+            }
+
+            .search {
+                width: 220px;
+            }
+
+            .content {
+                padding: 18px 14px;
+            }
+        }
+
+        /* MASTER DASHBOARD SHELL */
+        :root { --navy-950:#102a43; --blue-600:#2176b5; --gray-800:#243b53; --gray-600:#627d98; --gray-500:#829ab1; --gray-200:#d9e2ec; --gray-50:#f5f7fa; }
+        body { background:var(--gray-50); color:var(--gray-800); font-family:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+        .sidebar { width:224px; background:var(--navy-950); }
+        .main { margin-left:224px; width:calc(100% - 224px); }
+        .brand { height:62px; padding:0 17px; border-bottom:1px solid rgba(255,255,255,.08); }
+        .brand-mark,.brand-symbol { width:29px; height:29px; margin-right:9px; border-radius:5px; background:var(--blue-600); display:flex; align-items:center; justify-content:center; }
+        .brand-mark svg,.brand-symbol svg { width:18px; height:18px; stroke:white; stroke-width:2.2; fill:none; }
+        .brand-name { color:white; font-size:17px; font-weight:700; }
+        .menu-title,.nav-title,.nav-label { padding:0 10px 7px; color:#7893aa; font-size:9px; font-weight:600; letter-spacing:.7px; text-transform:uppercase; }
+        .nav { padding:18px 10px; }
+        .nav a,.nav-item { min-height:36px; margin-bottom:2px; padding:0 10px; display:flex; align-items:center; gap:10px; border-radius:5px; color:#c8d6e3; font-size:12px; font-weight:500; }
+        .nav a:hover,.nav-item:hover,.nav a.active,.nav-item.active { background:#1e68a8; color:white; }
+        .nav-icon { width:18px; display:flex; align-items:center; justify-content:center; color:#9fb5c8; }
+        .nav-icon svg { width:17px; height:17px; }
+        .topbar { height:62px; padding:0 22px; background:white; border-bottom:1px solid var(--gray-200); }
+        .search { width:330px; height:34px; border:1px solid var(--gray-200); border-radius:5px; background:var(--gray-50) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23829ab1' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='m20 20-4-4'/%3E%3C/svg%3E") 10px center / 15px no-repeat; padding-left:32px; color:var(--gray-800); font-size:11px; }
+        .search::placeholder { color:var(--gray-500); }
+        .top-right,.user-area,.user-info { display:flex; align-items:center; }
+        .top-right,.user-area { gap:13px; }
+        .avatar { width:30px; height:30px; border-radius:50%; background:#eaf3fa; color:#1769aa; }
+        .user-name { color:var(--gray-800); font-size:11px; font-weight:600; }
+        .user-role { color:var(--gray-500); font-size:9px; }
+        .logout,.primary-button,.support button { border-radius:4px; font-size:9px; font-weight:600; }
+        @media (max-width:800px) { .sidebar{width:64px;} .main{margin-left:64px;width:calc(100% - 64px);} .brand-name,.brand-subtitle,.menu-title,.nav-title,.nav-label,.nav a span:not(.nav-icon),.nav-item span:not(.nav-icon),.support,.user-name,.user-role,.logout{display:none;} .search{width:260px;} }
+        @media (max-width:650px) { .topbar{padding:0 12px;} .search{width:200px;} }
+    
+        /* ===== DASHBOARD-MATCHED CAREGIVER SHELL ===== */
+        .sidebar {
+            width: 224px !important;
+            background: #102a43 !important;
+        }
+
+        .main {
+            margin-left: 224px !important;
+            width: calc(100% - 224px) !important;
+        }
+
+        .brand {
+            height: 62px !important;
+            padding: 0 17px !important;
+            gap: 9px !important;
+            border-bottom: 1px solid rgba(255,255,255,.08) !important;
+        }
+
+        .brand-mark {
+            width: 29px !important;
+            height: 29px !important;
+            margin: 0 !important;
+            border-radius: 5px !important;
+            background: #2176b5 !important;
+            font-size: 0 !important;
+        }
+
+        .brand-mark svg {
+            width: 18px !important;
+            height: 18px !important;
+            display: block !important;
+            stroke: #fff !important;
+            stroke-width: 2.2 !important;
+            stroke-linecap: round !important;
+            stroke-linejoin: round !important;
+            fill: none !important;
+        }
+
+        .brand > span {
+            color: #fff !important;
+            font-size: 17px !important;
+            font-weight: 700 !important;
+            letter-spacing: -.25px !important;
+        }
+
+        .menu-title {
+            padding: 0 10px 7px !important;
+            margin-top: 18px !important;
+            color: #7893aa !important;
+            font-size: 9px !important;
+            font-weight: 600 !important;
+            letter-spacing: .7px !important;
+        }
+
+        .nav {
+            padding: 0 10px !important;
+        }
+
+        .nav-item {
+            width: 100% !important;
+            height: 36px !important;
+            min-height: 36px !important;
+            margin-bottom: 2px !important;
+            padding: 0 10px !important;
+            gap: 10px !important;
+            border-radius: 5px !important;
+            color: #c8d6e3 !important;
+            font-size: 12px !important;
+            font-weight: 500 !important;
+        }
+
+        .nav-item:hover {
+            background: rgba(255,255,255,.065) !important;
+            color: #fff !important;
+        }
+
+        .nav-item.active {
+            background: #1e68a8 !important;
+            color: #fff !important;
+        }
+
+        .nav-icon {
+            width: 18px !important;
+            height: 18px !important;
+            min-width: 18px !important;
+            flex: 0 0 18px !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            color: #9fb5c8 !important;
+            font-size: 0 !important;
+        }
+
+        .nav-item.active .nav-icon {
+            color: #fff !important;
+        }
+
+        .nav-icon .icon,
+        .nav-icon svg {
+            width: 17px !important;
+            height: 17px !important;
+            min-width: 17px !important;
+            flex: 0 0 17px !important;
+            display: block !important;
+            stroke: currentColor !important;
+            stroke-width: 1.8 !important;
+            stroke-linecap: round !important;
+            stroke-linejoin: round !important;
+            fill: none !important;
+        }
+
+        .topbar {
+            height: 62px !important;
+            padding: 0 22px !important;
+            background: #fff !important;
+            border-bottom: 1px solid #d9e2ec !important;
+        }
+
+        .search {
+            width: 330px !important;
+            height: 34px !important;
+            border: 1px solid #d9e2ec !important;
+            border-radius: 5px !important;
+            background-color: #f5f7fa !important;
+            font-size: 11px !important;
+        }
+
+        .user-area {
+            display: flex !important;
+            align-items: center !important;
+            gap: 13px !important;
+        }
+
+    
+
+        .user-info {
+    display: flex !important;
+    align-items: center !important;
+    gap: 9px !important;
+    padding-left: 13px !important;
+    border-left: 1px solid #e1e7ec !important;
+}
+
+.avatar {
+    width: 30px !important;
+    height: 30px !important;
+    min-width: 30px !important;
+    border-radius: 50% !important;
+    background: #eaf3fa !important;
+    color: #1769aa !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 11px !important;
+    font-weight: 500 !important;
+}
+
+.user-name {
+    color: #243b53 !important;
+    font-size: 11px !important;
+    font-weight: 600 !important;
+    line-height: 14px !important;
+    white-space: nowrap !important;
+}
+
+.user-role {
+    color: #829ab1 !important;
+    font-size: 9px !important;
+    font-weight: 400 !important;
+    line-height: 12px !important;
+    margin-top: 1px !important;
+    white-space: nowrap !important;
+}
+
+        .logout {
+    height: 31px !important;
+    padding: 0 12px !important;
+    border: 1px solid #e2a5a5 !important;
+    color: #d95353 !important;
+    background: #ffffff !important;
+    border-radius: 4px !important;
+    font-size: 9px !important;
+    font-weight: 500 !important;
+    cursor: pointer !important;
+}
+
+        @media (max-width: 800px) {
+            .sidebar {
+                width: 64px !important;
+            }
+
+            .main {
+                margin-left: 64px !important;
+                width: calc(100% - 64px) !important;
+            }
+
+            .brand > span,
+            .menu-title,
+            .nav-item span:not(.nav-icon),
+            .support,
+            .user-name,
+            .user-role,
+            .logout {
+                display: none !important;
+            }
+
+            .brand {
+                justify-content: center !important;
+                padding: 0 !important;
+            }
+
+            .nav-item {
+                justify-content: center !important;
+                padding: 0 !important;
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+
+<div class="app">
+
+    <!-- SIDEBAR -->
+
+    <aside class="sidebar">
+
+        <div class="brand">
+            <div class="brand-mark"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14"></path><path d="M5 12h14"></path></svg></div>
+            <span>CareSync</span>
+        </div>
+
+        <div class="menu-title">Caregiver Portal</div>
+
+        <nav class="nav">
+
+            <a href="/caresync/caregiver/dashboard"
+               class="nav-item active">
+                <span class="nav-icon"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m3 11 9-8 9 8"></path><path d="M5 10v10h14V10"></path><path d="M9 20v-6h6v6"></path></svg></span>
+                <span>Overview</span>
+            </a>
+
+            <a href="/caresync/caregiver/dashboard"
+               class="nav-item">
+                <span class="nav-icon"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3"></circle><circle cx="17" cy="9" r="2.5"></circle><path d="M3 21a6 6 0 0 1 12 0"></path><path d="M14 17a5 5 0 0 1 7 4"></path></svg></span>
+                <span>Shared Patients</span>
+            </a>
+
+        </nav>
+
+        <div class="support">
+
+            <div class="support-title">
+                Need Help?
+            </div>
+
+            <div class="support-text">
+                Contact CareSync support for assistance with caregiver access.
+            </div>
+
+            <button type="button"
+                    onclick="alert('CareSync Support')">
+                Contact Support
+            </button>
+
+        </div>
+
+    </aside>
+
+
+    <!-- MAIN -->
+
+    <main class="main">
+
+        <!-- TOP BAR -->
+
+        <header class="topbar">
+
+            <input
+                    id="searchInput"
+                    class="search"
+                    type="search"
+                    placeholder="Search healthcare information..."
+                    aria-label="Search healthcare information"
+            >
+
+            <div class="user-area">
+
+                
+
+                <div class="avatar" id="avatar">
+                    C
+                </div>
+
+                <div class="user-info">
+                    <div class="user-name" id="caregiverName">
+                        Caregiver
+                    </div>
+
+                    <div class="user-role">
+                        Caregiver
+                    </div>
+                </div>
+
+                <button
+                        class="logout"
+                        type="button"
+                        onclick="logoutUser()">
+                    Logout
+                </button>
+
+            </div>
+
+        </header>
+
+
+        <!-- CONTENT -->
+
+        <section class="content">
+
+            <div class="breadcrumb">
+                Caregiver Portal / Overview
+            </div>
+
+            <h1 class="page-title">
+                Caregiver Dashboard
+            </h1>
+
+            <p class="page-subtitle">
+                View and manage healthcare information shared with you.
+            </p>
+
+
+            <div id="errorMessage" class="error"></div>
+
+
+            <!-- SUMMARY -->
+
+            <div class="summary-grid">
+
+                <div class="summary-card">
+                    <div class="summary-label">
+                        Shared Patients
+                    </div>
+
+                    <div class="summary-number"
+                         id="patientCount">
+                        0
+                    </div>
+
+                    <div class="summary-description">
+                        Patients who have shared access with you
+                    </div>
+                </div>
+
+
+                <div class="summary-card">
+                    <div class="summary-label">
+                        Active Access
+                    </div>
+
+                    <div class="summary-number"
+                         id="activeCount">
+                        0
+                    </div>
+
+                    <div class="summary-description">
+                        Currently active caregiver relationships
+                    </div>
+                </div>
+
+
+                <div class="summary-card">
+                    <div class="summary-label">
+                        Portal Status
+                    </div>
+
+                    <div class="summary-number">
+                        Active
+                    </div>
+
+                    <div class="summary-description">
+                        Secure JWT authenticated session
+                    </div>
+                </div>
+
+            </div>
+
+
+            <!-- PATIENT LIST -->
+
+            <section class="section">
+
+                <div class="section-header">
+
+                    <div class="section-title">
+                        Shared Patients
+                    </div>
+
+                    <div class="section-action">
+                        Caregiver access
+                    </div>
+
+                </div>
+
+                <div id="patientList">
+
+                    <div class="empty">
+                        Loading shared patients...
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <footer class="footer">
+
+                <span>
+                    CareSync Caregiver Portal
+                </span>
+
+                <span>
+                    Privacy Policy &nbsp;&nbsp;
+                    Terms of Service &nbsp;&nbsp;
+                    Help Center
+                </span>
+
+            </footer>
+
+        </section>
+
+    </main>
+
+</div>
+
+
+<script>
+
+    const token =
+        localStorage.getItem("caresyncToken");
+
+    const caregiverEmail =
+        localStorage.getItem("caresyncEmail");
+
+
+    if (!token) {
+        window.location.href = "/caresync/login";
+    }
+
+
+    function authHeaders() {
+
+        return {
+            "Authorization": "Bearer " + token
+        };
+
+    }
+
+
+    function escapeHtml(value) {
+
+        if (value === null || value === undefined) {
+            return "";
+        }
+
+        return String(value)
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
+
+
+    function initials(email) {
+
+        if (!email) {
+            return "C";
+        }
+
+        return email
+            .charAt(0)
+            .toUpperCase();
+
+    }
+
+
+    function logout() {
+
+        localStorage.removeItem("caresyncToken");
+        localStorage.removeItem("caresyncEmail");
+        localStorage.removeItem("caresyncRole");
+
+        window.location.href =
+            "/caresync/login";
+    }
+
+
+    async function loadCaregiver() {
+
+        if (caregiverEmail) {
+
+            document.getElementById(
+                "caregiverName"
+            ).textContent = caregiverEmail;
+
+            document.getElementById(
+                "avatar"
+            ).textContent = initials(
+                caregiverEmail
+            );
+        }
+
+
+        try {
+
+            const response = await fetch(
+                "/caresync/api/caregiver/shared-patients",
+                {
+                    method: "GET",
+                    headers: authHeaders()
+                }
+            );
+
+
+            if (response.status === 401) {
+
+                logout();
+                return;
+            }
+
+
+            const data =
+                await response.json();
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    typeof data === "string"
+                        ? data
+                        : "Unable to load shared patients."
+                );
+            }
+
+
+            renderPatients(data);
+
+        } catch (error) {
+
+            console.error(error);
+
+            showError(
+                error.message ||
+                "Unable to load caregiver information."
+            );
+
+            document.getElementById(
+                "patientList"
+            ).innerHTML =
+                '<div class="empty">Unable to load shared patients.</div>';
+        }
+
+    }
+
+
+    function renderPatients(patients) {
+
+        const container =
+            document.getElementById("patientList");
+
+
+        document.getElementById(
+            "patientCount"
+        ).textContent =
+            patients.length;
+
+
+        const active =
+            patients.filter(
+                patient =>
+                    String(patient.status)
+                        .toUpperCase() === "ACCEPTED"
+            ).length;
+
+
+        document.getElementById(
+            "activeCount"
+        ).textContent =
+            active;
+
+
+        if (!patients.length) {
+
+            container.innerHTML =
+                '<div class="empty">No patients have shared access with you.</div>';
+
+            return;
+        }
+
+
+        container.innerHTML =
+            patients.map(patient => {
+
+                const status =
+                    String(
+                        patient.status || ""
+                    ).toUpperCase();
+
+
+                let statusClass =
+                    "other";
+
+
+                if (status === "ACCEPTED") {
+                    statusClass = "accepted";
+                } else if (status === "PENDING") {
+                    statusClass = "pending";
+                }
+
+
+                const caregiverEmail =
+                    patient.caregiverEmail || "";
+
+
+                /*
+                 * The relationship response contains
+                 * the relationship id.
+                 *
+                 * The backend's patient-specific
+                 * endpoints require patientId.
+                 *
+                 * We therefore use the patient id
+                 * returned by the shared-patient
+                 * relationship when available.
+                 */
+
+                const patientId =
+                    patient.patientId ||
+                    patient.patient?.id;
+
+
+                return `
+                    <div class="patient-row"
+                         data-search="${escapeHtml(
+                             caregiverEmail
+                         )}">
+
+                        <div class="patient-left">
+
+                            <div class="patient-avatar">
+                                ${escapeHtml(
+                                    initials(
+                                        caregiverEmail
+                                    )
+                                )}
+                            </div>
+
+                            <div>
+
+                                <div class="patient-name">
+                                    ${escapeHtml(
+                                        caregiverEmail
+                                    )}
+                                </div>
+
+                                <div class="patient-email">
+                                    Shared healthcare access
+                                </div>
+
+                                <div class="patient-meta">
+                                    <span class="status ${statusClass}">
+                                        ${escapeHtml(status)}
+                                    </span>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        ${
+                            patientId
+                            ? `
+                            <button
+                                class="view-btn"
+                                type="button"
+                                onclick="openPatient(${patientId})">
+                                View Patient
+                            </button>
+                            `
+                            : `
+                            <span class="status other">
+                                Patient ID unavailable
+                            </span>
+                            `
+                        }
+
+                    </div>
+                `;
+
+            }).join("");
+
+    }
+
+
+    function openPatient(patientId) {
+
+        window.location.href =
+            "/caresync/caregiver/patient-details?patientId="
+            + encodeURIComponent(patientId);
+
+    }
+
+
+    function showError(message) {
+
+        const box =
+            document.getElementById(
+                "errorMessage"
+            );
+
+        box.textContent = message;
+        box.style.display = "block";
+
+    }
+
+
+    document
+        .getElementById("searchInput")
+        .addEventListener(
+            "input",
+            function () {
+
+                const query =
+                    this.value
+                        .trim()
+                        .toLowerCase();
+
+
+                document
+                    .querySelectorAll(".patient-row")
+                    .forEach(row => {
+
+                        const text =
+                            row.dataset.search
+                                .toLowerCase();
+
+                        row.style.display =
+                            text.includes(query)
+                                ? ""
+                                : "none";
+
+                    });
+
+            }
+        );
+
+
+    loadCaregiver();
+
+
+    function logoutUser() {
+        localStorage.removeItem("caresyncToken");
+        localStorage.removeItem("caresyncEmail");
+        localStorage.removeItem("caresyncRole");
+        window.location.href = "/caresync/login";
+    }
+
+</script>
+
+</body>
+</html>
